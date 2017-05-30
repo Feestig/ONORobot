@@ -1,4 +1,4 @@
-Auguste README.md
+Auguste README.md initial commit from Ubuntu
 # GIT Commands
 Git:
   Globals:
