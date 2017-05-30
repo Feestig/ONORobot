@@ -2,11 +2,11 @@ audio:
   master_volume: 60
   tts_engine: espeak
   tts_gender: f
-  tts_language: en
+  tts_language: fr
 behaviour:
-  blink: false
+  blink: true
   caffeine: 0
-  enabled: false
+  enabled: true
   gaze: true
 general:
   robot_name: robot
