@@ -75,11 +75,6 @@ $(document).ready(function(){
 		self.pressPlay = function(){
 			if(self.isPlaying()){
 				robotSendStop();
-				// $.ajax({
-				// 	dataType: "json",
-				// 	type: "GET",
-				// 	url: "stopsound"
-				// });
 			 	self.isPlaying(false);
 			 	self.hasPlayed(true);
 			}else{
@@ -88,17 +83,6 @@ $(document).ready(function(){
 				}
 				model.selectedVoiceLine(self);
 				if (self.emotion().emotion){
-					// $.ajax({
-					// 	dataType: "json",
-					// 	data: {"phi": self.emotion().emotion.phi, "r": self.emotion().emotion.r},
-					// 	type: "POST",
-					// 	url: "setemotion",
-					// 	success: function(data){
-					// 		if(data.status == "error"){
-					// 			addError(data.message);
-					// 		}
-					// 	}
-					// });
 					robotSendEmotionRPhi(self.emotion().emotion.r, self.emotion().emotion.phi, -1);
 				}
 				if (self.emotion().custom){
@@ -109,42 +93,11 @@ $(document).ready(function(){
 					var json_data = ko.toJSON(dofdata, null, 2);
 
 					robotSendAllDOF(json_data);
-					// $.ajax({
-					// 	dataType: "json",
-					// 	data: { dofdata: json_data },
-					// 	type: "POST",
-					// 	url: "setDofData",
-					// 	success: function(data){
-					// 		if(data.status == "error"){
-					// 			addError(data.message);
-					// 		}
-					// 	}
-					// });
 				}
 				if(this.output() == "tts"){
 					robotSendTTS(self.tts());
-					// $.ajax({
-					// 	dataType: "json",
-					// 	type: "GET",
-					// 	url: "saytts",
-					// 	data: {text: self.tts()},
-					// 	success: function(data){
-					//
-					// 	}
-					// });
 				}else{
 					robotSendSound(self.wav());
-					// $.ajax({
-					// 	dataType: "json",
-					// 	type: "GET",
-					// 	url: "play/" + self.wav(),
-					// 	success: function(data){
-					// 		if(data.status == "error"){
-					// 			addError(data.message);
-					// 		}
-					//
-					// 	}
-					// });
 				}
 				self.isPlaying(true);
 			}
@@ -156,7 +109,7 @@ $(document).ready(function(){
 			}
 
 			model.selectedVoiceLine(self);
-			$("#PickEmotionModal").foundation("reveal", "open");
+			$("#PickEmotionModal").foundation("open");
 		};
 	};
 
@@ -321,7 +274,7 @@ $(document).ready(function(){
 		self.changeEmotion = function(emotion){
 			self.fileIsModified(true);
 			self.selectedVoiceLine().emotion(emotion);
-			$("#PickEmotionModal").foundation("reveal", "close");
+			$("#PickEmotionModal").foundation("close");
 		};
 
 
@@ -332,11 +285,11 @@ $(document).ready(function(){
 		// Setup websocket connection.
 		self.conn = null;
 		self.connReady = false;
-		self.conn = new SockJS("http://" + window.location.host + "/sockjs");
+		self.conn = new SockJS("http://" + window.location.host + "/appsockjs");
 
 		self.conn.onopen = function(){
 			$.ajax({
-				url: "/sockjstoken",
+				url: "/appsockjstoken",
 				cache: false
 			})
 			.done(function(data) {

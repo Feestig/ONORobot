@@ -15,59 +15,52 @@ import os
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-config = {'full_name': 'App Template',
-          'icon': 'fa-info',
-          'color': '#15e678',
-          'allowed_background': False,
-          'robot_state': 0}
-config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
+config = {
+    'full_name':            'App Template',
+    'icon':                 'fa-info',
+    'color':                'green',
+    'difficulty':           1,
+    'tags':                 ['template', 'developer'],
+    'allowed_background':   False,
+    'connection':           Robot.Connection.OFFLINE,
+    'activation':           Robot.Activation.AUTO
+}
+config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
-# robot_state:
-# 0: Manual start/stop
-# 1: Start robot automatically (alive feature according to preferences)
-# 2: Start robot automatically and enable alive feature
-# 3: Start robot automatically and disable alive feature
+def setup_pages(server):
+    app_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
+    # Public function declarations
+    app_bp.add_url_rule('/demo',    'demo',     server.app_api(demo),       methods=['GET', 'POST'])
 
-def setup_pages(opsoroapp):
-    app_bp = Blueprint(
-        config['formatted_name'],
-        __name__,
-        template_folder='templates',
-        static_folder='static')
-
-    @app_bp.route('/', methods=['GET'])
-    @opsoroapp.app_view
+    @app_bp.route('/')
+    @server.app_view
     def index():
         data = {
             'actions': {},
             'data': [],
         }
-
         action = request.args.get('action', None)
         if action != None:
             data['actions'][action] = request.args.get('param', None)
 
-        return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
+        return server.render_template(config['formatted_name'] + '.html', **data)
 
-    # @app_bp.route('/demo')
-    # @opsoroapp.app_view
-    # def demo():
-    # 	data = {
-    # 	}
-    #
-    # 	return opsoroapp.render_template('app.html', **data)
+    server.register_app_blueprint(app_bp)
 
-    opsoroapp.register_app_blueprint(app_bp)
+def demo():
+    # publicly accessible function
+    if 1 > 0:
+        return {'status': 'success'}
+    else:
+        return {'status': 'error', 'message': 'This is a demo error!'}
 
-
-def setup(opsoroapp):
+# Default functions for setting up, starting and stopping an app
+def setup(server):
     pass
 
-
-def start(opsoroapp):
+def start(server):
     pass
 
-
-def stop(opsoroapp):
+def stop(server):
     pass

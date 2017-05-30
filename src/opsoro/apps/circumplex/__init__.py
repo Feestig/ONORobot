@@ -1,18 +1,18 @@
 from flask import Blueprint, render_template
 
-config = {'full_name': 'Circumplex',
-          'icon': 'fa-meh-o',
-          'color': '#15e678',
-          'allowed_background': False,
-          'robot_state': 1}
-config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
+from opsoro.robot import Robot
 
-# robot_state:
-# 0: Manual start/stop
-# 1: Start robot automatically (alive feature according to preferences)
-# 2: Start robot automatically and enable alive feature
-# 3: Start robot automatically and disable alive feature
-
+config = {
+    'full_name':            'Circumplex',
+    'icon':                 'fa-circle-o-notch',
+    'color':                'green',
+    'difficulty':           0,
+    'tags':                 ['circumplex', 'circle', 'expression'],
+    'allowed_background':   False,
+    'connection':           Robot.Connection.OFFLINE,
+    'activation':           Robot.Activation.AUTO
+}
+config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
 def setup_pages(opsoroapp):
     circumplex_bp = Blueprint(
