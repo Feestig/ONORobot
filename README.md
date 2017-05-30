@@ -1,25 +1,4 @@
-Auguste README.md initial commit from Ubuntu
-# GIT Commands
-Git:
-  Globals:
-  - git config user.name "<Github username>"
-  - git config user.email "<E-mail connected to Github acc>"
-
-  Commands: 
-  - git checkout -b <new branch name>
-  - git push --set-upstream origin killlbill // make your remote branch on github streamable
-  - git checkout master // switches to branch or master
-  - git status
-  - git add <filename.extension> or . for all
-  - git commit -am "Description of commit"
-  - git push -u origin desktop_branch // branch or master
-  - git merge desktop_branch // merge with master, make sure to cd to master first -> git checkout master
-  - git push // push the merged action to master
-
-  - git pull origin desktop_branch // pull updated version to either desktop or laptop 
-
-  - git log
-  - git help // to see more commands
+Groep Arno Vande Cappelle, Thibaud Vander Syppe
 
 # OnoSW
 OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OnoHAT](https://github.com/cesarvandevelde/OnoHAT).
@@ -43,7 +22,7 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
 5. Install Python development files, Avahi daemon, LuaJIT
 
     ```
-    sudo apt-get install python2.7-dev avahi-daemon libluajit-5.1-dev
+    sudo apt-get install python2.7-dev avahi-daemon libluajit-5.1-dev git
     ```
 
 6. Install PIP
@@ -64,7 +43,7 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
 8. Install Python packages (flask, flask-login, pyyaml, pluginbase, sockjs-tornado, simplejson, lupa, numpy, scipy, spidev)
 
     ```
-    sudo pip install flask flask-login pyyaml pluginbase sockjs-tornado simplejson lupa numpy spidev
+    sudo pip install flask flask-login pyyaml pluginbase sockjs-tornado simplejson lupa numpy spidev gitpython flask-babel noise pyserial enum enum34 requests tweepy
     sudo apt-get install -y python-smbus i2c-tools
     sudo apt-get install -y python-scipy
     ```
