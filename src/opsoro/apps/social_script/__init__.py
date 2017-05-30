@@ -7,6 +7,7 @@ from opsoro.sound import Sound
 import math
 import cmath
 
+from opsoro.robot import Robot
 from opsoro.console_msg import *
 from opsoro.hardware import Hardware
 from opsoro.stoppable_thread import StoppableThread
@@ -27,18 +28,18 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
 # from opsoro.expression import Expression
 
-config = {'full_name': 'Social Script',
-          'icon': 'fa-commenting-o',
-          'color': '#15e678',
-          'allowed_background': False,
-          'robot_state': 1}
-config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
+config = {
+    'full_name':            'Social Script',
+    'icon':                 'fa-commenting-o',
+    'color':                'orange',
+    'difficulty':           4,
+    'tags':                 [''],
+    'allowed_background':   False,
+    'connection':           Robot.Connection.OFFLINE,
+    'activation':           Robot.Activation.AUTO
+}
+config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
-# robot_state:
-# 0: Manual start/stop
-# 1: Start robot automatically (alive feature according to preferences)
-# 2: Start robot automatically and enable alive feature
-# 3: Start robot automatically and disable alive feature
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
