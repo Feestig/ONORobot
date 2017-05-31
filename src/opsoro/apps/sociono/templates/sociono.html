@@ -18,25 +18,7 @@
 {% block sidebar_right %}{% endblock %}
 
 {% block app_content %}
-	<fieldset>
-		<legend>
-			<span class="fa fa-commenting"></span>
-			{{ _('Popup demo') }}</legend>
-		<div class="row">
-			<div class="content">
-				<span class="" data-bind="text: popupTextInput"></span>
-			</div>
-		</div>
-		<div class="row">
-			<div class="content">
-				<a href="#" class="button" data-bind="click: showPopup">
-					<span class="fa fa-cog" style="font-size: 1.5rem"></span>
-					{{ _('Change text popup') }}
-				</a>
-			</div>
-		</div>
-	</fieldset>
-
+	
 	{% if not online %}
 		<!-- Content in this section is not displayed online, only on the robot. For example: it is a perfect place to put controls that access hardware stuff, which is not available online. -->
 	{% endif %}

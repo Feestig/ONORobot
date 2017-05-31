@@ -12,17 +12,18 @@ from opsoro.sound import Sound
 from functools import partial
 import os
 
-constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
-get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
+import tweepy
+
+
 
 config = {
     'full_name':            'sociono',
     'icon':                 'fa-info',
-    'color':                'orange',
+    'color':                'blue',
     'difficulty':           1,
     'tags':                 ['template', 'developer'],
     'allowed_background':   False,
-    'connection':           Robot.Connection.OFFLINE,
+    'connection':           Robot.Connection.ONLINE,
     'activation':           Robot.Activation.AUTO
 }
 config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
@@ -30,32 +31,23 @@ config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 def setup_pages(server):
     app_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
-    # Public function declarations
-    app_bp.add_url_rule('/sociono',    'sociono',     server.app_api(sociono),       methods=['GET', 'POST'])
-
-
 
     @app_bp.route('/')
     @server.app_view
     def index():
         data = {
             'actions': {},
-            'data': [],
+            'data': ["hello"],
         }
         action = request.args.get('action', None)
         if action != None:
             data['actions'][action] = request.args.get('param', None)
 
+        
         return server.render_template(config['formatted_name'] + '.html', **data)
 
     server.register_app_blueprint(app_bp)
 
-def sociono():
-    # publicly accessible function
-    if 1 > 0:
-        return {'status': 'success'}
-    else:
-        return {'status': 'error', 'message': 'This is a demo error!'}
 
 # Default functions for setting up, starting and stopping an app
 def setup(server):
