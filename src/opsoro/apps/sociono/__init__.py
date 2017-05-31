@@ -8,21 +8,32 @@ from opsoro.robot import Robot
 from opsoro.expression import Expression
 # from opsoro.stoppable_thread import StoppableThread
 from opsoro.sound import Sound
+from opsoro.stoppable_thread import StoppableThread
 
 from functools import partial
 import os
 
 import tweepy
 
+import urllib2
+from functools import partial
+from random import randint
+
+
+
+#QUESTION
+def constrain(n, minn, maxn): return max(min(maxn, n), minn)
+
 
 
 config = {
     'full_name':            'sociono',
+    'author':               ['Arno Vande Cappelle','Thibaud Vander Syppe', 'Auguste Van Nieuwenhuyzen'],
     'icon':                 'fa-info',
     'color':                'blue',
     'difficulty':           1,
-    'tags':                 ['template', 'developer'],
-    'allowed_background':   False,
+    'tags':                 ['Twitter', 'developer'],
+    'allowed_background':   True,
     'connection':           Robot.Connection.ONLINE,
     'activation':           Robot.Activation.AUTO
 }
@@ -43,10 +54,31 @@ def setup_pages(server):
         if action != None:
             data['actions'][action] = request.args.get('param', None)
 
-        
+
         return server.render_template(config['formatted_name'] + '.html', **data)
 
     server.register_app_blueprint(app_bp)
+
+access_token = '735437381696905216-BboISY7Qcqd1noMDY61zN75CdGT0OSc'
+access_token_secret = 'd3A8D1ttrCxYV76pBOB389YqoLB32LiE0RVyoFwuMKUMb'
+consumer_key = 'AcdgqgujzF06JF6zWrfwFeUfF'
+consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
+
+
+
+twitterWords = ['#tennis']
+
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+
+class MyStreamListener(tweepy.StreamListener):
+    def on_status(self, status):
+        print_info(status.text)
+        Sound.say_tts(status.text)
+
+api = tweepy.API(auth)
+myStreamListener = MyStreamListener()
+myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
 
 
 # Default functions for setting up, starting and stopping an app
@@ -54,7 +86,10 @@ def setup(server):
     pass
 
 def start(server):
-    pass
+     global myStream
+     myStream.filter(track=twitterWords, async=True)
+
 
 def stop(server):
-    pass
+    global myStream
+    myStream.disconnect()
