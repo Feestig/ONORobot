@@ -89,6 +89,15 @@ def setup_pages(opsoroapp):
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
+    @sociono_bp.route('/', methods=['POST'])
+    @opsoroapp.app_view
+    # Auguste functions
+    def send():
+        socialID = request.form['socialID']
+        print_info(socialID)
+
+    # / Auguste
+
     @opsoroapp.app_socket_connected
     def s_connected(conn):
         global clientconn
@@ -98,6 +107,7 @@ def setup_pages(opsoroapp):
     def s_disconnected(conn):
         global clientconn
         clientconn = None
+
 
     opsoroapp.register_app_blueprint(sociono_bp)
 

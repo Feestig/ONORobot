@@ -1,11 +1,19 @@
 {% extends "app_base.html" %}
 
 {% block app_toolbar %}
-	{% include "toolbar/_file_operations.html" %}
-	{% include "toolbar/_lock_unlock.html" %}
+	<!--{% include "toolbar/_file_operations.html" %}
+	{% include "toolbar/_lock_unlock.html" %}-->
 {% endblock %}
 
 {% block app_content %}
+
+	<form method="POST" action="/send">
+		<input type="text" name="socialID">
+		<input type="submit" value="Go!">
+	</form>
+
+
+	<!-- Social script code -->
 	<div class="left-column" data-bind="visible: $root.fileIsLocked()">
 		<div id="fixedavatars">
 			<div class="row small-up-5" data-bind="foreach: emotions">
