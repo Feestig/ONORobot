@@ -21,7 +21,6 @@ from random import randint
 
 
 
-#QUESTION
 def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
 
@@ -29,7 +28,7 @@ def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 config = {
     'full_name':            'sociono',
     'author':               ['Arno Vande Cappelle','Thibaud Vander Syppe', 'Auguste Van Nieuwenhuyzen'],
-    'icon':                 'fa-info',
+    'icon':                 'fa-slack',
     'color':                'blue',
     'difficulty':           1,
     'tags':                 ['Twitter', 'developer'],
@@ -48,7 +47,7 @@ def setup_pages(server):
     def index():
         data = {
             'actions': {},
-            'data': ["hello"],
+            'data': [],
         }
         action = request.args.get('action', None)
         if action != None:
@@ -64,13 +63,12 @@ access_token_secret = 'UalduP04BS4X3ycgBJKn2QJymMhJUbNfQZlEiCZZezW6V'
 consumer_key = 'tNYqa3yLHTGhBvGNblUHHerlJ'
 consumer_secret = 'NxBbCA8VJZvxk1SNKWw3CWd5oSnJyNAcH9Kns5Lv1DV0cqrQiz'
 
-
-
 twitterWords = ['#opsoro']
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
+#getting new tweet
 class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         print_info(status.text)

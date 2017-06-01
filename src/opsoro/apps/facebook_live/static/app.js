@@ -77,7 +77,42 @@ $(document).ready(function() {
     ko.applyBindings(model);
     model.fileIsModified(false);
 
-  
+
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+   window.fbAsyncInit = function() {
+   FB.init({
+     appId            : '1388042014582795',
+     autoLogAppEvents : true,
+     xfbml            : true,
+     version          : 'v2.9'
+   });
+   FB.AppEvents.logPageView();
+
+   FB.api(
+        "/1477323589008693?fields=live_views&access_token=EAAaBZCzjU8H8BAFV7KudJn0K1V12CDBHqTIxYu6pVh7cpZAbt1WbZCyZBeSZC472fpPd0ZAkWC1tMrfAY26XnQJUR2rNrMQncQ9OGJlie3dUeQVvabZCwNmGaLL4FGHjZBVTajid16FL5niGWytlwZCiFDgj6yjIsZAAAZD",
+       function (response) {
+         console.log(response)
+         if (response && !response.error) {
+           /* handle the result */
+           console.log(response);
+         }
+       }
+   );
+
+
+  };
+
+
+
+
     // Configurate toolbar handlers
     //config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
 });
