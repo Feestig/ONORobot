@@ -30,6 +30,8 @@ $(document).ready(function(){
 
 	var switchID = 0; // Variable to generate unique IDs for toggle switches
 
+
+
 	// Here's my data model
 	var VoiceLine = function(emotion, output, tts, wav){
 		var self = this;
@@ -321,24 +323,28 @@ $(document).ready(function(){
 		// } else {
 		// 	self.init();
 		// }
+
+
+		// Auguste Code
+
+		self.socialID = ko.observable("");
+
+		self.setSocialID = function() {
+			
+			console.log("Hello world");
+			console.log(socialID.value)
+
+			$.post('/apps/sociono/', { social_id: socialID.value }, function(resp) {
+				console.log("post done")
+			})
+		}
+
 	};
 	// This makes Knockout get to work
 	var model = new SocialScriptModel();
 	ko.applyBindings(model);
 	model.fileIsModified(false);
 
-
-
-	// Auguste Models 
-
-	var SocialMedia = function() {
-		var self = this;
-
-		self.setSocialID = function() {
-			console.log('set social ID here');
-		}
-
-	}
 
 
 

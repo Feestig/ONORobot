@@ -44,19 +44,19 @@
 			</div>
 		</div>
 		<div data-bind="css: { 'right-column': $root.fileIsLocked() }">
-		<div id="socialIDForm">
-			<form method="POST">
-				<input type="text" placeholder="Enter a social page ID, ex: 512433" name="socialID">
-				<div class="rightcontrols" data-bind="visible: !$root.fileIsLocked()">
-					<a href="#" id="btnGo" class="button round info" data-bind="click: $root.setSocialID">
-						<span class="fa fa-plus"></span>
-						<span class="text">
-							{{ _('GO') }}</span>
-					</a>
-				</div>
-			</form>
-		</div>
-		<!-- Container for input boxes -->
+			<div id="socialIDForm">
+				<form method="POST">
+					<input type="text" placeholder="Enter a social page ID, ex: 512433" id="socialID" data-bind="value: socialID">
+					<div class="rightcontrols" data-bind="visible: !$root.fileIsLocked()">
+						<a href="#" id="btnGo" class="button round info" data-bind="click: $root.setSocialID">
+							<span class="fa fa-plus"></span>
+							<span class="text">
+								{{ _('GO') }}</span>
+						</a>
+					</div>
+				</form>
+			</div>
+			<!-- Container for input boxes -->
 			<div id="voicelines" data-bind="sortable: { data: voiceLines, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 				<div class="voiceline" data-bind="css: { locked: $root.fileIsLocked(), unlocked: !$root.fileIsLocked()}">
 					<div class="gripper"></div>

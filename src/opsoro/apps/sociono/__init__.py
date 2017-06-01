@@ -24,6 +24,9 @@ try:
 except ImportError:
     from yaml import Loader
 
+
+import tweepy
+
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
 # from opsoro.expression import Expression
@@ -87,11 +90,12 @@ def setup_pages(opsoroapp):
             data['sounds'].append(os.path.split(filename)[1])
         data['sounds'].sort()
 
-        print_info(config['formatted_name']);
-
+        # Auguste code
         if request.method == "POST":
-            socialID = request.form['socialID']
-            print_info(socialID)
+            stopTwitter()
+            social_id = []
+            social_id.append(request.form['social_id'])
+            startTwitter(social_id)
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
@@ -109,13 +113,45 @@ def setup_pages(opsoroapp):
     opsoroapp.register_app_blueprint(sociono_bp)
 
 
+access_token = '141268248-yAGsPydKTDgkCcV0RZTPc5Ff7FGE41yk5AWF1dtN'
+access_token_secret = 'UalduP04BS4X3ycgBJKn2QJymMhJUbNfQZlEiCZZezW6V'
+consumer_key = 'tNYqa3yLHTGhBvGNblUHHerlJ'
+consumer_secret = 'NxBbCA8VJZvxk1SNKWw3CWd5oSnJyNAcH9Kns5Lv1DV0cqrQiz'
+
+#twitterWords = ['#opsoro']
+
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+
+#getting new tweet
+class MyStreamListener(tweepy.StreamListener):
+    def on_status(self, status):
+        print_info(status.text)
+        Sound.say_tts(status.text)
+
+api = tweepy.API(auth)
+myStreamListener = MyStreamListener()
+myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
+
+
+# Default functions for setting up, starting and stopping an app
 def setup(opsoroapp):
     pass
-
 
 def start(opsoroapp):
     pass
 
-
 def stop(opsoroapp):
     pass
+
+def startTwitter(twitterWords):
+    global myStream
+    myStream.filter(track=twitterWords, async=True)
+    
+    print_info(twitterWords)
+
+def stopTwitter():
+    global myStream
+    myStream.disconnect()
+
+    print_info("stop twitter stream")

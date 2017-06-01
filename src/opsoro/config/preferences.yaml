@@ -2,7 +2,7 @@ audio:
   master_volume: 60
   tts_engine: espeak
   tts_gender: f
-  tts_language: fr
+  tts_language: en
 behaviour:
   blink: true
   caffeine: 0
