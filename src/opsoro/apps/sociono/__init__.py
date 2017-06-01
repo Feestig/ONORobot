@@ -69,7 +69,7 @@ def setup_pages(opsoroapp):
         template_folder='templates',
         static_folder='static')
 
-    @sociono_bp.route('/', methods=['GET'])
+    @sociono_bp.route('/', methods=['GET', 'POST'])
     @opsoroapp.app_view
     def index():
         data = {'actions': {}, 'emotions': [], 'sounds': []}
@@ -87,16 +87,13 @@ def setup_pages(opsoroapp):
             data['sounds'].append(os.path.split(filename)[1])
         data['sounds'].sort()
 
+        print_info(config['formatted_name']);
+
+        if request.method == "POST":
+            socialID = request.form['socialID']
+            print_info(socialID)
+
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
-
-    @sociono_bp.route('/', methods=['POST'])
-    @opsoroapp.app_view
-    # Auguste functions
-    def send():
-        socialID = request.form['socialID']
-        print_info(socialID)
-
-    # / Auguste
 
     @opsoroapp.app_socket_connected
     def s_connected(conn):

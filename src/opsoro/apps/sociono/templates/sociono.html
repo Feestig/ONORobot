@@ -1,17 +1,10 @@
 {% extends "app_base.html" %}
 
 {% block app_toolbar %}
-	<!--{% include "toolbar/_file_operations.html" %}
-	{% include "toolbar/_lock_unlock.html" %}-->
+	{% include "toolbar/_file_operations.html" %}
+	{% include "toolbar/_lock_unlock.html" %}
 {% endblock %}
-
 {% block app_content %}
-
-	<form method="POST" action="/send">
-		<input type="text" name="socialID">
-		<input type="submit" value="Go!">
-	</form>
-
 
 	<!-- Social script code -->
 	<div class="left-column" data-bind="visible: $root.fileIsLocked()">
@@ -51,6 +44,18 @@
 			</div>
 		</div>
 		<div data-bind="css: { 'right-column': $root.fileIsLocked() }">
+		<div id="socialIDForm">
+			<form method="POST">
+				<input type="text" placeholder="Enter a social page ID, ex: 512433" name="socialID">
+				<div class="rightcontrols" data-bind="visible: !$root.fileIsLocked()">
+					<a href="#" id="btnGo" class="button round info" data-bind="click: $root.setSocialID">
+						<span class="fa fa-plus"></span>
+						<span class="text">
+							{{ _('GO') }}</span>
+					</a>
+				</div>
+			</form>
+		</div>
 		<!-- Container for input boxes -->
 			<div id="voicelines" data-bind="sortable: { data: voiceLines, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 				<div class="voiceline" data-bind="css: { locked: $root.fileIsLocked(), unlocked: !$root.fileIsLocked()}">

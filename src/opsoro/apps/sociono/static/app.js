@@ -327,6 +327,21 @@ $(document).ready(function(){
 	ko.applyBindings(model);
 	model.fileIsModified(false);
 
+
+
+	// Auguste Models 
+
+	var SocialMedia = function() {
+		var self = this;
+
+		self.setSocialID = function() {
+			console.log('set social ID here');
+		}
+
+	}
+
+
+
 	config_file_operations("scripts", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
 
 });
