@@ -113,19 +113,22 @@ consumer_secret = 'NxBbCA8VJZvxk1SNKWw3CWd5oSnJyNAcH9Kns5Lv1DV0cqrQiz'
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
+COUNT = 0
 
 #getting new tweet
 class MyStreamListener(tweepy.StreamListener):
+
+
     def on_status(self, status):
+        global COUNT
+        COUNT = COUNT+1
+
         print_info(status.text)
-        #print_info(status._json)
-    
-        #Sound.say_tts(status.text)
 
-        
-        send_data('tweepy', status._json)
-
-        stopTwitter()
+        if COUNT < 5:
+            send_data('tweepy', status._json)
+        else:
+            stopTwitter()
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
@@ -144,14 +147,19 @@ def stop(opsoroapp):
     
 
 def startTwitter(twitterWords):
+    global COUNT
     global myStream
+    COUNT = 0
     myStream.filter(track=twitterWords, async=True)
+
 
     print_info(twitterWords)
 
 def stopTwitter():
+    global COUNT
     global myStream
     myStream.disconnect()
+    COUNT = 0
 
     print_info("stop twitter stream")
 

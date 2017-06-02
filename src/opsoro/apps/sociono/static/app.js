@@ -235,6 +235,12 @@ $(document).ready(function(){
 
 		// Auguste Code
 
+		self.addTweetLine = function(data){
+			self.fileIsModified(true);
+			self.voiceLines.push( new VoiceLine(self.emotions[0], "tts", data, "") );
+      		window.scrollTo(0, document.body.scrollHeight);
+		};
+
 		self.socialID = ko.observable("");
 
 		self.setSocialID = function() {
@@ -255,8 +261,10 @@ $(document).ready(function(){
 					 	self.selectedVoiceLine().hasPlayed(true);
 					}
 					break;
-				case "custom":
-					console.log(data)
+				case "tweepy":
+					console.log(data);
+					//self.tts = data.text; // if retweeted status?
+					self.addTweetLine(data.text);
 					break;
 			}
 		};
