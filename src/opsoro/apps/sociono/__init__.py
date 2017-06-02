@@ -73,6 +73,8 @@ class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         print_info(status.text)
         Sound.say_tts(status.text)
+        #send sockets
+        
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
