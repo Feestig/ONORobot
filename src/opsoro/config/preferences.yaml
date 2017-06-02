@@ -4,9 +4,9 @@ audio:
   tts_gender: f
   tts_language: en
 behaviour:
-  blink: true
+  blink: false
   caffeine: 0
-  enabled: true
+  enabled: false
   gaze: true
 general:
   robot_name: robot
