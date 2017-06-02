@@ -1,4 +1,3 @@
-
 $(document).ready(function(){
 
 	ko.bindingHandlers.avatar = {
@@ -330,7 +329,7 @@ $(document).ready(function(){
 		self.socialID = ko.observable("");
 
 		self.setSocialID = function() {
-			
+
 			console.log("Hello world");
 			console.log(socialID.value)
 
@@ -339,15 +338,36 @@ $(document).ready(function(){
 			})
 		}
 
+
+		self.conn = new SockJS("http://" + window.location.host + "/appsockjs");
+
+		self.conn.onopen = function(){
+			$.ajax({
+				url: "/appsockjstoken",
+				cache: false
+			})
+			.done(function(data) {
+				self.conn.send(JSON.stringify({action: "authenticate", token: data}));
+				self.connReady = true;
+			});
+		};
+
+		self.conn.onmessage = function(e){
+			var msg = $.parseJSON(e.data);
+			console.log(msg);
+			console.log(e);
+			//TODO verwerk msg
+
+
+		};
+
+
+
 	};
 	// This makes Knockout get to work
 	var model = new SocialScriptModel();
 	ko.applyBindings(model);
 	model.fileIsModified(false);
 
-
-
-
 	config_file_operations("scripts", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
-
 });

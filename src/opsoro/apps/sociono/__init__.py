@@ -50,7 +50,6 @@ dof_positions = {}
 
 clientconn = None
 
-
 def send_stopped():
     global clientconn
     if clientconn:
@@ -126,12 +125,13 @@ auth.set_access_token(access_token, access_token_secret)
 #getting new tweet
 class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
-        print_info('status')
-        print_info(status._json)
-        stopTwitter()
-        stop()
-        #print_info(status.text)
+        print_info(status.text)
+        #print_info(status._json)
+        #stopTwitter()
+        #stop()
         #Sound.say_tts(status.text)
+        #TODO send socket to js
+        clientconn.send_data("this is data", {})
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
@@ -151,7 +151,7 @@ def stop(opsoroapp):
 def startTwitter(twitterWords):
     global myStream
     myStream.filter(track=twitterWords, async=True)
-    
+
     print_info(twitterWords)
 
 def stopTwitter():
