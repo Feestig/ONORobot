@@ -23,6 +23,11 @@ Make a new app in the dashboard.
 [u'#opsoro']
 bij elke post eerst Twitter stream stoppen
 
+
+# Investigate Tweepy Response
+response object
+
+
 # Convert social username to ID
 
 # Issues

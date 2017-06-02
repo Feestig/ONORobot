@@ -126,8 +126,12 @@ auth.set_access_token(access_token, access_token_secret)
 #getting new tweet
 class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
-        print_info(status.text)
-        Sound.say_tts(status.text)
+        print_info('status')
+        print_info(status._json)
+        stopTwitter()
+        stop()
+        #print_info(status.text)
+        #Sound.say_tts(status.text)
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
