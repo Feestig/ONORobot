@@ -76,10 +76,10 @@ page_id = 'opsoro'  # username or id
 field = 'fan_count'
 token = 'EAAaBZCzjU8H8BAFV7KudJn0K1V12CDBHqTIxYu6pVh7cpZAbt1WbZCyZBeSZC472fpPd0ZAkWC1tMrfAY26XnQJUR2rNrMQncQ9OGJlie3dUeQVvabZCwNmGaLL4FGHjZBVTajid16FL5niGWytlwZCiFDgj6yjIsZAAAZD' # Access Token
 
-loop_T = 0
+loop_T = None
 
 def loop():
-    while loop_T:
+    while 1:
         data = get_page_data(page_id, field, token)
         print_info(data)
         time.sleep(5)
@@ -92,8 +92,7 @@ def setup(server):
 
 def start(server):
     global loop_T
-    loop_T = 1
-    loop()
+    loop_T = new(StoppableThread(target = loop))
     pass
 
 def stop(server):
