@@ -55,7 +55,7 @@ def setup_pages(server):
 
 
 def get_page_data(page_id, fields, access_token):
-    api_endpoint = "https://graph.facebook.com/v2.4/"
+    api_endpoint = "https://graph.facebook.com/v2.8/"
     fb_graph_url = api_endpoint + page_id + '?fields=' + fields + '&access_token=' + access_token
     try:
         api_request = urllib2.Request(fb_graph_url)
@@ -79,10 +79,12 @@ token = 'EAAaBZCzjU8H8BAFV7KudJn0K1V12CDBHqTIxYu6pVh7cpZAbt1WbZCyZBeSZC472fpPd0Z
 loop_T = None
 
 def loop():
-    while 1:
+    time.sleep(0.05)  # delay
+    while not loop_T.stopped():
+
         data = get_page_data(page_id, field, token)
         print_info(data)
-        time.sleep(5)
+        loop_T.sleep(5)
 
 
 
@@ -92,9 +94,9 @@ def setup(server):
 
 def start(server):
     global loop_T
-    loop_T = new(StoppableThread(target = loop))
+    loop_T = StoppableThread(target=loop)
     pass
 
 def stop(server):
-    loop_T = 0;
+    loop_T.Stop();
     pass

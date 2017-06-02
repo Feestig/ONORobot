@@ -117,8 +117,6 @@ access_token_secret = 'UalduP04BS4X3ycgBJKn2QJymMhJUbNfQZlEiCZZezW6V'
 consumer_key = 'tNYqa3yLHTGhBvGNblUHHerlJ'
 consumer_secret = 'NxBbCA8VJZvxk1SNKWw3CWd5oSnJyNAcH9Kns5Lv1DV0cqrQiz'
 
-#twitterWords = ['#opsoro']
-
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
@@ -130,8 +128,8 @@ class MyStreamListener(tweepy.StreamListener):
         #stopTwitter()
         #stop()
         #Sound.say_tts(status.text)
-        #TODO send socket to js
-        clientconn.send_data("this is data", {})
+        if not (clientconn == None):
+            clientconn.send_data("this is data", {})
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
