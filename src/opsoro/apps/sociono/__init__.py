@@ -3,6 +3,7 @@ from __future__ import with_statement
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory
 from werkzeug import secure_filename
 from opsoro.sound import Sound
+from opsoro.sound import TTS
 
 import math
 import cmath
@@ -26,6 +27,7 @@ except ImportError:
 
 
 import tweepy
+import re
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
@@ -126,16 +128,40 @@ auth.set_access_token(access_token, access_token_secret)
 class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         print_info(status.text)
-        #print_info(status._json)
-        #stopTwitter()
+        print_info("json" + status._json)
+        statusproc = rtToRetweet(status)
         #stop()
         #Sound.say_tts(status.text)
-        #TODO send socket to js
-        clientconn.send_data("this is data", {})
+        if not (clientconn == None):
+            clientconn.send_data("this is data", {"fjsdlkfjklsdjfslkf"})
+
+        stopTwitter()
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
 myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
+#function for text Editing
+def rtToRetweet(status):
+    #alles in nieuw object aanmaken en steken
+    encodedstattext = status.text.encode('utf-8')
+    status.filteredtext = str(encodedstattext)
+    strTweet = strTweet.replace("RT","ReTweet", 1)
+    strTweet = strTweet.decode('unicode_escape').encode('ascii','ignore')
+    strTweet = re.sub(r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', strTweet, flags=re.MULTILINE)
+    if status.lang == "en":
+        strTweet = strTweet.replace("@","from ", 1)
+    elif status.lang == "nl":
+        strTweet = strTweet.replace("@","van ", 1)
+    elif status.lang == "de":
+        strTweet = strTweet.replace("@","von ", 1)
+    elif status.lang == "fr":
+        strTweet = strTweet.replace("@","de ", 1)
+    #say_tweet(status)
+    print_info(strTweet)
+    return status
+def say_tweet(status):
+    file_path = str(os.path.expanduser('~/sociono'))
+    TTS.create_espeak(status.text, file_path, status.lang, "m", 10, 100)
 
 
 # Default functions for setting up, starting and stopping an app
@@ -146,15 +172,19 @@ def start(opsoroapp):
     pass
 
 def stop(opsoroapp):
+    stopTwitter()
     pass
 
 def startTwitter(twitterWords):
+    print_info("stop")
     global myStream
     myStream.filter(track=twitterWords, async=True)
 
+    print_info("twitterwords below")
     print_info(twitterWords)
 
 def stopTwitter():
+    print_info("stop")
     global myStream
     myStream.disconnect()
 
