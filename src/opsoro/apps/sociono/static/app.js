@@ -9,26 +9,7 @@ $(document).ready(function(){
 		}
 	};
 
-	ko.bindingHandlers.outputswitch = {
-		init: function(element, valueAccessor){
-			$(element).change(function(){
-				model.fileIsModified(true);
-				var value = valueAccessor();
-				if( $(element).prop("checked") ){
-					value("wav");
-				}else{
-					value("tts");
-				}
-			});
-		},
-		update: function(element, valueAccessor, allBindings) {
-			var value = valueAccessor();
-			var valueUnwrapped = ko.unwrap(value);
-			$(element).prop("checked", valueUnwrapped == "tts" ? false : true);
-		}
-	};
-
-	var switchID = 0; // Variable to generate unique IDs for toggle switches
+	var searchField = "";
 
 	// Here's my data model
 	var VoiceLine = function(emotion, output, tts, wav, picture){
@@ -43,8 +24,6 @@ $(document).ready(function(){
 
 		self.isPlaying = ko.observable(false);
 		self.hasPlayed = ko.observable(false);
-
-		self.switchID = "output-switch-" + switchID++;
 
 		self.contentPreview = ko.pureComputed(function(){
 			if(self.output() == "tts"){
@@ -111,8 +90,7 @@ $(document).ready(function(){
 	var SocialScriptModel = function(){
 		var self = this;
 
-		self.fileIsLocked = ko.observable("");
-		self.fileIsLocked = true;
+		self.fileIsLocked = ko.observable(true);
 		self.fileIsModified = ko.observable(false);
 		// self.fileName = ko.observable("");
 		self.fileStatus = ko.observable("");
@@ -227,29 +205,38 @@ $(document).ready(function(){
 			self.fixedVoiceLine.emotion(emotion);
 		};
 
-		self.profilePicture = ko.observable();
-
-		self.profilePicture = "https://pbs.twimg.com/profile_images/860055776626343936/ynb5WvCf.jpg";
-
 
 		// Auguste Code
 
+		// Observables
+		self.socialID = ko.observable("");
+		self.isStreaming = ko.observable(false);
+
 		self.addTweetLine = function(data, picture){
 			self.fileIsModified(true);
-
-			self.voiceLines.unshift( new VoiceLine(self.emotions[0], "tts", data, "", picture) );
-
+			self.voiceLines.unshift( new VoiceLine(self.emotions[0], "tts", data, "", picture) ); // unshift to push to first index of arr
 		}
-		
-		self.socialID = ko.observable("");
 
-		self.setSocialID = function() {
+		self.toggleTweepy = function() {
+			if(!socialID.value){
+				showMainWarning("Please enter a hashtag");
+				return;
+			}
 
-			console.log(socialID.value)
+			if(self.isStreaming()) { // stop tweety if button is clicked again
+				self.stopTweepy();
+			} else {
+				if(socialID.value != searchField){
+					searchField = socialID.value;
+					self.voiceLines.removeAll();
+				}
 
-			$.post('/apps/sociono/', { social_id: socialID.value }, function(resp) {
-				console.log("post done")
-			})
+				$.post('/apps/sociono/', { social_id: socialID.value }, function(resp) {
+					console.log("post done");
+				});
+			}
+
+			self.isStreaming(!self.isStreaming());
 		}
 
 		self.stopTweepy = function() {
@@ -265,10 +252,15 @@ $(document).ready(function(){
 			
 			console.log(l.isPlaying());
 			console.log(l.hasPlayed());
-			
-			
-
 		}
+
+		// Enter
+		$(document).keyup(function (e) {
+		    if ($(".socialID:focus") && (e.keyCode === 13)) {
+				self.setSocialID();
+		    }
+		});
+
 		// Setup websocket connection.
 		app_socket_handler = function(data) {
       		switch (data.action) {
@@ -279,10 +271,8 @@ $(document).ready(function(){
 					}
 					break;
 				case "tweepy":
-				console.log("data:");
-					console.log(data);
-					//self.tts = data.text; // if retweeted status?
-					self.addTweetLine(data.text, data.user["profile_image_url"]);
+
+					self.addTweetLine(data["text"]["filtered"], data["user"]["profile_picture"]);
 					break;
 			}
 		};

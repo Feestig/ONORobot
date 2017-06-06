@@ -33,6 +33,8 @@ Custom addLine() function
 
 # Autoloop voicelines
 
+# Locked = true for lay-out
+
 
 # Convert social username to ID
 

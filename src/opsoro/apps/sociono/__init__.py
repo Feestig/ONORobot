@@ -30,6 +30,7 @@ except ImportError:
 
 
 import tweepy
+import re
 
 def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
@@ -106,10 +107,10 @@ def setup_pages(opsoroapp):
     opsoroapp.register_app_blueprint(sociono_bp)
 
 
-access_token = '141268248-yAGsPydKTDgkCcV0RZTPc5Ff7FGE41yk5AWF1dtN'
-access_token_secret = 'UalduP04BS4X3ycgBJKn2QJymMhJUbNfQZlEiCZZezW6V'
-consumer_key = 'tNYqa3yLHTGhBvGNblUHHerlJ'
-consumer_secret = 'NxBbCA8VJZvxk1SNKWw3CWd5oSnJyNAcH9Kns5Lv1DV0cqrQiz'
+access_token = '735437381696905216-BboISY7Qcqd1noMDY61zN75CdGT0OSc'
+access_token_secret = 'd3A8D1ttrCxYV76pBOB389YqoLB32LiE0RVyoFwuMKUMb'
+consumer_key = 'AcdgqgujzF06JF6zWrfwFeUfF'
+consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -117,10 +118,10 @@ auth.set_access_token(access_token, access_token_secret)
 #getting new tweet
 class MyStreamListener(tweepy.StreamListener):
 
-
     def on_status(self, status):
-        print_info(status.text)
-        send_data('tweepy', status._json)
+        dataToSend = processJson(status)
+        print_info(dataToSend)
+        send_data('tweepy', dataToSend)
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
@@ -139,9 +140,7 @@ def stop(opsoroapp):
 
 
 def startTwitter(twitterWords):
-    #global COUNT
     global myStream
-    #COUNT = 0
     myStream.filter(track=twitterWords, async=True)
 
 
@@ -152,3 +151,46 @@ def stopTwitter():
     myStream.disconnect()
 
     print_info("stop twitter stream")
+
+
+# Thibaud code
+
+#process tweepy json
+def processJson(status):
+    data = { 
+        "user": { 
+            "username": status._json["user"]["screen_name"], 
+            "profile_picture": status._json["user"]["profile_image_url_https"]
+        }, 
+        "text": { 
+            "original": status.text, 
+            "filtered": filterTweet(status)
+        }
+    }
+
+    return data
+
+def filterTweet(status):
+    #alles in nieuw object aanmaken en steken
+    encodedstattext = status.text.encode('utf-8')
+    strTweet = str(encodedstattext)
+    strTweet = strTweet.replace("RT","ReTweet", 1)
+    strTweet = strTweet.decode('unicode_escape').encode('ascii','ignore')
+    strTweet = re.sub(r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', strTweet, flags=re.MULTILINE) # re -> import re (regular expression)
+    strTweet = languageCheck(strTweet, status)
+    return strTweet
+
+def languageCheck(strTweet,status):
+    if status.lang == "en":
+        return strTweet.replace("@","from ", 1)
+    elif status.lang == "nl":
+        return strTweet.replace("@","van ", 1)
+    elif status.lang == "de":
+        return strTweet.replace("@","von ", 1)
+    elif status.lang == "fr":
+        return strTweet.replace("@","de ", 1)
+
+def sayTweetInLanguage(status):
+    file_path = str(os.path.expanduser('~/sociono'))
+    TTS.create_espeak(status.text, file_path, status.lang, "m", 10, 100)
+
