@@ -1,6 +1,5 @@
 
 $(document).ready(function(){
-
 	ko.bindingHandlers.avatar = {
 		update: function(element, valueAccessor, allBindings) {
 			var value = valueAccessor();
@@ -28,7 +27,9 @@ $(document).ready(function(){
 		}
 	};
 
+
 	var switchID = 0; // Variable to generate unique IDs for toggle switches
+	var searchField = "";
 
 	// Here's my data model
 	var VoiceLine = function(emotion, output, tts, wav, picture){
@@ -110,6 +111,11 @@ $(document).ready(function(){
 
 	var SocialScriptModel = function(){
 		var self = this;
+
+		self.streaming = ko.observable(false);
+		self.streaming = false;
+		self.buttonvalue = ko.observable("");
+		self.buttonvalue("GO");
 
 		self.fileIsLocked = ko.observable(false);
 		self.fileIsModified = ko.observable(false);
@@ -239,16 +245,40 @@ $(document).ready(function(){
 			self.voiceLines.unshift( new VoiceLine(self.emotions[0], "tts", data, "", picture) );
 
 		}
-		
+
+		$(document).keyup(function (e) {
+		    if ($(".socialID:focus") && (e.keyCode === 13)) {
+					self.setSocialID();
+		    }
+		 });
+
+
 		self.socialID = ko.observable("");
 
 		self.setSocialID = function() {
+			if(! socialID.value){
+				showMainWarning("Please enter a value");
+				return;
+			}
 
-			console.log(socialID.value)
+			if(self.streaming){
+				self.stopTweepy();
+				self.buttonvalue("GO");
+			}
+			else {
+					self.buttonvalue("STOP");
+					if(socialID.value != searchField){
+						searchField = socialID.value;
+						self.voiceLines.removeAll();
+					}
 
-			$.post('/apps/sociono/', { social_id: socialID.value }, function(resp) {
-				console.log("post done")
-			})
+				$.post('/apps/sociono/', { social_id: socialID.value }, function(resp) {
+					console.log("post done");
+				});
+			}
+
+			self.streaming = !self.streaming;
+
 		}
 
 		self.stopTweepy = function() {
@@ -261,11 +291,11 @@ $(document).ready(function(){
 			var l = self.voiceLines()[0]
 
 			l.pressPlay();
-			
+
 			console.log(l.isPlaying());
 			console.log(l.hasPlayed());
-			
-			
+
+
 
 		}
 		// Setup websocket connection.
@@ -292,6 +322,10 @@ $(document).ready(function(){
 	var model = new SocialScriptModel();
 	ko.applyBindings(model);
 	model.fileIsModified(false);
+
+
+
+
 
 	config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.newFileData);
 
