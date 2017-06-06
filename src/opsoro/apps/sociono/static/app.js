@@ -111,8 +111,7 @@ $(document).ready(function(){
 	var SocialScriptModel = function(){
 		var self = this;
 
-		self.fileIsLocked = ko.observable("");
-		self.fileIsLocked = true;
+		self.fileIsLocked = ko.observable(false);
 		self.fileIsModified = ko.observable(false);
 		// self.fileName = ko.observable("");
 		self.fileStatus = ko.observable("");
