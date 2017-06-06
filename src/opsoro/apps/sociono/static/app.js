@@ -133,7 +133,7 @@ $(document).ready(function(){
 
 		self.newFileData = function(){
 			self.voiceLines.removeAll();
-			self.voiceLines.push(new VoiceLine(self.emotions[0], "tts", "", ""));
+			//self.voiceLines.push(new VoiceLine(self.emotions[0], "tts", "", ""));
 			self.unlockFile();
 			self.fileIsModified(false);
 		};
@@ -238,7 +238,7 @@ $(document).ready(function(){
 		self.addTweetLine = function(data){
 			self.fileIsModified(true);
 			self.voiceLines.push( new VoiceLine(self.emotions[0], "tts", data, "") );
-      		window.scrollTo(0, document.body.scrollHeight);
+      		//window.scrollTo(0, document.body.scrollHeight);
 		};
 
 		self.socialID = ko.observable("");
@@ -252,9 +252,26 @@ $(document).ready(function(){
 			})
 		}
 
+		self.stopTweepy = function() {
+			$.post('/apps/sociono/', {}, function(resp) {
+				console.log("post to stop tweepy")
+			})
+		}
+
+		self.autoLoopTweepy = function() {
+			var l = self.voiceLines()[0]
+
+			l.pressPlay();
+			
+			console.log(l.isPlaying());
+			console.log(l.hasPlayed());
+			
+			
+
+		}
 		// Setup websocket connection.
 		app_socket_handler = function(data) {
-      switch (data.action) {
+      		switch (data.action) {
 				case "soundStopped":
 					if (self.selectedVoiceLine() != undefined) {
 						self.selectedVoiceLine().isPlaying(false);

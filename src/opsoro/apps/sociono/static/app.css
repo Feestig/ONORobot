@@ -130,7 +130,7 @@
 }
 
 .voiceline .avatar,
-#PickEmotionModal .avatar
+#PickEmotionModal .avatar, .avatar > img
 {
     position: absolute;
     top: 0;
