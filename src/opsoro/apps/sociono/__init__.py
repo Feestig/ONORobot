@@ -127,7 +127,7 @@ class MyStreamListener(tweepy.StreamListener):
         #print_info(status._json)
         #stopTwitter()
         #stop()
-        #Sound.say_tts(status.text)
+        Sound.say_tts(status.text)
         if not (clientconn == None):
             clientconn.send_data("this is data", {})
 

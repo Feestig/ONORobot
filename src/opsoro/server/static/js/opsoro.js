@@ -159,6 +159,7 @@ var app_socket_handler = undefined;
 var conn = null;
 var connReady = false;
 function connectSocket() {
+  console.log("in connectSocket");
     conn = new SockJS('http://' + window.location.host + '/sockjs');
 
     conn.onopen = function(){
@@ -168,7 +169,6 @@ function connectSocket() {
         cache: false
       }).done(function(data) {
         var appname = undefined;
-
         if (app_data != undefined) {
           if ('formatted_name' in app_data) {
             appname = app_data['formatted_name'];
@@ -282,13 +282,15 @@ function connectSocket() {
       if (connReady) {
         setTimeout(function() {
           var retry_socket = setInterval(function () {
+            console.log("retry_socket");
             connectSocket();
             setTimeout(function() {
               if (connReady) {
                 clearInterval(retry_socket);
                 if (typeof virtual_robot != 'undefined' && virtual_robot) {
-
+                  console.log("virtgual robot");;
                 } else {
+                  console.log("reload 1");
                   location.reload();
                 }
               }
@@ -301,7 +303,7 @@ function connectSocket() {
           if (typeof virtual_robot != 'undefined' && virtual_robot) {
 
           } else {
-            setTimeout(function() { location.reload(); }, 5000);
+            setTimeout(function() {location.reload(); }, 5000);
           }
         }, 500);
       }
