@@ -28,6 +28,7 @@ except ImportError:
 
 import tweepy
 import re
+import json
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
@@ -128,8 +129,9 @@ auth.set_access_token(access_token, access_token_secret)
 class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         print_info(status.text)
-        print_info("json" + status._json)
-        statusproc = rtToRetweet(status)
+        #print_info(status._json)
+        process_tweepy_json(status)
+        #statusproc = rtToRetweet(status)
         #stop()
         #Sound.say_tts(status.text)
         if not (clientconn == None):
@@ -140,25 +142,34 @@ class MyStreamListener(tweepy.StreamListener):
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
 myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
-#function for text Editing
+#process tweepy json
+def process_tweepy_json(status):
+    data = {}
+    data[0] = status._json["user"]["screen_name"]
+    data[1] = status._json["user"]["profile_image_url_https"]
+    data[2] = status.text
+    data[3] = status._json["lang"]
+    data[4] = rtToRetweet(status)
+    print_info(data[4])
+
 def rtToRetweet(status):
     #alles in nieuw object aanmaken en steken
     encodedstattext = status.text.encode('utf-8')
-    status.filteredtext = str(encodedstattext)
+    strTweet = str(encodedstattext)
     strTweet = strTweet.replace("RT","ReTweet", 1)
     strTweet = strTweet.decode('unicode_escape').encode('ascii','ignore')
     strTweet = re.sub(r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', strTweet, flags=re.MULTILINE)
+    strTweet = languageCheck(strTweet, status)
+    return strTweet
+def languageCheck(strTweet,status):
     if status.lang == "en":
-        strTweet = strTweet.replace("@","from ", 1)
+        return strTweet.replace("@","from ", 1)
     elif status.lang == "nl":
-        strTweet = strTweet.replace("@","van ", 1)
+        return strTweet.replace("@","van ", 1)
     elif status.lang == "de":
-        strTweet = strTweet.replace("@","von ", 1)
+        return strTweet.replace("@","von ", 1)
     elif status.lang == "fr":
-        strTweet = strTweet.replace("@","de ", 1)
-    #say_tweet(status)
-    print_info(strTweet)
-    return status
+        return strTweet.replace("@","de ", 1)
 def say_tweet(status):
     file_path = str(os.path.expanduser('~/sociono'))
     TTS.create_espeak(status.text, file_path, status.lang, "m", 10, 100)
