@@ -1,24 +1,28 @@
 from __future__ import with_statement
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory
-from werkzeug import secure_filename
-from opsoro.sound import Sound
-
-import math
-import cmath
-
-from opsoro.robot import Robot
-from opsoro.console_msg import *
-from opsoro.hardware import Hardware
-from opsoro.stoppable_thread import StoppableThread
-
-from functools import partial
-from exceptions import RuntimeError
-import os
 import glob
+import math
+import os
 import shutil
 import time
+from exceptions import RuntimeError
+from functools import partial
+
 import yaml
+from flask import (Blueprint, flash, redirect, render_template, request,
+                   send_from_directory, url_for)
+from werkzeug import secure_filename
+
+import cmath
+from opsoro.console_msg import *
+from opsoro.expression import Expression
+from opsoro.hardware import Hardware
+from opsoro.robot import Robot
+from opsoro.sound import Sound
+from opsoro.stoppable_thread import StoppableThread
+
+from opsoro.users import Users
+
 try:
     from yaml import CLoader as Loader
 except ImportError:
@@ -27,7 +31,8 @@ except ImportError:
 
 import tweepy
 
-constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
+def constrain(n, minn, maxn): return max(min(maxn, n), minn)
+
 
 # from opsoro.expression import Expression
 
@@ -38,25 +43,26 @@ config = {
     'difficulty':           4,
     'tags':                 [''],
     'allowed_background':   False,
+    'multi_user':           True,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.AUTO
 }
-config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 dof_positions = {}
 
-clientconn = None
 
 def send_stopped():
-    global clientconn
-    if clientconn:
-        clientconn.send_data('soundStopped', {})
+    Users.send_app_data(config['formatted_name'], 'soundStopped', {})
 
+def send_data(action, data):
+    #def send_app_data(self, appname, action, data={}): from Opsoro.Users
+    Users.send_app_data(config['formatted_name'], action, data)
 
-def SocionoRun():
+def SocialScriptRun():
     Sound.wait_for_sound()
     send_stopped()
 
@@ -65,11 +71,7 @@ sociono_t = None
 
 
 def setup_pages(opsoroapp):
-    sociono_bp = Blueprint(
-        config['formatted_name'],
-        __name__,
-        template_folder='templates',
-        static_folder='static')
+    sociono_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
     @sociono_bp.route('/', methods=['GET', 'POST'])
     @opsoroapp.app_view
@@ -80,8 +82,7 @@ def setup_pages(opsoroapp):
         if action != None:
             data['actions'][action] = request.args.get('param', None)
 
-        with open(get_path('emotions.yaml')) as f:
-            data['emotions'] = yaml.load(f, Loader=Loader)
+        data['emotions'] = Expression.expressions
 
         filenames = glob.glob(get_path('../../data/sounds/*.wav'))
 
@@ -98,16 +99,6 @@ def setup_pages(opsoroapp):
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
-    @opsoroapp.app_socket_connected
-    def s_connected(conn):
-        global clientconn
-        clientconn = conn
-
-    @opsoroapp.app_socket_disconnected
-    def s_disconnected(conn):
-        global clientconn
-        clientconn = None
-
 
     opsoroapp.register_app_blueprint(sociono_bp)
 
@@ -120,16 +111,23 @@ consumer_secret = 'NxBbCA8VJZvxk1SNKWw3CWd5oSnJyNAcH9Kns5Lv1DV0cqrQiz'
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
+COUNT = 0
+
 #getting new tweet
 class MyStreamListener(tweepy.StreamListener):
+
+
     def on_status(self, status):
+        global COUNT
+        COUNT = COUNT+1
+
         print_info(status.text)
-        #print_info(status._json)
-        #stopTwitter()
-        #stop()
-        Sound.say_tts(status.text)
-        if not (clientconn == None):
-            clientconn.send_data("this is data", {})
+
+
+        if COUNT < 5:
+            send_data('tweepy', status._json)
+        else:
+            stopTwitter()
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
@@ -144,16 +142,22 @@ def start(opsoroapp):
     pass
 
 def stop(opsoroapp):
-    pass
+    stopTwitter()
+
 
 def startTwitter(twitterWords):
+    global COUNT
     global myStream
+    COUNT = 0
     myStream.filter(track=twitterWords, async=True)
+
 
     print_info(twitterWords)
 
 def stopTwitter():
+    global COUNT
     global myStream
     myStream.disconnect()
+    COUNT = 0
 
     print_info("stop twitter stream")

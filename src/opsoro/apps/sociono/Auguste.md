@@ -27,6 +27,9 @@ bij elke post eerst Twitter stream stoppen
 # Investigate Tweepy Response
 response object
 
+# Send Tweepy object to JS -> python Users socket
+Alter js funtions to pass in tweet text
+
 
 # Convert social username to ID
 
