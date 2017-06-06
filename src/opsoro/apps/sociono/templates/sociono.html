@@ -46,19 +46,32 @@
 	<div data-bind="css: { 'right-column': $root.fileIsLocked() }">
 
 		<div id="socialIDForm">
-			<form>
-				<input type="text" placeholder="Enter a social page ID, ex: 512433" id="socialID" data-bind="value: socialID">
-				<div class="rightcontrols" data-bind="visible: !$root.fileIsLocked()">
-					<a href="#" id="btnGo" class="button round info" data-bind="click: $root.setSocialID">
-						<span class="fa fa-plus"></span>
-						<span class="text">
-							{{ _('GO') }}</span>
-					</a>
-				</div>
-			</form>
+			<input type="text" placeholder="Enter a social page ID, ex: 512433" id="socialID" data-bind="value: socialID">
+			<div class="rightcontrols" data-bind="visible: !$root.fileIsLocked()">
+				<a href="#" id="btnGo" class="button round info" data-bind="click: $root.setSocialID">
+					<span class="fa fa-plus"></span>
+					<span class="text">
+						{{ _('GO') }}</span>
+				</a>
+			</div>
+			<div class="rightcontrols" data-bind="visible: !$root.fileIsLocked()">
+				<a href="#" id="btnGo" class="button round info" data-bind="click: $root.stopTweepy">
+					<span class="fa fa-close"></span>
+					<span class="text">
+						{{ _('STOP') }}</span>
+				</a>
+			</div>
 		</div>
 
-		<!-- Container -->
+		<div class="rightcontrols" data-bind="visible: !$root.fileIsLocked()">
+			<a href="#" id="btnGo" class="button round info" data-bind="click: $root.autoLoopTweepy">
+				<span class="fa fa-refresh"></span>
+				<span class="text">
+					{{ _('Auto Loop') }}</span>
+			</a>
+		</div>
+
+		<!-- VoiceLine Container -->
 
 		<div id="voicelines" data-bind="sortable: { data: voiceLines, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 			<div class="voiceline" data-bind="css: { locked: $root.fileIsLocked(), unlocked: !$root.fileIsLocked()}">
@@ -89,7 +102,6 @@
 				</div>
 			</div>
 		</div>
-
 	</div>
 {% endblock %}
 
