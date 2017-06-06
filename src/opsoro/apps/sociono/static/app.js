@@ -31,15 +31,15 @@ $(document).ready(function(){
 	var switchID = 0; // Variable to generate unique IDs for toggle switches
 
 	// Here's my data model
-	var VoiceLine = function(emotion, output, tts, wav){
+	var VoiceLine = function(emotion, output, tts, wav, picture){
 		var self = this;
 
 		self.emotion = ko.observable(emotion || emotions_data[0]);
-		console.log(self.emotion());
 
 		self.output = ko.observable(output || "tts");
 		self.tts = ko.observable(tts || "");
 		self.wav = ko.observable(wav || sounds_data[0]);
+		self.picture = ko.observable(picture || "");
 
 		self.isPlaying = ko.observable(false);
 		self.hasPlayed = ko.observable(false);
@@ -133,7 +133,7 @@ $(document).ready(function(){
 
 		self.newFileData = function(){
 			self.voiceLines.removeAll();
-			self.voiceLines.push(new VoiceLine(self.emotions[0], "tts", "", ""));
+			//lf.voiceLines.push(new VoiceLine(self.emotions[0], "tts", "", ""));
 			self.unlockFile();
 			self.fileIsModified(false);
 		};
@@ -155,11 +155,6 @@ $(document).ready(function(){
 			self.fileStatus("Editing")
 		};
 
-		self.addLine = function(){
-			self.fileIsModified(true);
-			self.voiceLines.push( new VoiceLine(self.emotions[0], "tts", "", "") );
-      window.scrollTo(0, document.body.scrollHeight);
-		};
 
 		self.removeLine = function(line){
 			self.fileIsModified(true);
@@ -231,14 +226,18 @@ $(document).ready(function(){
 		self.changeFixedEmotion = function(emotion){
 			self.fixedVoiceLine.emotion(emotion);
 		};
-	
+
+		self.profilePicture = ko.observable();
+
+		self.profilePicture = "https://pbs.twimg.com/profile_images/860055776626343936/ynb5WvCf.jpg";
+
 
 		// Auguste Code
 
-		self.addTweetLine = function(data){
+		self.addTweetLine = function(data, picture){
 			self.fileIsModified(true);
-			self.voiceLines.push( new VoiceLine(self.emotions[0], "tts", data, "") );
-      		window.scrollTo(0, document.body.scrollHeight);
+			self.voiceLines.unshift( new VoiceLine(self.emotions[0], "tts", data, "", picture) );
+      //window.scrollTo(0, document.body.scrollHeight);
 		};
 
 		self.socialID = ko.observable("");
@@ -262,9 +261,10 @@ $(document).ready(function(){
 					}
 					break;
 				case "tweepy":
+				console.log("data:");
 					console.log(data);
 					//self.tts = data.text; // if retweeted status?
-					self.addTweetLine(data.text);
+					self.addTweetLine(data.text, data.user["profile_image_url"]);
 					break;
 			}
 		};

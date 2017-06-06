@@ -129,15 +129,15 @@
     min-height: 10rem;
 }
 
-.voiceline .avatar,
-#PickEmotionModal .avatar
+.voiceline .avatar
+#PickEmotionModal .avatar, .avatar > img
 {
     position: absolute;
     top: 0;
     left: 0;
 
-    width: 5.5rem;
-    height: 5.5rem;
+    width: 5.6rem;
+    height: 5.6rem;
     padding: .25rem;
 
     border: 2px solid #ddd;

@@ -44,7 +44,7 @@
 		</div>
 	</div>
 	<div data-bind="css: { 'right-column': $root.fileIsLocked() }">
-	
+
 		<div id="socialIDForm">
 			<form>
 				<input type="text" placeholder="Enter a social page ID, ex: 512433" id="socialID" data-bind="value: socialID">
@@ -62,9 +62,8 @@
 
 		<div id="voicelines" data-bind="sortable: { data: voiceLines, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 			<div class="voiceline" data-bind="css: { locked: $root.fileIsLocked(), unlocked: !$root.fileIsLocked()}">
-				<div class="gripper"></div>
 				<div class="avatar">
-					<span class="emoji" data-bind="html: '&#x' + emotion().filename + ';', click: pickEmotion"></span>
+					<img data-bind="attr: { src: picture }"/>
 				</div>
 				<div class="content">
 					<span class="bubble" data-bind="html: contentPreview"></span>
@@ -97,13 +96,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="rightcontrols" data-bind="visible: !$root.fileIsLocked()">
-			<a href="#" id="btnAdd" class="button round info" data-bind="click: $root.addLine">
-				<span class="fa fa-plus"></span>
-				<span class="text">
-					{{ _('Add Line') }}</span>
-			</a>
-		</div>
+
 	</div>
 {% endblock %}
 
