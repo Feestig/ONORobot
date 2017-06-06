@@ -29,6 +29,9 @@ response object
 
 # Send Tweepy object to JS -> python Users socket
 Alter js funtions to pass in tweet text
+Custom addLine() function
+
+# Autoloop voicelines
 
 
 # Convert social username to ID

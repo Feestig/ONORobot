@@ -129,7 +129,8 @@
     min-height: 10rem;
 }
 
-.voiceline .avatar
+
+.voiceline .avatar,
 #PickEmotionModal .avatar, .avatar > img
 {
     position: absolute;
