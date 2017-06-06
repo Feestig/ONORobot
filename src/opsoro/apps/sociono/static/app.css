@@ -375,13 +375,11 @@
 .voiceline.unlocked form .leftcontrols
 {
     position: absolute;
-    top: 3.25rem;
     left: 0;
 }
 .voiceline.unlocked form .rightcontrols
 {
     position: absolute;
-    top: 3.25rem;
     right: 0;
 }
 .voiceline.unlocked form .rightcontrols a
