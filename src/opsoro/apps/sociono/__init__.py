@@ -78,7 +78,6 @@ def setup_pages(opsoroapp):
     @opsoroapp.app_view
     def index():
         data = {'actions': {}, 'emotions': [], 'sounds': []}
-
         action = request.args.get('action', None)
         if action != None:
             data['actions'][action] = request.args.get('param', None)
@@ -91,11 +90,14 @@ def setup_pages(opsoroapp):
             data['sounds'].append(os.path.split(filename)[1])
         data['sounds'].sort()
 
-        # Auguste code
+            # Auguste code
         if request.method == "POST":
-            #print_info(request)
-            stopTwitter()
-            if request.form['social_id']:
+            print_info(request.form)
+            if request.form['action'] == "stop":
+                stopTwitter()
+
+            if request.form['action'] == "start":
+                stopTwitter()
                 social_id = []
                 social_id.append(request.form['social_id'])
                 startTwitter(social_id)

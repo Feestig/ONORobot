@@ -70,7 +70,7 @@ $(document).ready(function(){
 					robotSendReceiveAllDOF(self.emotion().dofs);
 				}
 				if(this.output() == "tts"){
-					robotSendTTS(self.tts());
+					//robotSendTTSLang(self.tts);
 				}else{
 					robotSendSound(self.wav());
 				}
@@ -87,6 +87,12 @@ $(document).ready(function(){
 			$("#PickEmotionModal").foundation("open");
 		};
 	};
+
+	function robotSendTTSLang(text, lang){
+		$.post('/apps/sociono/', { t: text, l: lang}, function(resp) {
+			console.log("sound post done");
+		});
+	}
 
 	var SocialScriptModel = function(){
 		var self = this;
@@ -232,7 +238,7 @@ $(document).ready(function(){
 					searchField = socialID.value;
 					self.voiceLines.removeAll();
 				}
-				$.post('/apps/sociono/', { social_id: socialID.value }, function(resp) {
+				$.post('/apps/sociono/', {'action': 'start', social_id: socialID.value }, function(resp) {
 					console.log("post done");
 				});
 			}
@@ -240,7 +246,7 @@ $(document).ready(function(){
 		}
 
 		self.stopTweepy = function() {
-			$.post('/apps/sociono/', {}, function(resp) {
+			$.post('/apps/sociono/', { 'action': "stop" }, function(resp) {
 				console.log("post to stop tweepy")
 			})
 		}
@@ -257,7 +263,7 @@ $(document).ready(function(){
 		// Enter
 		$(document).keyup(function (e) {
 		    if ($(".socialID:focus") && (e.keyCode === 13)) {
-				self.setSocialID();
+				self.toggleTweepy();
 		    }
 		});
 
