@@ -236,15 +236,32 @@ $(document).ready(function(){
 			});
 		}
 
-		self.autoLoopTweepy = function() {
-			
-			$.each(self.voiceLines(), function(k, v) {
-				v.pressPlay()
-				$.post('/apps/sociono/', { action: 'autoLoopTweepy' }, function(resp) {
-					console.log("play sound");
-				});
-			})
-			
+		var index_voiceLine;
+
+		self.autoLoopTweepyStart = function() {	
+
+			index_voiceLine = 0;
+
+			self.autoLoopTweepyNext()
+		
+		}
+
+		self.autoLoopTweepyNext = function() {
+
+			self.selectedVoiceLine(self.voiceLines()[index_voiceLine])
+
+			self.selectedVoiceLine().pressPlay()
+			$.post('/apps/sociono/', { action: 'autoLoopTweepy' }, function(resp) {
+				console.log("play sound");
+			});	
+		}
+
+		self.autoLoopTweepyRun = function() {
+			console.log(self.voiceLines().length)
+			if (index_voiceLine < self.voiceLines().length) {
+				self.autoLoopTweepyNext();
+				console.log("running loop, next");
+			}
 		}
 
 		// Enter functionaliteit
@@ -262,7 +279,12 @@ $(document).ready(function(){
 					if (self.selectedVoiceLine() != undefined) {
 						self.selectedVoiceLine().isPlaying(false);
 					 	self.selectedVoiceLine().hasPlayed(true);
+
+ 						index_voiceLine += 1
+
+						self.autoLoopTweepyRun()
 					}
+
 					break;
 				case "tweepy":
 

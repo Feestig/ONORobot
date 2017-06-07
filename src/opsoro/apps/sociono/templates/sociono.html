@@ -9,7 +9,7 @@
 					<span class="fa " data-bind="css: { 'fa-play': !$root.isStreaming(), 'fa-close': $root.isStreaming() }"></span>
 					<span class="text" data-bind="text: !$root.isStreaming() ? '{{ _('Start') }}' : '{{ _('Stop') }}' "></span>
 				</button>
-				<button class="button round info" data-bind="click: $root.autoLoopTweepy">
+				<button class="button round info" data-bind="click: $root.autoLoopTweepyStart">
 					<span class="fa fa-refresh"></span>
 					<span class="text"> Auto Loop</span>
 				</button>
