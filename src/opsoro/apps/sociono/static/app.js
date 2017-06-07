@@ -1,4 +1,3 @@
-
 $(document).ready(function(){
 	ko.bindingHandlers.avatar = {
 		update: function(element, valueAccessor, allBindings) {
@@ -12,7 +11,7 @@ $(document).ready(function(){
 	var searchField = "";
 
 	// Here's my data model
-	var VoiceLine = function(emotion, output, tts, wav, picture, url){
+	var VoiceLine = function(emotion, output, tts, wav, picture, url, lang){
 		var self = this;
 
 		self.emotion = ko.observable(emotion || emotions_data[0]);
@@ -22,6 +21,7 @@ $(document).ready(function(){
 		self.wav = ko.observable(wav || sounds_data[0]);
 		self.picture = ko.observable(picture || "");
 		self.url = ko.observable(url||"");
+		self.lang = ko.observable(lang|| "");
 
 		self.isPlaying = ko.observable(false);
 		self.hasPlayed = ko.observable(false);
@@ -61,7 +61,7 @@ $(document).ready(function(){
 					robotSendReceiveAllDOF(self.emotion().dofs);
 				}
 				if(this.output() == "tts"){
-					//robotSendTTSLang(self.tts);
+					robotSendTTSLang(self.tts, self.lang);
 				}else{
 					robotSendSound(self.wav());
 				}
@@ -80,10 +80,11 @@ $(document).ready(function(){
 	};
 
 	function robotSendTTSLang(text, lang){
-		$.post('/apps/sociono/', { t: text, l: lang}, function(resp) {
+		$.post('/apps/sociono/', { 'action': 'playTweet', 'text': text, 'lang': lang}, function(resp) {
 			console.log("sound post done");
 		});
 	}
+
 
 	var SocialScriptModel = function(){
 		var self = this;
@@ -210,9 +211,9 @@ $(document).ready(function(){
 		self.socialID = ko.observable("");
 		self.isStreaming = ko.observable(false);
 
-		self.addTweetLine = function(data, picture, url){
+		self.addTweetLine = function(data, picture, url, lang){
 				self.fileIsModified(true);
-				self.voiceLines.unshift( new VoiceLine(self.emotions[0], "tts", data, "", picture, url) ); // unshift to push to first index of arr
+				self.voiceLines.unshift( new VoiceLine(self.emotions[0], "tts", data, "", picture, url, lang) ); // unshift to push to first index of arr
 		}
 
 
@@ -260,7 +261,7 @@ $(document).ready(function(){
 
 		// Setup websocket connection.
 		app_socket_handler = function(data) {
-      		switch (data.action) {
+      switch (data.action) {
 				case "soundStopped":
 					console.log("sound stopped!")
 					if (self.selectedVoiceLine() != undefined) {
@@ -269,11 +270,13 @@ $(document).ready(function(){
 					}
 					break;
 				case "tweepy":
-
-					self.addTweetLine(data["text"]["filtered"], data["user"]["profile_picture"], "https://twitter.com/" + data["user"]["username"] );
+					self.addTweetLine(
+						data["text"]["filtered"],
+						data["user"]["profile_picture"],
+						"https://twitter.com/" + data["user"]["username"],
+						data["text"]["lang"]
+					);
 					break;
-				case "test":
-					console.log(data)
 			}
 		};
 
@@ -283,10 +286,6 @@ $(document).ready(function(){
 	var model = new SocialScriptModel();
 	ko.applyBindings(model);
 	model.fileIsModified(false);
-
-
-
-
 
 	config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.newFileData);
 

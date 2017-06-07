@@ -19,6 +19,7 @@ from opsoro.expression import Expression
 from opsoro.hardware import Hardware
 from opsoro.robot import Robot
 from opsoro.sound import Sound
+from opsoro.sound.tts import TTS
 from opsoro.stoppable_thread import StoppableThread
 
 from opsoro.users import Users
@@ -112,7 +113,10 @@ def setup_pages(opsoroapp):
             wait_for_sound()
             #if request.form['data']:
 
+        if(request.form['action'] == 'playTweet'):
+            playTweetInLanguage(request.form['text'], request.form['lang'])
 
+        data = {'actions': {}, 'emotions': [], 'sounds': []}
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
 
@@ -132,7 +136,7 @@ class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
         dataToSend = processJson(status)
-        print_info(dataToSend)
+        #print_info(dataToSend)
         if dataToSend['text']['filtered'] != None:
             send_data('tweepy', dataToSend)
 
@@ -177,7 +181,8 @@ def processJson(status):
         },
         "text": {
             "original": status.text,
-            "filtered": filterTweet(status)
+            "filtered": filterTweet(status),
+            "lang": status.lang
         }
     }
 
@@ -203,6 +208,17 @@ def languageCheck(strTweet,status):
     elif status.lang == "fr":
         return strTweet.replace("@","de ", 1)
 
-def sayTweetInLanguage(status):
-    file_path = str(os.path.expanduser('~/sociono'))
-    TTS.create_espeak(status.text, file_path, status.lang, "m", 10, 100)
+def playTweetInLanguage(text, lang):
+
+    if not os.path.exists("/tmp/OpsoroTTS/"):
+        os.makedirs("/tmp/OpsoroTTS/")
+
+    full_path = os.path.join(
+        get_path("/tmp/OpsoroTTS/"), "Tweet.wav")
+
+    if os.path.isfile(full_path):
+        os.remove(full_path)
+
+    TTS.create_espeak(text, full_path, lang, "f", "5", "180")
+
+    Sound.play_file(full_path)
