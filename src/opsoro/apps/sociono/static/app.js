@@ -237,12 +237,13 @@ $(document).ready(function(){
 		}
 
 		self.autoLoopTweepy = function() {
-			var l = self.voiceLines()[0];
-			l.pressPlay()
-			$.post('/apps/sociono/', { action: 'autoLoopTweepy' }, function(resp) {
-				console.log("play sound");
-			});
 			
+			$.each(self.voiceLines(), function(k, v) {
+				v.pressPlay()
+				$.post('/apps/sociono/', { action: 'autoLoopTweepy' }, function(resp) {
+					console.log("play sound");
+				});
+			})
 			
 		}
 
