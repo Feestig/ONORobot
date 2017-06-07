@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import with_statement
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory
@@ -130,7 +131,7 @@ auth.set_access_token(access_token, access_token_secret)
 #getting new tweet
 class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
-        print_info(status.text)
+        #print_info(status.text)
         #print_info(status._json)
         process_tweepy_json(status)
         #statusproc = rtToRetweet(status)
@@ -154,10 +155,11 @@ def process_tweepy_json(status):
     data[4] = rtToRetweet(status)
     checkForEmoji(data)
 def checkForEmoji(data):
-    emoticonStr = data[2].encode('utf-8')
+    #emoticonStr = unicode(data[2], 'utf-8')
+    emoticonStr = data[2]
     #'this is a test  \U0001F620 \U0001F620 \U0001F620'
     #decode makes emoji from code while encode makes code from emoji
-    emoticonStr = emoticonStr.decode('unicode-escape')
+    #emoticonStr = emoticonStr.decode('unicode-escape')
     print_info(emoticonStr)
     winking = len(re.findall(u"[\U0001F609]", emoticonStr))
     angry = len(re.findall(u"[\U0001F620]", emoticonStr))
@@ -185,6 +187,7 @@ def checkForEmoji(data):
     elif astonished > 0:
         pass
     elif neutral > 0:
+        print_info(neutral)
         pass
     elif fearful > 0:
         pass
