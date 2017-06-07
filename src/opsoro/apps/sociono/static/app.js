@@ -12,7 +12,7 @@ $(document).ready(function(){
 	var searchField = "";
 
 	// Here's my data model
-	var VoiceLine = function(emotion, output, tts, wav, picture){
+	var VoiceLine = function(emotion, output, tts, wav, picture, url){
 		var self = this;
 
 		self.emotion = ko.observable(emotion || emotions_data[0]);
@@ -21,6 +21,7 @@ $(document).ready(function(){
 		self.tts = ko.observable(tts || "");
 		self.wav = ko.observable(wav || sounds_data[0]);
 		self.picture = ko.observable(picture || "");
+		self.url = ko.observable(url||"");
 
 		self.isPlaying = ko.observable(false);
 		self.hasPlayed = ko.observable(false);
@@ -212,9 +213,9 @@ $(document).ready(function(){
 		self.socialID = ko.observable("");
 		self.isStreaming = ko.observable(false);
 
-		self.addTweetLine = function(data, picture){
-			self.fileIsModified(true);
-			self.voiceLines.unshift( new VoiceLine(self.emotions[0], "tts", data, "", picture) ); // unshift to push to first index of arr
+		self.addTweetLine = function(data, picture, url){
+				self.fileIsModified(true);
+				self.voiceLines.unshift( new VoiceLine(self.emotions[0], "tts", data, "", picture, url) ); // unshift to push to first index of arr
 		}
 
 
@@ -271,7 +272,7 @@ $(document).ready(function(){
 					break;
 				case "tweepy":
 
-					self.addTweetLine(data["text"]["filtered"], data["user"]["profile_picture"]);
+					self.addTweetLine(data["text"]["filtered"], data["user"]["profile_picture"], "https://twitter.com/" + data["user"]["username"] );
 					break;
 			}
 		};

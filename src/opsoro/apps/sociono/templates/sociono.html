@@ -22,7 +22,9 @@
 			<div id="voicelines" data-bind="sortable: { data: voiceLines, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 				<div class="voiceline" data-bind="css: { locked: $root.fileIsLocked(), unlocked: !$root.fileIsLocked()}">
 					<div class="avatar">
-						<img data-bind="attr: { src: picture }"/>
+						<a target="_blank" data-bind="attr: { href: url}">
+							<img data-bind="attr: { src: picture }"/>
+						</a>
 					</div>
 					<div class="content">
 						<span class="bubble" data-bind="html: contentPreview"></span>

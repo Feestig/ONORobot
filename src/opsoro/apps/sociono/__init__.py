@@ -107,10 +107,10 @@ def setup_pages(opsoroapp):
     opsoroapp.register_app_blueprint(sociono_bp)
 
 
-access_token = '735437381696905216-BboISY7Qcqd1noMDY61zN75CdGT0OSc'
-access_token_secret = 'd3A8D1ttrCxYV76pBOB389YqoLB32LiE0RVyoFwuMKUMb'
-consumer_key = 'AcdgqgujzF06JF6zWrfwFeUfF'
-consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
+access_token = '141268248-yAGsPydKTDgkCcV0RZTPc5Ff7FGE41yk5AWF1dtN'
+access_token_secret = 'UalduP04BS4X3ycgBJKn2QJymMhJUbNfQZlEiCZZezW6V'
+consumer_key = 'tNYqa3yLHTGhBvGNblUHHerlJ'
+consumer_secret = 'NxBbCA8VJZvxk1SNKWw3CWd5oSnJyNAcH9Kns5Lv1DV0cqrQiz'
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -120,8 +120,11 @@ class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
         dataToSend = processJson(status)
-        print_info(dataToSend)
-        send_data('tweepy', dataToSend)
+        #print_info(dataToSend)
+        if dataToSend["text"]["filtered"] != None:
+            send_data('tweepy', dataToSend)
+
+
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
@@ -144,7 +147,7 @@ def startTwitter(twitterWords):
     myStream.filter(track=twitterWords, async=True)
 
 
-    print_info(twitterWords)
+    #print_info(twitterWords)
 
 def stopTwitter():
     global myStream
@@ -157,13 +160,13 @@ def stopTwitter():
 
 #process tweepy json
 def processJson(status):
-    data = { 
-        "user": { 
-            "username": status._json["user"]["screen_name"], 
+    data = {
+        "user": {
+            "username": status._json["user"]["screen_name"],
             "profile_picture": status._json["user"]["profile_image_url_https"]
-        }, 
-        "text": { 
-            "original": status.text, 
+        },
+        "text": {
+            "original": status.text,
             "filtered": filterTweet(status)
         }
     }
@@ -193,4 +196,3 @@ def languageCheck(strTweet,status):
 def sayTweetInLanguage(status):
     file_path = str(os.path.expanduser('~/sociono'))
     TTS.create_espeak(status.text, file_path, status.lang, "m", 10, 100)
-
