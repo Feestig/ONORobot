@@ -28,7 +28,9 @@ except ImportError:
 
 import tweepy
 import re
-import json
+import urllib2
+import unicodedata
+import sys
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
@@ -150,14 +152,56 @@ def process_tweepy_json(status):
     data[2] = status.text
     data[3] = status._json["lang"]
     data[4] = rtToRetweet(status)
-    print_info(data[4])
+    checkForEmoji(data)
+def checkForEmoji(data):
+    emoticonStr = data[2].encode('utf-8')
+    #'this is a test  \U0001F620 \U0001F620 \U0001F620'
+    #decode makes emoji from code while encode makes code from emoji
+    emoticonStr = emoticonStr.decode('unicode-escape')
+    print_info(emoticonStr)
+    winking = len(re.findall(u"[\U0001F609]", emoticonStr))
+    angry = len(re.findall(u"[\U0001F620]", emoticonStr))
+    happy_a = len(re.findall(u"[\U0000263A]", emoticonStr))
+    happy_b = len(re.findall(u"[\U0000263b]", emoticonStr))
+    thinking = len(re.findall(u"[\U0001F914]", emoticonStr))
+    frowning = len(re.findall(u"[\U00002639]", emoticonStr))
+    nauseated = len(re.findall(u"[\U0001F922]", emoticonStr))
+    astonished = len(re.findall(u"[\U0001F632]", emoticonStr))
+    neutral = len(re.findall(u"[\U0001F610]", emoticonStr))
+    fearful = len(re.findall(u"[\U0001F628]", emoticonStr))
+    laughing = len(re.findall(u"[\U0001F602]", emoticonStr))
+    tired = len(re.findall(u"[\U0001F62B]", emoticonStr))
+
+    if winking > 0:
+        pass
+    elif angry > 0:
+        pass
+    elif happy_a > 0 or happy_b > 0:
+        pass
+    elif frowning > 0:
+        pass
+    elif nauseated > 0:
+        pass
+    elif astonished > 0:
+        pass
+    elif neutral > 0:
+        pass
+    elif fearful > 0:
+        pass
+    elif laughing > 0:
+        pass
+    elif tired > 0:
+        pass
+    elif thinking > 0:
+        pass
+
 
 def rtToRetweet(status):
     #alles in nieuw object aanmaken en steken
     encodedstattext = status.text.encode('utf-8')
     strTweet = str(encodedstattext)
     strTweet = strTweet.replace("RT","ReTweet", 1)
-    strTweet = strTweet.decode('unicode_escape').encode('ascii','ignore')
+    strTweet = strTweet.decode('unicode-escape').encode('ascii','ignore')
     strTweet = re.sub(r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', strTweet, flags=re.MULTILINE)
     strTweet = languageCheck(strTweet, status)
     return strTweet
