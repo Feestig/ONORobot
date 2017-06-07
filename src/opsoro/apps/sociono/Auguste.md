@@ -36,6 +36,8 @@ import opsoro/sound lib
 recursieve functie met index_voiceline++ wachten op soundStopped
 Start - Post to Python - Response from Python - Running, Next - Stop?
 
+$root.prop != $root.prop() -> runs at start
+
 # Locked = true for lay-out
 
 

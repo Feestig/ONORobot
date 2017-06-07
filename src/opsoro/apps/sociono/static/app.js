@@ -202,6 +202,7 @@ $(document).ready(function(){
 		// Observables
 		self.socialID = ko.observable("");
 		self.isStreaming = ko.observable(false);
+		self.index_voiceLine = ko.observable(0) // made observable to toggle button layout
 
 		self.addTweetLine = function(data, picture){
 			self.fileIsModified(true);
@@ -232,37 +233,80 @@ $(document).ready(function(){
 
 		self.stopTweepy = function() {
 			$.post('/apps/sociono/', { action: 'stopTweepy' }, function(resp) { // message ... success functions?
-				console.log("post to stop tweepy")
+				console.log("Stopping Tweepy Stream!")
 			});
 		}
 
-		var index_voiceLine;
+		self.toggleAutoLoopTweepy = function() {
+			if (self.index_voiceLine() > 0) {
+				self.autoLoopTweepyStop();
+			} else {
+				self.autoLoopTweepyStart();
+			}
+		}
 
-		self.autoLoopTweepyStart = function() {	
+		self.autoLoopTweepyStart = function() {
+			self.index_voiceLine(1); // set on null on initialize (reset)
+			self.autoLoopTweepyNext();
+		}
 
-			index_voiceLine = 0;
-
-			self.autoLoopTweepyNext()
-		
+		self.autoLoopTweepyStop = function() {
+			// post to stop sound
+			console.log("Stop Auto Loop!");
+			console.log(self.index_voiceLine());
+		 	//self.selectedVoiceLine().isPlaying(false);
+		 	//self.selectedVoiceLine().hasPlayed(true);
+		 	$.post('/apps/sociono/', { action: 'autoLoopTweepyStop' }, function(resp) {
+				console.log("Stopping Robot?");
+				self.index_voiceLine(0) // set to null to reset
+			});
 		}
 
 		self.autoLoopTweepyNext = function() {
+			self.selectedVoiceLine(self.voiceLines()[self.index_voiceLine() - 1]); // starting at 1 so -1
+			self.selectedVoiceLine().pressPlay();
 
-			self.selectedVoiceLine(self.voiceLines()[index_voiceLine])
-
-			self.selectedVoiceLine().pressPlay()
-			$.post('/apps/sociono/', { action: 'autoLoopTweepy' }, function(resp) {
-				console.log("play sound");
+			$.post('/apps/sociono/', { action: 'autoLoopTweepyNext' }, function(resp) {
+				console.log("Playing Next Sound");
 			});	
 		}
 
 		self.autoLoopTweepyRun = function() {
-			console.log(self.voiceLines().length)
-			if (index_voiceLine < self.voiceLines().length) {
+			console.log("Finished playing: " + self.index_voiceLine() + " / " + self.voiceLines().length);
+
+			self.index_voiceLine(self.index_voiceLine() + 1); // increment observable
+
+			if (self.index_voiceLine() <= self.voiceLines().length) {
 				self.autoLoopTweepyNext();
-				console.log("running loop, next");
+				console.log("Running Loop: Next");
 			}
 		}
+
+		// Setup websocket connection.
+		app_socket_handler = function(data) {
+      		switch (data.action) {
+				case "autoLoopTweepyStop":
+					if (self.selectedVoiceLine() != undefined) {
+						self.selectedVoiceLine().isPlaying(false);
+					 	self.selectedVoiceLine().hasPlayed(true);
+					}
+					robotSendStop();
+					break;
+				case "autoLoopTweepyNext":
+					if (self.selectedVoiceLine() != undefined) {
+						self.selectedVoiceLine().isPlaying(false);
+					 	self.selectedVoiceLine().hasPlayed(true);
+
+					 	self.autoLoopTweepyRun()
+					}
+					break;					 	
+				case "dataFromTweepy":
+					self.addTweetLine(data["text"]["filtered"], data["user"]["profile_picture"]);
+					break;
+				case "test":
+					console.log(data)
+			}
+		};
 
 		// Enter functionaliteit
 		$(document).keyup(function (e) {
@@ -271,30 +315,6 @@ $(document).ready(function(){
 		    }
 		});
 
-		// Setup websocket connection.
-		app_socket_handler = function(data) {
-      		switch (data.action) {
-				case "soundStopped":
-					console.log("sound stopped!")
-					if (self.selectedVoiceLine() != undefined) {
-						self.selectedVoiceLine().isPlaying(false);
-					 	self.selectedVoiceLine().hasPlayed(true);
-
- 						index_voiceLine += 1
-
-						self.autoLoopTweepyRun()
-					}
-
-					break;
-				case "tweepy":
-
-					self.addTweetLine(data["text"]["filtered"], data["user"]["profile_picture"]);
-					break;
-				case "test":
-					console.log(data)
-			}
-		};
-
 
 	};
 	// This makes Knockout get to work
@@ -302,6 +322,6 @@ $(document).ready(function(){
 	ko.applyBindings(model);
 	model.fileIsModified(false);
 
-	config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.newFileData);
+	//config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.newFileData);
 
 });

@@ -56,8 +56,8 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 dof_positions = {}
 
 
-def send_stopped():
-    Users.send_app_data(config['formatted_name'], 'soundStopped', {})
+def send_action(action):
+    Users.send_app_data(config['formatted_name'], action, {})
 
 def send_data(action, data):
     #def send_app_data(self, appname, action, data={}): from Opsoro.Users
@@ -65,7 +65,6 @@ def send_data(action, data):
 
 def wait_for_sound():
     Sound.wait_for_sound()
-    send_stopped()
 
 
 sociono_t = None
@@ -98,6 +97,8 @@ def setup_pages(opsoroapp):
     @opsoroapp.app_view
     def post():
 
+        data = {'actions': {}, 'emotions': [], 'sounds': []} # Overbodig ...
+
         # Auguste code --- Te verbeteren a.d.h.v. post actions
         
         if request.form['action'] == 'startTweepy':
@@ -110,10 +111,12 @@ def setup_pages(opsoroapp):
         if request.form['action'] == 'stopTweepy':
             stopTwitter()
 
-        if request.form['action'] == 'autoLoopTweepy':
+        if request.form['action'] == 'autoLoopTweepyNext':
             stopTwitter()
             wait_for_sound()
-            #if request.form['data']:
+            send_action(request.form['action'])
+        if request.form['action'] == 'autoLoopTweepyStop':
+            send_action(request.form['action'])
 
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
@@ -137,7 +140,7 @@ class MyStreamListener(tweepy.StreamListener):
         dataToSend = processJson(status)
         print_info(dataToSend)
         if dataToSend['text']['filtered'] != None:
-            send_data('tweepy', dataToSend)
+            send_data('dataFromTweepy', dataToSend)
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
