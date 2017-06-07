@@ -32,6 +32,7 @@ Alter js funtions to pass in tweet text
 Custom addLine() function
 
 # Autoloop voicelines
+import opsoro/sound lib
 
 # Locked = true for lay-out
 

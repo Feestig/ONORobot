@@ -43,15 +43,6 @@ $(document).ready(function(){
 			model.fileIsModified(true);
 		}
 
-		self.toggleOutput = function(){
-			model.fileIsModified(true);
-			if(this.output() == "tts"){
-				this.output("wav");
-			}else{
-				this.output("tts");
-			}
-		};
-
 		self.pressPlay = function(){
 			if(self.isPlaying()){
 				robotSendStop();
@@ -231,7 +222,7 @@ $(document).ready(function(){
 					self.voiceLines.removeAll();
 				}
 
-				$.post('/apps/sociono/', { social_id: socialID.value }, function(resp) {
+				$.post('/apps/sociono/', { action: 'startTweepy', data: socialID.value }, function(resp) {
 					console.log("post done");
 				});
 			}
@@ -240,21 +231,22 @@ $(document).ready(function(){
 		}
 
 		self.stopTweepy = function() {
-			$.post('/apps/sociono/', {}, function(resp) {
+			$.post('/apps/sociono/', { action: 'stopTweepy' }, function(resp) { // message ... success functions?
 				console.log("post to stop tweepy")
-			})
+			});
 		}
 
 		self.autoLoopTweepy = function() {
-			var l = self.voiceLines()[0]
-
-			l.pressPlay();
+			var l = self.voiceLines()[0];
+			l.pressPlay()
+			$.post('/apps/sociono/', { action: 'autoLoopTweepy' }, function(resp) {
+				console.log("play sound");
+			});
 			
-			console.log(l.isPlaying());
-			console.log(l.hasPlayed());
+			
 		}
 
-		// Enter
+		// Enter functionaliteit
 		$(document).keyup(function (e) {
 		    if ($(".socialID:focus") && (e.keyCode === 13)) {
 				self.setSocialID();
@@ -265,6 +257,7 @@ $(document).ready(function(){
 		app_socket_handler = function(data) {
       		switch (data.action) {
 				case "soundStopped":
+					console.log("sound stopped!")
 					if (self.selectedVoiceLine() != undefined) {
 						self.selectedVoiceLine().isPlaying(false);
 					 	self.selectedVoiceLine().hasPlayed(true);
@@ -274,6 +267,8 @@ $(document).ready(function(){
 
 					self.addTweetLine(data["text"]["filtered"], data["user"]["profile_picture"]);
 					break;
+				case "test":
+					console.log(data)
 			}
 		};
 
