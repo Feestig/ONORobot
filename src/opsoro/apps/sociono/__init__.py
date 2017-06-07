@@ -63,7 +63,7 @@ def send_data(action, data):
     #def send_app_data(self, appname, action, data={}): from Opsoro.Users
     Users.send_app_data(config['formatted_name'], action, data)
 
-def SocialScriptRun():
+def wait_for_sound():
     Sound.wait_for_sound()
     send_stopped()
 
@@ -74,7 +74,7 @@ sociono_t = None
 def setup_pages(opsoroapp):
     sociono_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
-    @sociono_bp.route('/', methods=['GET', 'POST'])
+    @sociono_bp.route('/', methods=['GET'])
     @opsoroapp.app_view
     def index():
         data = {'actions': {}, 'emotions': [], 'sounds': []}
@@ -90,17 +90,27 @@ def setup_pages(opsoroapp):
             data['sounds'].append(os.path.split(filename)[1])
         data['sounds'].sort()
 
-            # Auguste code
-        if request.method == "POST":
-            print_info(request.form)
-            if request.form['action'] == "stop":
-                stopTwitter()
+        return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
-            if request.form['action'] == "start":
-                stopTwitter()
+    @sociono_bp.route('/', methods=['POST'])
+    @opsoroapp.app_view
+    def post():
+
+        # Auguste code --- Te verbeteren a.d.h.v. post actions
+
+        if request.form['action'] == 'startTweepy':
+            stopTwitter()
+            if request.form['data']:
                 social_id = []
-                social_id.append(request.form['social_id'])
+                social_id.append(request.form['data'])
                 startTwitter(social_id)
+
+        if request.form['action'] == 'stopTweepy':
+            stopTwitter()
+
+        if request.form['action'] == 'autoLoopTweepy':
+            wait_for_sound()
+            #if request.form['data']:
 
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
@@ -122,11 +132,9 @@ class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
         dataToSend = processJson(status)
-        #print_info(dataToSend)
-        if dataToSend["text"]["filtered"] != None:
+        print_info(dataToSend)
+        if dataToSend['text']['filtered'] != None:
             send_data('tweepy', dataToSend)
-
-
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
@@ -179,7 +187,7 @@ def filterTweet(status):
     #alles in nieuw object aanmaken en steken
     encodedstattext = status.text.encode('utf-8')
     strTweet = str(encodedstattext)
-    strTweet = strTweet.replace("RT","ReTweet", 1)
+    strTweet = strTweet.replace("RT","Retweet", 1)
     strTweet = strTweet.decode('unicode_escape').encode('ascii','ignore')
     strTweet = re.sub(r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', strTweet, flags=re.MULTILINE) # re -> import re (regular expression)
     strTweet = languageCheck(strTweet, status)
