@@ -9,6 +9,7 @@ from opsoro.sound import TTS
 import math
 import cmath
 
+from opsoro.expression import Expression
 from opsoro.robot import Robot
 from opsoro.console_msg import *
 from opsoro.hardware import Hardware
@@ -155,7 +156,7 @@ def process_tweepy_json(status):
     data[4] = rtToRetweet(status)
     checkForEmoji(data)
 def checkForEmoji(data):
-    #emoticonStr = unicode(data[2], 'utf-8')
+    #emoticonStr = unicode("😠", 'utf-8')
     emoticonStr = data[2]
     #'this is a test  \U0001F620 \U0001F620 \U0001F620'
     #decode makes emoji from code while encode makes code from emoji
@@ -165,39 +166,53 @@ def checkForEmoji(data):
     angry = len(re.findall(u"[\U0001F620]", emoticonStr))
     happy_a = len(re.findall(u"[\U0000263A]", emoticonStr))
     happy_b = len(re.findall(u"[\U0000263b]", emoticonStr))
+    happy_c = len(re.findall(u"[\U0001f642]", emoticonStr))
     thinking = len(re.findall(u"[\U0001F914]", emoticonStr))
     frowning = len(re.findall(u"[\U00002639]", emoticonStr))
     nauseated = len(re.findall(u"[\U0001F922]", emoticonStr))
     astonished = len(re.findall(u"[\U0001F632]", emoticonStr))
     neutral = len(re.findall(u"[\U0001F610]", emoticonStr))
     fearful = len(re.findall(u"[\U0001F628]", emoticonStr))
-    laughing = len(re.findall(u"[\U0001F602]", emoticonStr))
+    laughing = len(re.findall(u"[\U0001F603]", emoticonStr))
     tired = len(re.findall(u"[\U0001F62B]", emoticonStr))
+    sad = len(re.findall(u"[\U0001f641]", emoticonStr))
 
     if winking > 0:
+        print_info(winking)
+        Expression.set_emotion_name("Tong", 1)
         pass
     elif angry > 0:
+        print_info("angry Expression")
+        Expression.set_emotion_name("angry", 1)
         pass
-    elif happy_a > 0 or happy_b > 0:
+    elif happy_a > 0 or happy_b > 0 or happy_c > 0:
+        Expression.set_emotion_name("happy", 1)
         pass
     elif frowning > 0:
+        Expression.set_emotion_name("tired", 1)
         pass
     elif nauseated > 0:
+        Expression.set_emotion_name("disgusted", 1)
         pass
     elif astonished > 0:
+        Expression.set_emotion_name("surprised", 1)
         pass
     elif neutral > 0:
         print_info(neutral)
+        Expression.set_emotion_name("neutral", 1)
         pass
     elif fearful > 0:
+        Expression.set_emotion_name("afraid", 1)
         pass
     elif laughing > 0:
+        Expression.set_emotion_name("laughing", 1)
         pass
     elif tired > 0:
+        Expression.set_emotion_name("sleep", 1)
         pass
-    elif thinking > 0:
+    elif sad > 0:
+        Expression.set_emotion_name("sad", 1)
         pass
-
 
 def rtToRetweet(status):
     #alles in nieuw object aanmaken en steken
