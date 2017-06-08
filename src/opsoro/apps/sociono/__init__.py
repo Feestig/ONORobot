@@ -219,6 +219,6 @@ def playTweetInLanguage(text, lang):
     if os.path.isfile(full_path):
         os.remove(full_path)
 
-    TTS.create_espeak(text, full_path, lang, "f", "5", "180")
+    TTS.create_espeak(text, full_path, lang, "f", "5", "150")
 
     Sound.play_file(full_path)
