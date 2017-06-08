@@ -314,7 +314,7 @@ $(document).ready(function(){
 		// Enter functionaliteit
 		$(document).keyup(function (e) {
 		    if ($(".socialID:focus") && (e.keyCode === 13)) {
-				self.setSocialID();
+				self.toggleTweepy();
 		    }
 		});
 
