@@ -66,7 +66,7 @@ $(document).ready(function(){
 				}
 
 				model.selectedVoiceLine(self);
-				self.playEmotion(); // call to function playEmotion()
+				//self.playEmotion(); // call to function playEmotion()
 
 				if (self.emotion().poly){
 					robotSendEmotionRPhi(1.0, self.emotion().poly * 18, -1);
@@ -181,6 +181,7 @@ $(document).ready(function(){
 		self.socialID = ko.observable("");
 		self.isStreaming = ko.observable(false);
 		self.index_voiceLine = ko.observable(0) // made observable to toggle button layout
+		self.autoRead = ko.observable(false);
 
 		self.addTweetLine = function(data){
 			self.fileIsModified(true);
@@ -204,7 +205,7 @@ $(document).ready(function(){
 					self.voiceLines.removeAll();
 				}
 
-				$.post('/apps/sociono/', { action: 'startTweepy', data: socialID.value }, function(resp) {
+				$.post('/apps/sociono/', { action: 'startTweepy', data: JSON.stringify({ socialID: socialID.value, autoRead: self.autoRead() }) }, function(resp) {
 					console.log("post done");
 				});
 			}

@@ -72,7 +72,7 @@ def wait_for_sound():
 
 
 sociono_t = None
-
+autoRead = None; # globals -> can be decalerd in called methodes
 
 def setup_pages(opsoroapp):
     sociono_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
@@ -108,8 +108,18 @@ def setup_pages(opsoroapp):
         if request.form['action'] == 'startTweepy':
             stopTwitter()
             if request.form['data']:
+                # HashTag input
+                json_data = json.loads(request.form['data']) # Decoding strigified JSON
                 social_id = []
-                social_id.append(request.form['data'])
+                social_id.append(json_data['socialID'])
+                print_info(social_id)
+
+                # Auto Read
+                global autoRead
+                autoRead = json_data['autoRead']
+                print_info(autoRead)
+
+                # Start Tweepy stream
                 startTwitter(social_id)
 
         if request.form['action'] == 'stopTweepy':
@@ -151,6 +161,12 @@ class MyStreamListener(tweepy.StreamListener):
         #print_info(dataToSend)
         if dataToSend['text']['filtered'] != None:
             send_data('dataFromTweepy', dataToSend)
+
+            #print_info(autoRead)
+            if autoRead == True:
+                playTweetInLanguage(dataToSend) # if auto read = true -> read tweets when they come in
+
+
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
