@@ -70,7 +70,7 @@ def wait_for_sound():
 
 
 sociono_t = None
-
+autoRead = None;
 
 def setup_pages(opsoroapp):
     sociono_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
@@ -104,7 +104,11 @@ def setup_pages(opsoroapp):
             if request.form['data']:
                 social_id = []
                 social_id.append(request.form['data'])
+                global autoRead
+                autoRead = request.form['autoRead']
+                print_info(autoRead)
                 startTwitter(social_id)
+
 
         if request.form['action'] == 'stopTweepy':
             stopTwitter()
@@ -140,6 +144,8 @@ class MyStreamListener(tweepy.StreamListener):
         #print_info(dataToSend)
         if dataToSend['text']['filtered'] != None:
             send_data('tweepy', dataToSend)
+            if autoRead == 'true':
+                playTweetInLanguage(dataToSend['text']['filtered'], dataToSend['text']['lang'])
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
@@ -210,16 +216,11 @@ def languageCheck(strTweet,status):
         return strTweet.replace("@","de ", 1)
 
 def playTweetInLanguage(text, lang):
-
     if not os.path.exists("/tmp/OpsoroTTS/"):
         os.makedirs("/tmp/OpsoroTTS/")
-
     full_path = os.path.join(
         get_path("/tmp/OpsoroTTS/"), "Tweet.wav")
-
     if os.path.isfile(full_path):
         os.remove(full_path)
-
     TTS.create_espeak(text, full_path, lang, "f", "5", "150")
-
     Sound.play_file(full_path)

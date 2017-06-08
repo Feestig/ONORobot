@@ -210,6 +210,7 @@ $(document).ready(function(){
 		// Observables
 		self.socialID = ko.observable("");
 		self.isStreaming = ko.observable(false);
+		self.autoRead = ko.observable(false);
 
 		self.addTweetLine = function(data, picture, url, lang){
 				self.fileIsModified(true);
@@ -230,8 +231,7 @@ $(document).ready(function(){
 					searchField = socialID.value;
 					self.voiceLines.removeAll();
 				}
-
-				$.post('/apps/sociono/', { action: 'startTweepy', data: socialID.value }, function(resp) {
+				$.post('/apps/sociono/', { action: 'startTweepy', data: socialID.value, autoRead: self.autoRead()}, function(resp) {
 					console.log("post done");
 				});
 			}
@@ -278,11 +278,13 @@ $(document).ready(function(){
 					break;
 				case "tweepy":
 					self.addTweetLine(
-						data["text"]["filtered"],
+						data["text"]["original"],
 						data["user"]["profile_picture"],
 						"https://twitter.com/" + data["user"]["username"],
 						data["text"]["lang"]
 					);
+
+
 					break;
 			}
 		};

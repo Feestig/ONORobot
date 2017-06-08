@@ -4,15 +4,16 @@
 	<div class="left-column" data-bind="visible: $root.fileIsLocked()">
 		<div id="fixedvoiceline" data-bind="sortable: { data: fixedVoiceLine, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 			<div class="voiceline locked">
-				<input type="text" placeholder="Enter a social page ID, ex: 512433" id="socialID" data-bind="value: $root.socialID">
-				<button class="button round info" data-bind="click: $root.toggleTweepy()">
+				<input type="text" placeholder="Enter a search term" id="socialID" data-bind="value: $root.socialID">
+				<button class="button round info" data-bind="click: $root.toggleTweepy">
 					<span class="fa " data-bind="css: { 'fa-play': !$root.isStreaming(), 'fa-close': $root.isStreaming() }"></span>
 					<span class="text" data-bind="text: !$root.isStreaming() ? '{{ _('Start') }}' : '{{ _('Stop') }}' "></span>
 				</button>
-				<button class="button round info" data-bind="click: $root.autoLoopTweepy">
+				<button class="button round info" data-bind="click: $root.autoLoopTweepy, enable: !$root.autoRead()">
 					<span class="fa fa-refresh"></span>
 					<span class="text"> Auto Loop</span>
 				</button>
+				<input type="checkbox" data-bind="checked: $root.autoRead"/>
 			</div>
 		</div>
 	</div>
