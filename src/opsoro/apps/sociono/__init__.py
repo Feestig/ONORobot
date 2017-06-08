@@ -110,6 +110,7 @@ def setup_pages(opsoroapp):
             stopTwitter()
 
         if request.form['action'] == 'autoLoopTweepy':
+            stopTwitter()
             wait_for_sound()
             #if request.form['data']:
 

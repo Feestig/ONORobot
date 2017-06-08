@@ -245,11 +245,22 @@ $(document).ready(function(){
 		}
 
 		self.autoLoopTweepy = function() {
+<<<<<<< HEAD
 			var l = self.voiceLines()[0];
 			l.pressPlay()
 			$.post('/apps/sociono/', { action: 'autoLoopTweepy' }, function(resp) {
 				console.log("play sound");
 			});
+=======
+			
+			$.each(self.voiceLines(), function(k, v) {
+				v.pressPlay()
+				$.post('/apps/sociono/', { action: 'autoLoopTweepy' }, function(resp) {
+					console.log("play sound");
+				});
+			})
+			
+>>>>>>> c882b8440bacb0c083eef8c0e51de6a74d32ea68
 		}
 
 		// Enter functionaliteit
