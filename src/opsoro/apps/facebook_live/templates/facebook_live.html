@@ -10,7 +10,15 @@
 {% block sidebar_right %}{% endblock %}
 
 {% block app_content %}
+<button class="button round info" data-bind="click: startFacebookLiveDialog()">
+	<span class="text">Start Facebook live</span>
+</button>
 
+<input type="text" data-bind="value: streamKey"/>
+
+<button class="button round info" data-bind="click: startFunction()">
+	<span class="text">GO</span>
+</button>
 
 	{% if not online %}
 		<!-- Content in this section is not displayed online, only on the robot. For example: it is a perfect place to put controls that access hardware stuff, which is not available online. -->
@@ -18,12 +26,6 @@
 
 {% endblock %}
 {% block app_scripts %}
-
-	<script>
-		// var action_data = {{ actions|tojson|safe }};
-
-		// var data = {{ data|tojson|safe }};
-	</script>
 
 	<!-- <script src="/site_media/static/js/....js"></script> -->
 
