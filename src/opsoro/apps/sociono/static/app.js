@@ -270,8 +270,8 @@ $(document).ready(function(){
 			self.selectedVoiceLine().pressPlay();
 
 			$.post('/apps/sociono/', { action: 'autoLoopTweepyNext' }, function(resp) {
-				console.log("Playing Next Sound");
-			});	
+				console.log("Waiting for sound to stop!");
+			});
 		}
 
 		self.autoLoopTweepyRun = function() {
@@ -304,7 +304,7 @@ $(document).ready(function(){
 					}
 					break;					 	
 				case "dataFromTweepy":
-					self.addTweetLine(data["text"]["filtered"], data["user"]["profile_picture"], "https://twitter.com/" + data['user']['username'], data['text']['lang']);
+					self.addTweetLine(data["text"]["original"], data["user"]["profile_picture"], "https://twitter.com/" + data['user']['username'], data['text']['lang']);
 					break;
 				case "test":
 					console.log(data)
@@ -322,7 +322,7 @@ $(document).ready(function(){
 	};
 
 	function robotSendTTSLang(text, lang){
-		$.post('/apps/sociono/', { 'action': 'playTweet', 'text': text, 'lang': lang}, function(resp) {
+		$.post('/apps/sociono/', { 'action': 'playTweet', data: { 'text': text, 'lang': lang } }, function(resp) {
 			console.log("sound post done");
 		});
 	}

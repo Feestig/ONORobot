@@ -8,9 +8,6 @@ Make a new app in the dashboard.
 2. Rename the HTML file in /templates to <the folder's name>.html
 3. Modify the config params in __init__.py, set a display name and color for your app.
 
-# Flask
-1. get posted data in python (request.json)
-
 # Posting a form (data-bind Knockout.JS)
 
 1. 
