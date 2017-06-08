@@ -12,7 +12,7 @@ $(document).ready(function(){
 	var searchField = "";
 
 	// Here's my data model
-	var VoiceLine = function(emotion, output, tts, wav, picture){
+	var VoiceLine = function(emotion, output, tts, wav, picture, url, lang){
 		var self = this;
 
 		self.emotion = ko.observable(emotion || emotions_data[0]);
@@ -24,6 +24,9 @@ $(document).ready(function(){
 
 		self.isPlaying = ko.observable(false);
 		self.hasPlayed = ko.observable(false);
+
+		self.url = ko.observable(url || "")
+		self.lang = ko.observable(lang || "");
 
 		self.contentPreview = ko.pureComputed(function(){
 			if(self.output() == "tts"){
@@ -60,7 +63,7 @@ $(document).ready(function(){
 					robotSendReceiveAllDOF(self.emotion().dofs);
 				}
 				if(this.output() == "tts"){
-					robotSendTTS(self.tts());
+					robotSendTTSLang(self.tts, self.lang);
 				}else{
 					robotSendSound(self.wav());
 				}
@@ -204,9 +207,9 @@ $(document).ready(function(){
 		self.isStreaming = ko.observable(false);
 		self.index_voiceLine = ko.observable(0) // made observable to toggle button layout
 
-		self.addTweetLine = function(data, picture){
+		self.addTweetLine = function(data, picture, url, lang){
 			self.fileIsModified(true);
-			self.voiceLines.unshift( new VoiceLine(self.emotions[0], "tts", data, "", picture) ); // unshift to push to first index of arr
+			self.voiceLines.unshift( new VoiceLine(self.emotions[0], "tts", data, "", picture, url, lang) ); // unshift to push to first index of arr
 		}
 
 		self.toggleTweepy = function() {
@@ -301,7 +304,7 @@ $(document).ready(function(){
 					}
 					break;					 	
 				case "dataFromTweepy":
-					self.addTweetLine(data["text"]["filtered"], data["user"]["profile_picture"]);
+					self.addTweetLine(data["text"]["filtered"], data["user"]["profile_picture"], "https://twitter.com/" + data['user']['username'], data['text']['lang']);
 					break;
 				case "test":
 					console.log(data)
@@ -317,6 +320,13 @@ $(document).ready(function(){
 
 
 	};
+
+	function robotSendTTSLang(text, lang){
+		$.post('/apps/sociono/', { 'action': 'playTweet', 'text': text, 'lang': lang}, function(resp) {
+			console.log("sound post done");
+		});
+	}
+
 	// This makes Knockout get to work
 	var model = new SocialScriptModel();
 	ko.applyBindings(model);
