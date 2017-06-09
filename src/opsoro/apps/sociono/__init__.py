@@ -76,8 +76,6 @@ autolooping = 0
 
 def wait_for_sound():
     time.sleep(0.05)  # delay
-<<<<<<< HEAD
-
     global loop_T
     while not loop_T.stopped():
         Sound.wait_for_sound()
@@ -85,17 +83,7 @@ def wait_for_sound():
         if autolooping == 1:
             send_action("autoLoopTweepyNext")
         loop_T.stop()
-    pass
-=======
-    while not loop.stopped():
-        Sound.wait_for_sound()
-        global autolooping
-        print_info(autolooping)
-        if autolooping == 1:
-            send_action("autoLoopTweepyNext")
-        loop.stop()
         pass
->>>>>>> 42c04408d82032a7e7d05e71a5a19a86169e8d51
 
 
 sociono_t = None
@@ -158,17 +146,10 @@ def setup_pages(opsoroapp):
             global autolooping
             autolooping = 1
             stopTwitter()
-<<<<<<< HEAD
             loop_T = StoppableThread(target=wait_for_sound)
             #send_action(request.form['action'])
             
-=======
-            global autolooping
-            autolooping = 1
-            global loop
-            loop = StoppableThread(target=wait_for_sound)
 
->>>>>>> 42c04408d82032a7e7d05e71a5a19a86169e8d51
         if request.form['action'] == 'autoLoopTweepyStop':
             global autolooping
             autolooping = 0
@@ -176,24 +157,16 @@ def setup_pages(opsoroapp):
 
         if request.form['action'] == 'playTweet':
             if request.form['data']:
+
                 global loop_E
                 global Emoticons
-                tweepyObj = json.loads(request.form['data'])
-<<<<<<< HEAD
-                Emoticons = tweepyObj['text']['emoticon']
 
+                tweepyObj = json.loads(request.form['data'])
+                Emoticons = tweepyObj['text']['emoticon']
                 loop_E = StoppableThread(target=asyncEmotion)
 
                 playTweetInLanguage(tweepyObj)
-=======
-                playTweetInLanguage(tweepyObj["text"]["filtered"], tweepyObj["text"]["lang"])
->>>>>>> 42c04408d82032a7e7d05e71a5a19a86169e8d51
 
-        if(request.form['action'] == 'playTweet'):
-            tweepyObj = json.loads(request.form['data'])
-            playTweetInLanguage(tweepyObj["text"]["filtered"], tweepyObj["text"]["lang"])
-
-        data = {'actions': {}, 'emotions': [], 'sounds': []}
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
 
