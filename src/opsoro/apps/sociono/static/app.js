@@ -221,10 +221,12 @@ $(document).ready(function(){
 		self.autoLoopTweepyNext = function() {
 			self.selectedVoiceLine(self.voiceLines()[self.index_voiceLine() - 1]); // starting at 1 so -1
 			self.selectedVoiceLine().pressPlay();
+
+
 			$.post('/apps/sociono/', { action: 'autoLoopTweepyNext' }, function(resp) {
 				console.log("Waiting for sound to stop!");
 			});
-}
+		}
 
 		self.autoLoopTweepyRun = function() {
 			console.log("Finished playing: " + self.index_voiceLine() + " / " + self.voiceLines().length);

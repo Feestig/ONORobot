@@ -139,7 +139,7 @@ def setup_pages(opsoroapp):
 
         if request.form['action'] == 'autoLoopTweepyNext':
             global loop_T
-            global autolooping
+            
             autolooping = 1
             stopTwitter()
 
