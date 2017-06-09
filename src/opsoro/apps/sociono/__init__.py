@@ -134,10 +134,11 @@ def setup_pages(opsoroapp):
         if request.form['action'] == 'playTweet':
             if request.form['data']:
                 tweepyObj = json.loads(request.form['data'])
-                playTweetInLanguage(tweepyObj)
+                playTweetInLanguage(tweepyObj["text"]["filtered"], tweepyObj["text"]["lang"])
 
         if(request.form['action'] == 'playTweet'):
-            playTweetInLanguage(request.form['text'], request.form['lang'])
+            tweepyObj = json.loads(request.form['data'])
+            playTweetInLanguage(tweepyObj["text"]["filtered"], tweepyObj["text"]["lang"])
 
         data = {'actions': {}, 'emotions': [], 'sounds': []}
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
@@ -164,7 +165,7 @@ class MyStreamListener(tweepy.StreamListener):
             send_data('dataFromTweepy', dataToSend)
             #print_info(autoRead)
             if autoRead == True:
-                playTweetInLanguage(dataToSend) # if auto read = true -> read tweets when they come in
+                playTweetInLanguage(dataToSend['text']['filtered'], dataToSend['text']['lang']) # if auto read = true -> read tweets when they come in
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
@@ -237,7 +238,7 @@ def languageCheck(strTweet,status):
     elif status.lang == "fr":
         return strTweet.replace("@","de ", 1)
 
-def playTweetInLanguage(tweepyObj):
+def playTweetInLanguage(text, lang):
     print_info(tweepyObj)
     if not os.path.exists("/tmp/OpsoroTTS/"):
         os.makedirs("/tmp/OpsoroTTS/")
@@ -245,7 +246,7 @@ def playTweetInLanguage(tweepyObj):
         get_path("/tmp/OpsoroTTS/"), "Tweet.wav")
     if os.path.isfile(full_path):
         os.remove(full_path)
-    TTS.create_espeak(tweepyObj['text']['filtered'], full_path, tweepyObj['text']['lang'], "f", "5", "150")
+    TTS.create_espeak(text, full_path, lang, "f", "5", "150")
     Sound.play_file(full_path)
 
 
