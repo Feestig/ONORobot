@@ -64,7 +64,7 @@ $(document).ready(function(){
 				}
 
 				model.selectedVoiceLine(self);
-				
+
 				if (self.emotion().poly){
 					robotSendEmotionRPhi(1.0, self.emotion().poly * 18, -1);
 				}
@@ -221,10 +221,10 @@ $(document).ready(function(){
 		self.autoLoopTweepyNext = function() {
 			self.selectedVoiceLine(self.voiceLines()[self.index_voiceLine() - 1]); // starting at 1 so -1
 			self.selectedVoiceLine().pressPlay();
-		}
 			$.post('/apps/sociono/', { action: 'autoLoopTweepyNext' }, function(resp) {
 				console.log("Waiting for sound to stop!");
 			});
+}
 
 		self.autoLoopTweepyRun = function() {
 			console.log("Finished playing: " + self.index_voiceLine() + " / " + self.voiceLines().length);
@@ -240,7 +240,7 @@ $(document).ready(function(){
 		self.autoLoopTweepyStop = function() {
 			// post to stop sound
 			console.log("Stop Auto Loop!");
-		 	
+
 		 	$.post('/apps/sociono/', { action: 'autoLoopTweepyStop' }, function(resp) {
 				console.log("Stopping AutoLoop & Reading");
 				self.index_voiceLine(0) // set to null to reset

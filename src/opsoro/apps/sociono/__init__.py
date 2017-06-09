@@ -75,9 +75,7 @@ def wait_for_sound():
     while not loop_T.stopped():
         Sound.wait_for_sound()
         global autolooping
-        print_info("hier is hij")
         if autolooping == 1:
-            print_info("next")
             send_action("autoLoopTweepyNext")
         loop_T.stop()
     pass
@@ -132,7 +130,6 @@ def setup_pages(opsoroapp):
                 # Auto Read
                 global autoRead
                 autoRead = json_data['autoRead']
-                print_info(autoRead)
 
                 # Start Tweepy stream
                 startTwitter(social_id)
@@ -147,7 +144,6 @@ def setup_pages(opsoroapp):
             stopTwitter()
 
             loop_T = StoppableThread(target=wait_for_sound)
-            #send_action(request.form['action'])
         if request.form['action'] == 'autoLoopTweepyStop':
             #global autolooping
             autolooping = 0
@@ -184,11 +180,9 @@ class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
         dataToSend = processJson(status)
-        #print_info(dataToSend)
         if dataToSend['text']['filtered'] != None:
             send_data('dataFromTweepy', dataToSend)
 
-            #print_info(autoRead)
             if autoRead == True:
                 playTweetInLanguage(dataToSend) # if auto read = true -> read tweets when they come in
 
@@ -215,7 +209,6 @@ def startTwitter(twitterWords):
     myStream.filter(track=twitterWords, async=True)
 
 
-    print_info(twitterWords)
 
 def stopTwitter():
     global myStream
@@ -292,11 +285,8 @@ def asyncEmotion():
     global Emoticons
     currentAnimationArrayLength = len(Emoticons)
     playedAnimations = 0
-    print_info(Emoticons)
-    #print_info("hier komt hij")
     while not loop_E.stopped():
         # if running:
-        print_info(Emoticons)
         if currentAnimationArrayLength > playedAnimations:
             Expression.set_emotion_name(Emoticons[playedAnimations], -1)
             playedAnimations = playedAnimations+1
