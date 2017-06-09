@@ -191,7 +191,7 @@ class MyStreamListener(tweepy.StreamListener):
             send_data('dataFromTweepy', dataToSend)
             #print_info(autoRead)
             if autoRead == True:
-                playTweetInLanguage(dataToSend['text']['filtered'], dataToSend['text']['lang']) # if auto read = true -> read tweets when they come in
+                playTweetInLanguage(dataToSend) # if auto read = true -> read tweets when they come in
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
@@ -350,14 +350,17 @@ def languageCheck(strTweet,status):
     elif status.lang == "fr":
         return strTweet.replace("@","de ", 1)
 
-def playTweetInLanguage(text, lang):
+def playTweetInLanguage(tweepyObj):
+
+    #print_info(tweepyObj)
+
     if not os.path.exists("/tmp/OpsoroTTS/"):
         os.makedirs("/tmp/OpsoroTTS/")
     full_path = os.path.join(
         get_path("/tmp/OpsoroTTS/"), "Tweet.wav")
     if os.path.isfile(full_path):
         os.remove(full_path)
-    TTS.create_espeak(text, full_path, lang, "f", "5", "150")
+    TTS.create_espeak(tweepyObj['text']['original'], full_path, tweepyObj['text']['lang'], "f", "5", "150")
     Sound.play_file(full_path)
 
 
