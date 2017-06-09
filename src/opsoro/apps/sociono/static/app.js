@@ -1,6 +1,4 @@
-
 $(document).ready(function(){
-
 	ko.bindingHandlers.avatar = {
 		update: function(element, valueAccessor, allBindings) {
 			var value = valueAccessor();
@@ -8,6 +6,7 @@ $(document).ready(function(){
 			$(element).css("background-image", "url('static/avatars/" + valueUnwrapped + "')")
 		}
 	};
+
 
 	var searchField = "";
 
@@ -20,7 +19,6 @@ $(document).ready(function(){
 		self.output = ko.observable(output || "tts");
 
 		self.wav = ko.observable(wav || sounds_data[0]);
-		
 
 		self.isPlaying = ko.observable(false);
 		self.hasPlayed = ko.observable(false);
@@ -114,6 +112,13 @@ $(document).ready(function(){
 		};
 	};
 
+	function robotSendTTSLang(text, lang){
+		$.post('/apps/sociono/', { 'action': 'playTweet', 'text': text, 'lang': lang}, function(resp) {
+			console.log("sound post done");
+		});
+	}
+
+
 	var SocialScriptModel = function(){
 		var self = this;
 
@@ -180,7 +185,7 @@ $(document).ready(function(){
 		// Observables
 		self.socialID = ko.observable("");
 		self.isStreaming = ko.observable(false);
-		self.index_voiceLine = ko.observable(0) // made observable to toggle button layout
+		self.index_voiceLine = ko.observable(0);// made observable to toggle button layout
 		self.autoRead = ko.observable(false);
 
 		self.addTweetLine = function(data){
@@ -189,7 +194,8 @@ $(document).ready(function(){
 			console.log(data.text.emoticon)
 
 			self.voiceLines.unshift( new VoiceLine(self.emotions[0], "tts", "", "", data) ); // unshift to push to first index of arr
-		}
+		};
+
 
 		self.toggleTweepy = function() {
 			if(!socialID.value){
@@ -209,7 +215,6 @@ $(document).ready(function(){
 					console.log("post done");
 				});
 			}
-
 			self.isStreaming(!self.isStreaming());
 		}
 
@@ -218,7 +223,6 @@ $(document).ready(function(){
 				console.log("Stopping Tweepy Stream!")
 			});
 		}
-
 		self.toggleAutoLoopTweepy = function() {
 			if (self.index_voiceLine() > 0) {
 				self.autoLoopTweepyStop();
@@ -235,11 +239,10 @@ $(document).ready(function(){
 		self.autoLoopTweepyNext = function() {
 			self.selectedVoiceLine(self.voiceLines()[self.index_voiceLine() - 1]); // starting at 1 so -1
 			self.selectedVoiceLine().pressPlay();
-
+		}
 			$.post('/apps/sociono/', { action: 'autoLoopTweepyNext' }, function(resp) {
 				console.log("Waiting for sound to stop!");
 			});
-		}
 
 		self.autoLoopTweepyRun = function() {
 			console.log("Finished playing: " + self.index_voiceLine() + " / " + self.voiceLines().length);
@@ -281,7 +284,7 @@ $(document).ready(function(){
 
 					 	self.autoLoopTweepyRun()
 					}
-					break;					 	
+					break;
 				case "dataFromTweepy":
 					self.addTweetLine(data);
 					break;
@@ -293,7 +296,7 @@ $(document).ready(function(){
 			$.post('/apps/sociono/', { action: 'playTweet', data: JSON.stringify(tweepyData) }, function(resp) {
 				console.log("sound post done");
 			});
-		}
+		};
 
 		// Enter functionaliteit
 		$(document).keyup(function (e) {
@@ -301,8 +304,6 @@ $(document).ready(function(){
 				self.toggleTweepy();
 		    }
 		});
-
-
 	};
 
 	// This makes Knockout get to work
