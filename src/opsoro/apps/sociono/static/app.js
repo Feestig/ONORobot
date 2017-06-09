@@ -11,11 +11,7 @@ $(document).ready(function(){
 	var searchField = "";
 
 	// Here's my data model
-<<<<<<< HEAD
-	var VoiceLine = function(emotion, output, tts, wav, picture, url, lang){
-=======
 	var VoiceLine = function(emotion, output, tts, wav, tweepyData){
->>>>>>> be2786186a66677e67b52055160c8e7f13d9a400
 		var self = this;
 
 		self.emotion = ko.observable(emotion || emotions_data[0]);
@@ -23,13 +19,7 @@ $(document).ready(function(){
 		self.output = ko.observable(output || "tts");
 
 		self.wav = ko.observable(wav || sounds_data[0]);
-<<<<<<< HEAD
-		self.picture = ko.observable(picture || "");
-		self.url = ko.observable(url||"");
-		self.lang = ko.observable(lang|| "");
-=======
-		
->>>>>>> be2786186a66677e67b52055160c8e7f13d9a400
+
 
 		self.isPlaying = ko.observable(false);
 		self.hasPlayed = ko.observable(false);
@@ -83,16 +73,11 @@ $(document).ready(function(){
 				if (self.emotion().dofs){
 					robotSendReceiveAllDOF(self.emotion().dofs);
 				}
-<<<<<<< HEAD
-				if(this.output() == "tts"){
-					robotSendTTSLang(self.tts, self.lang);
-=======
 				console.log(self.tts())
 				console.log(self.lang())
 				console.log(tweepyData)
 				if(this.output() == "tts" && tweepyData){
 					model.robotSendTTSLang(self.tweepyData());
->>>>>>> be2786186a66677e67b52055160c8e7f13d9a400
 				}else{
 					robotSendSound(self.wav());
 				}
@@ -201,13 +186,6 @@ $(document).ready(function(){
 		// Observables
 		self.socialID = ko.observable("");
 		self.isStreaming = ko.observable(false);
-<<<<<<< HEAD
-		self.autoRead = ko.observable(false);
-
-		self.addTweetLine = function(data, picture, url, lang){
-				self.fileIsModified(true);
-				self.voiceLines.unshift( new VoiceLine(self.emotions[0], "tts", data, "", picture, url, lang) ); // unshift to push to first index of arr
-=======
 		self.index_voiceLine = ko.observable(0) // made observable to toggle button layout
 		self.autoRead = ko.observable(false);
 
@@ -217,7 +195,6 @@ $(document).ready(function(){
 			console.log(data.text.emoticon)
 
 			self.voiceLines.unshift( new VoiceLine(self.emotions[0], "tts", "", "", data) ); // unshift to push to first index of arr
->>>>>>> be2786186a66677e67b52055160c8e7f13d9a400
 		}
 
 
@@ -234,12 +211,8 @@ $(document).ready(function(){
 					searchField = socialID.value;
 					self.voiceLines.removeAll();
 				}
-<<<<<<< HEAD
-				$.post('/apps/sociono/', { action: 'startTweepy', data: socialID.value, autoRead: self.autoRead()}, function(resp) {
-=======
 
 				$.post('/apps/sociono/', { action: 'startTweepy', data: JSON.stringify({ socialID: socialID.value, autoRead: self.autoRead() }) }, function(resp) {
->>>>>>> be2786186a66677e67b52055160c8e7f13d9a400
 					console.log("post done");
 				});
 			}
@@ -251,36 +224,6 @@ $(document).ready(function(){
 				console.log("Stopping Tweepy Stream!")
 			});
 		}
-
-<<<<<<< HEAD
-		self.autoLoopTweepy = function() {
-			var l = self.voiceLines()[0];
-			l.pressPlay()
-			$.post('/apps/sociono/', { action: 'autoLoopTweepy' }, function(resp) {
-				console.log("play sound");
-			});
-
-			$.each(self.voiceLines(), function(k, v) {
-				v.pressPlay()
-				$.post('/apps/sociono/', { action: 'autoLoopTweepy' }, function(resp) {
-					console.log("play sound");
-				});
-			})
-		}
-
-		// Enter functionaliteit
-		$(document).keyup(function (e) {
-		    if ($(".socialID:focus") && (e.keyCode === 13)) {
-				self.toggleTweepy();
-		    }
-		});
-
-		// Setup websocket connection.
-		app_socket_handler = function(data) {
-      switch (data.action) {
-				case "soundStopped":
-					console.log("sound stopped!")
-=======
 		self.toggleAutoLoopTweepy = function() {
 			if (self.index_voiceLine() > 0) {
 				self.autoLoopTweepyStop();
@@ -330,24 +273,12 @@ $(document).ready(function(){
 		app_socket_handler = function(data) {
       		switch (data.action) {
 				case "autoLoopTweepyStop":
->>>>>>> be2786186a66677e67b52055160c8e7f13d9a400
 					if (self.selectedVoiceLine() != undefined) {
 						self.selectedVoiceLine().isPlaying(false);
 					 	self.selectedVoiceLine().hasPlayed(true);
 					}
 					robotSendStop();
 					break;
-<<<<<<< HEAD
-				case "tweepy":
-					self.addTweetLine(
-						data["text"]["original"],
-						data["user"]["profile_picture"],
-						"https://twitter.com/" + data["user"]["username"],
-						data["text"]["lang"]
-					);
-
-
-=======
 				case "autoLoopTweepyNext":
 					if (self.selectedVoiceLine() != undefined) {
 						self.selectedVoiceLine().isPlaying(false);
@@ -355,10 +286,9 @@ $(document).ready(function(){
 
 					 	self.autoLoopTweepyRun()
 					}
-					break;					 	
+					break;
 				case "dataFromTweepy":
 					self.addTweetLine(data);
->>>>>>> be2786186a66677e67b52055160c8e7f13d9a400
 					break;
 			}
 		};

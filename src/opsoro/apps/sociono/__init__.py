@@ -66,8 +66,18 @@ def send_data(action, data):
     #def send_app_data(self, appname, action, data={}): from Opsoro.Users
     Users.send_app_data(config['formatted_name'], action, data)
 
+loop = None
+autolooping = 0
+
 def wait_for_sound():
-    Sound.wait_for_sound()
+    time.sleep(0.05)  # delay
+    while not loop.stopped():
+        Sound.wait_for_sound()
+        global autolooping
+        if autolooping == 1:
+            send_action("autoLoopTweepyNext")
+        loop.stop()
+        pass
 
 
 sociono_t = None
@@ -125,10 +135,14 @@ def setup_pages(opsoroapp):
 
         if request.form['action'] == 'autoLoopTweepyNext':
             stopTwitter()
-            wait_for_sound()
-            send_action(request.form['action'])
+            global autolooping
+            autolooping = 1
+            global loop
+            loop = StoppableThread(target=wait_for_sound)
 
         if request.form['action'] == 'autoLoopTweepyStop':
+            global autolooping
+            autolooping = 0
             send_action(request.form['action'])
 
         if request.form['action'] == 'playTweet':
@@ -239,7 +253,6 @@ def languageCheck(strTweet,status):
         return strTweet.replace("@","de ", 1)
 
 def playTweetInLanguage(text, lang):
-    print_info(tweepyObj)
     if not os.path.exists("/tmp/OpsoroTTS/"):
         os.makedirs("/tmp/OpsoroTTS/")
     full_path = os.path.join(
