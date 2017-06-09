@@ -66,8 +66,7 @@ $(document).ready(function(){
 				}
 
 				model.selectedVoiceLine(self);
-				//self.playEmotion(); // call to function playEmotion()
-
+				
 				if (self.emotion().poly){
 					robotSendEmotionRPhi(1.0, self.emotion().poly * 18, -1);
 				}
@@ -84,24 +83,6 @@ $(document).ready(function(){
 				}
 				self.isPlaying(true);
 			}
-		};
-
-		//function for playing emotions
-		self.playEmotion = function(){
-			for (var i = 0; i < model.emotions.length; i++) {
-				for (var j = 0; j < self.emoticons().length; j++) {
-					if (model.emotions[i]["name"].localeCompare(self.emoticons()[j]) == 0) {
-						self.VoerMetDelayUit(i);
-					}
-				}
-			}
-		};
-		//timeout function
-		self.VoerMetDelayUit = function(i){
-			console.log(model.emotions[i]["dofs"]);
-			setTimeout(function(){
-				robotSendReceiveAllDOF(model.emotions[i]["dofs"]);
-			}, 1000 * i, i);
 		};
 
 		self.pickEmotion = function(){
@@ -256,11 +237,9 @@ $(document).ready(function(){
 		self.autoLoopTweepyStop = function() {
 			// post to stop sound
 			console.log("Stop Auto Loop!");
-			console.log(self.index_voiceLine());
-		 	//self.selectedVoiceLine().isPlaying(false);
-		 	//self.selectedVoiceLine().hasPlayed(true);
+		 	
 		 	$.post('/apps/sociono/', { action: 'autoLoopTweepyStop' }, function(resp) {
-				console.log("Stopping Robot?");
+				console.log("Stopping AutoLoop & Reading");
 				self.index_voiceLine(0) // set to null to reset
 			});
 		}

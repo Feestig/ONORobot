@@ -72,7 +72,11 @@ If you haven't already, navigate to the Graph API Explorer: https://developers.f
 1.1 Click the dropdown button with "Graph API Explorer" and select your (created) app.
 
 1.2 Click "Get Token" to retrieve a user or page access token.
+
 You'll be prompted to select permissions, we'll continue without so click "Get Access Token".
+
+A "short lived" access token appears, short lived means that it'll  
+
 
 2. Reading
 3. Updating

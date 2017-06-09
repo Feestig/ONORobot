@@ -35,6 +35,7 @@ except ImportError:
 import tweepy
 import re
 import json
+import time
 
 def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
@@ -68,15 +69,23 @@ def send_data(action, data):
     Users.send_app_data(config['formatted_name'], action, data)
 
 def wait_for_sound():
+    time.sleep(0.05)  # delay
+
     global loop_T
-    loop_T = StoppableThread(target=loop)
-    
-    Sound.wait_for_sound()
+    while not loop_T.stopped():
+        Sound.wait_for_sound()
+        global autolooping
+        if autolooping == 1:
+            send_action("autoLoopTweepyNext")
+        loop_T.stop()
+    pass
 
 
 sociono_t = None
 autoRead = None # globals -> can be decalerd in called methodes
 loop_T = None # loop var for Stoppable Thread
+loop_E = None # loop var for Emoticons
+Emoticons = []
 
 def setup_pages(opsoroapp):
     sociono_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
@@ -130,16 +139,27 @@ def setup_pages(opsoroapp):
             stopTwitter()    
 
         if request.form['action'] == 'autoLoopTweepyNext':
+            global loop_T
+            global autolooping
+            autolooping = 1
             stopTwitter()
-            wait_for_sound()
-            send_action(request.form['action'])
+            loop_T = StoppableThread(target=wait_for_sound)
+            #send_action(request.form['action'])
             
         if request.form['action'] == 'autoLoopTweepyStop':
+            global autolooping
+            autolooping = 0
             send_action(request.form['action'])
 
         if request.form['action'] == 'playTweet':
             if request.form['data']:
+                global loop_E
+                global Emoticons
                 tweepyObj = json.loads(request.form['data'])
+                Emoticons = tweepyObj['text']['emoticon']
+
+                loop_E = StoppableThread(target=asyncEmotion)
+
                 playTweetInLanguage(tweepyObj)
 
 
@@ -263,6 +283,28 @@ def playTweetInLanguage(tweepyObj):
 
 
 # Emoticon functions
+
+def asyncEmotion():
+    time.sleep(0.05)
+
+    global loop_E
+    global Emoticons
+    currentAnimationArrayLength = len(Emoticons)
+    playedAnimations = 0
+    print_info(Emoticons)
+    #print_info("hier komt hij")
+    while not loop_E.stopped():
+        # if running:
+        print_info(Emoticons)
+        if currentAnimationArrayLength > playedAnimations:
+            Expression.set_emotion_name(Emoticons[playedAnimations], -1)
+            playedAnimations = playedAnimations+1
+            time.sleep(2)
+        if currentAnimationArrayLength == playedAnimations:
+            loop_E.stop()
+            pass
+
+
 #check if the post has an standard emoticon
 def checkForEmoji(status):
     emotions = []
