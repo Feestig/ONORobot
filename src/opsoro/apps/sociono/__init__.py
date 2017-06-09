@@ -80,7 +80,9 @@ def wait_for_sound():
     while not loop_T.stopped():
         Sound.wait_for_sound()
         global autolooping
+        print_info("hier is hij")
         if autolooping == 1:
+            print_info("next")
             send_action("autoLoopTweepyNext")
         loop_T.stop()
         pass
@@ -146,12 +148,13 @@ def setup_pages(opsoroapp):
             global autolooping
             autolooping = 1
             stopTwitter()
+            
             loop_T = StoppableThread(target=wait_for_sound)
             #send_action(request.form['action'])
-            
+
 
         if request.form['action'] == 'autoLoopTweepyStop':
-            global autolooping
+            #global autolooping
             autolooping = 0
             send_action(request.form['action'])
 
@@ -360,7 +363,7 @@ def playTweetInLanguage(tweepyObj):
         get_path("/tmp/OpsoroTTS/"), "Tweet.wav")
     if os.path.isfile(full_path):
         os.remove(full_path)
-    TTS.create_espeak(tweepyObj['text']['original'], full_path, tweepyObj['text']['lang'], "f", "5", "150")
+    TTS.create_espeak(tweepyObj['text']['filtered'], full_path, tweepyObj['text']['lang'], "f", "5", "150")
     Sound.play_file(full_path)
 
 
