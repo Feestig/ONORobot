@@ -63,7 +63,7 @@ You now have an app which you can use for the Graph API Explorer: https://develo
 
 # Graph API Explorer
 
-The Graph API Explorer is a tool commonly used for testing and playing with Facebook data. 
+The Graph API Explorer is a tool commonly used for testing and playing with Facebook data. We'll use it for creating a live video.
 
 # 1. Creating
 
@@ -71,6 +71,8 @@ If you haven't already, navigate to the Graph API Explorer: https://developers.f
 
 1.1 Click the dropdown button with "Graph API Explorer" and select your (created) app.
 
+1.2 Click "Get Token" to retrieve a user or page access token.
+You'll be prompted to select permissions, we'll continue without so click "Get Access Token".
 
 2. Reading
 3. Updating
