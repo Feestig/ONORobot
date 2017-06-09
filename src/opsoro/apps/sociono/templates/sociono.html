@@ -7,13 +7,13 @@
 				<input type="text" placeholder="Enter a search term" id="socialID" data-bind="value: $root.socialID">
 				<button class="button round info" data-bind="click: $root.toggleTweepy">
 					<span class="fa " data-bind="css: { 'fa-play': !$root.isStreaming(), 'fa-close': $root.isStreaming() }"></span>
-					<span class="text" data-bind="text: !$root.isStreaming() ? '{{ _('Start') }}' : '{{ _('Stop') }}' "></span>
+					<span class="text" data-bind="text: !$root.isStreaming() ? '{{ _('Start Streaming') }}' : '{{ _('Stop Streaming') }}' "></span>
 				</button>
-				<button class="button round info" data-bind="click: $root.autoLoopTweepy, enable: !$root.autoRead()">
-					<span class="fa fa-refresh"></span>
-					<span class="text"> Auto Loop</span>
+				<button class="button round info" data-bind="click: $root.toggleAutoLoopTweepy, enable: !$root.autoRead()">
+					<span class="fa " data-bind="css: { 'fa-close': $root.index_voiceLine() > 0, 'fa-refresh': $root.index_voiceLine() == 0 }"></span>
+					<span class="text" data-bind="text: $root.index_voiceLine() > 0 ? '{{ _('Stop Autoloop') }}' : '{{ _('Start Autoloop') }}' "></span>
 				</button>
-				<input type="checkbox" data-bind="checked: $root.autoRead"/>
+				<label><input type="checkbox" data-bind="checked: $root.autoRead"/> Toggle Auto Read</label>
 			</div>
 		</div>
 	</div>
@@ -23,7 +23,7 @@
 			<div id="voicelines" data-bind="sortable: { data: voiceLines, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 				<div class="voiceline" data-bind="css: { locked: $root.fileIsLocked(), unlocked: !$root.fileIsLocked()}">
 					<div class="avatar">
-						<a target="_blank" data-bind="attr: { href: url}">
+						<a data-bind="attr: { href: url}" target="_blank">
 							<img data-bind="attr: { src: picture }"/>
 						</a>
 					</div>

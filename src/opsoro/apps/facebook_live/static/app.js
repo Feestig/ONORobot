@@ -14,6 +14,7 @@ $(document).ready(function() {
             alert('stream url:' + response.secure_stream_url);
             FB.ui({
               display: 'popup',
+
               method: 'live_broadcast',
               phase: 'publish',
               broadcast_data: response,
