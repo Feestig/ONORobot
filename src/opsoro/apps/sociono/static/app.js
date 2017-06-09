@@ -228,6 +228,7 @@ $(document).ready(function(){
 		}
 
 		self.autoLoopTweepyStart = function() {
+			self.isStreaming(false); // set the streaming button back on "Start"
 			self.index_voiceLine(1); // set on null on initialize (reset)
 			self.autoLoopTweepyNext();
 		}

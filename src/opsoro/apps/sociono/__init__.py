@@ -68,11 +68,15 @@ def send_data(action, data):
     Users.send_app_data(config['formatted_name'], action, data)
 
 def wait_for_sound():
+    global loop_T
+    loop_T = StoppableThread(target=loop)
+    
     Sound.wait_for_sound()
 
 
 sociono_t = None
-autoRead = None; # globals -> can be decalerd in called methodes
+autoRead = None # globals -> can be decalerd in called methodes
+loop_T = None # loop var for Stoppable Thread
 
 def setup_pages(opsoroapp):
     sociono_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')

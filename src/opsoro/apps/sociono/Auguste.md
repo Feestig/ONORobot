@@ -37,9 +37,47 @@ $root.prop != $root.prop() -> runs at start
 
 # Locked = true for lay-out
 
+# JS loop to Python loop with Stoppable Thread
 
 # Convert social username to ID
 
 # Issues
 
 Zie pics
+
+
+
+# Facebook Live ft. ONORobot
+
+We'll create a Facebook live video using their API and make the ONORobot react to the view count, comments maybe, ...
+
+# Prequisites, create a Facebook app
+
+Follow these steps if you have no Facebook app yet:
+
+1. Go to: https://developers.facebook.com/
+2. Click "My Apps" in the top right corner and add a new app.
+3. Give it a display name and your e-mail address, press "Create App".
+
+You now have an app which you can use for the Graph API Explorer: https://developers.facebook.com/tools/explorer/
+
+# Graph API Explorer
+
+The Graph API Explorer is a tool commonly used for testing and playing with Facebook data. 
+
+# 1. Creating
+
+If you haven't already, navigate to the Graph API Explorer: https://developers.facebook.com/tools/explorer/
+
+1.1 Click the dropdown button with "Graph API Explorer" and select your (created) app.
+
+
+2. Reading
+3. Updating
+4. Deleting
+5. Viewer Experience
+
+
+
+src: https://developers.facebook.com/docs/videos/live-video/getting-started
+
