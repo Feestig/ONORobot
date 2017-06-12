@@ -91,6 +91,8 @@ https://stackoverflow.com/questions/17197970/facebook-permanent-page-access-toke
 
 ### POST request
 
+Perform a POST request to create a Facebook live stream.
+
 1.5 Underneath your access token to the left, you'll see a book icon (examine it if you feel like). To the right of the book icon, you see the word "GET", change it to "POST" by clicking it.
 
 1.6 In the query field you'll see something like this "me?fields=id,name", change it to "me/live_videos" or "<your-page-id>/live_videos" and click "Submit"
@@ -115,8 +117,12 @@ OBS (Open Broadcasting Software) is referenced to and shown in the Facebook docu
 
 Follow this link to set-up OBS: https://github.com/jp9000/obs-studio/wiki/Install-Instructions
 
-Once it's downloaded an "Auto-Configuration Wizard" will pop-up, make good use of this. Make sure you set the streaming service to "Facebook Live", default is "Twitch".
+Once it's downloaded an "Auto-Configuration Wizard" will pop-up, make good use of this. Make sure you set the stream type to "Custom Streaming Service" and the streaming service to "Facebook Live". Enter your stream url and key. You can retrieve this key through a Facebook dialog but you can also just fetch it from your stream url.
 
+Example: "stream_url": "rtmp://rtmp-api.facebook.com:80/rtmp/1548733171824663?ds=1&s_l=1&a=ATghSBT1Dp_Gp7Rh"
+
+The part after "/rtmp/" is your stream key, so "1548733171824663?ds=1&s_l=1&a=ATghSBT1Dp_Gp7Rh".
+The first part refers to your user, page, group or event id.
 
 
 
