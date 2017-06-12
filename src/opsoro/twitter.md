@@ -58,7 +58,9 @@ def stop_streamreader(self):
 - [x] filter the tweet
 - [x] robot read tweet in language
 - [ ] play emoticons
-- [ ] create seperate blocks
-- [ ] make some presets that can be loaded into blockly
+- [x] create seperate blocks for start stream and stop stream
+- [x][ ] make some presets that can be loaded into blockly
 
-# Issues
+# Notes and Issues
+ - Autoread not waiting until finished
+ - while streaming for more tweets the function to play emoticons is disabled

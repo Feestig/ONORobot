@@ -47,6 +47,8 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
 loop_T = None # loop for Stoppable Thread
+loop_E = None # loop var for Emoticons
+Emoticons = []
 autoRead = True
 hasRecievedTweet = False
 
@@ -60,7 +62,9 @@ class MyStreamListener(tweepy.StreamListener):
             global hasRecievedTweet
             hasRecievedTweet = True
             if autoRead == True:
+                Twitter.playEmotion(dataToSend)
                 Twitter.playTweetInLanguage(dataToSend) # if auto read = true -> read tweets when they come in
+
 
 
 api = tweepy.API(auth)
@@ -72,19 +76,24 @@ class _twitter(object):
     def __init__(self):
         super(_twitter, self).__init__()
         #self.arg = arg
-    def init_twitter(self):
-        print_info("test for blockly")
+
     def start_streamreader(self, twitterwords):
         global hasRecievedTweet
         global myStream
+        hasRecievedTweet = False #if adding ui elements to blockly this can be used to get out of a loop
+        print_info("test")
         myStream.filter(track=twitterwords, async=True);
-        hasRecievedTweet = True #if adding ui elements to blockly this can be used to get out of a loop
         print_info(twitterwords)
+
     def stop_streamreader(self):
         global myStream
+        global hasRecievedTweet
         myStream.disconnect()
+        hasRecievedTweet = False
     def get_tweet(self, hashtag):
         global loop_T
+
+        print_info("twitterwords")
         self.start_streamreader(hashtag)
         loop_T = StoppableThread(target=self.wait_for_tweet)
     #streamreader stops after recieving a single tweet
@@ -136,8 +145,6 @@ class _twitter(object):
             return strTweet.replace("@","von ", 1)
         elif status.lang == "fr":
             return strTweet.replace("@","de ", 1)
-    def autoRead(self, autoReadStatus):
-        autoRead = autoReadStatus
     def playTweetInLanguage(self, tweet):
         print_info(tweet)
 
@@ -197,41 +204,32 @@ class _twitter(object):
         if not emotions:
             emotions.append("none")
         return emotions
+    def playEmotion(self, tweet):
+        global loop_E
+        global Emoticons
+        Emoticons = tweet['text']['emoticon']
+        loop_E = StoppableThread(target=self.asyncEmotion)
+    def asyncEmotion(self):
+        time.sleep(0.05)
+
+        global loop_E
+        global Emoticons
+        currentAnimationArrayLength = len(Emoticons)
+        playedAnimations = 0
+        print_info(Emoticons)
+        while not loop_E.stopped():
+            if currentAnimationArrayLength > playedAnimations:
+                Expression.set_emotion_name(Emoticons[playedAnimations], -1)
+                playedAnimations = playedAnimations+1
+                time.sleep(2)
+            if currentAnimationArrayLength == playedAnimations:
+                loop_E.stop()
+                pass
+
 #    def get_tweet(self, hashtag, filter):
 #result_type: popular/ mixed/ recent
 #        for tweet in tweepy.Cursor(api.search, q='#yoursearch',result_type='popular').items(5):
 #            print(tweet)
 #        print_info("tweet by hashtag and filter")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Global instance that can be accessed by apps and scripts
 Twitter = _twitter()
