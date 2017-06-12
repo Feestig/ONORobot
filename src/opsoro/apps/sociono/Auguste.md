@@ -45,8 +45,6 @@ $root.prop != $root.prop() -> runs at start
 
 Zie pics
 
-
-
 # Facebook Live ft. ONORobot
 
 We'll create a Facebook live video using their API and make the ONORobot react to the view count, comments maybe, ...
@@ -97,9 +95,30 @@ https://stackoverflow.com/questions/17197970/facebook-permanent-page-access-toke
 
 1.6 In the query field you'll see something like this "me?fields=id,name", change it to "me/live_videos" or "<your-page-id>/live_videos" and click "Submit"
 
-This should return an object with an id, stream_url, secure_stream_url and stream_secondary_urls
+This should return an object with an id, and stream urls in RTMP format.
+You have now created a Facebook live stream but external software is needed to record your stream.
 
-You have now created your Facebook live stream but you'll need external software to record your stream.
+Something like this:
+{
+  "id": "1548733171824663",
+  "stream_url": "rtmp://rtmp-api.facebook.com:80/rtmp/1548733171824663?ds=1&s_l=1&a=ATghSBT1Dp_Gp7Rh",
+  "secure_stream_url": "rtmps://rtmp-api.facebook.com:443/rtmp/1548733171824663?ds=1&s_l=1&a=ATghSBT1Dp_Gp7Rh",
+  "stream_secondary_urls": [
+  ],
+  "secure_stream_secondary_urls": [
+  ]
+}
+
+## Open Broadcasting Software
+
+OBS (Open Broadcasting Software) is referenced to and shown in the Facebook documentation, download link: https://obsproject.com/download
+
+Follow this link to set-up OBS: https://github.com/jp9000/obs-studio/wiki/Install-Instructions
+
+Once it's downloaded an "Auto-Configuration Wizard" will pop-up, make good use of this. Make sure you set the streaming service to "Facebook Live", default is "Twitch".
+
+
+
 
 2. Reading
 3. Updating
@@ -107,6 +126,8 @@ You have now created your Facebook live stream but you'll need external software
 5. Viewer Experience
 
 
+Side Notes:
+RTMP (Real-time Messaging Protocol): https://en.wikipedia.org/wiki/Real-Time_Messaging_Protocol
 
 src: https://developers.facebook.com/docs/videos/live-video/getting-started
 
