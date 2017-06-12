@@ -3,8 +3,8 @@
 ### Auguste Van Nieuwenhuyzen
 ### Thibaud Vander Syppe
 
-### Link naar eigen repo: https://github.com/Feestig/ONORobot.git
-### Link naar trello bord (planning): https://trello.com/b/joI1cgwn/opsoro
+#### Link naar eigen repo: https://github.com/Feestig/ONORobot.git
+#### Link naar trello bord (planning): https://trello.com/b/joI1cgwn/opsoro
 
 # OnoSW
 OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OnoHAT](https://github.com/cesarvandevelde/OnoHAT).
