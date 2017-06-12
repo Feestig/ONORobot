@@ -65,18 +65,41 @@ You now have an app which you can use for the Graph API Explorer: https://develo
 
 The Graph API Explorer is a tool commonly used for testing and playing with Facebook data. We'll use it for creating a live video.
 
-# 1. Creating
+## 1. Creating
+
+### Use your app
 
 If you haven't already, navigate to the Graph API Explorer: https://developers.facebook.com/tools/explorer/
 
 1.1 Click the dropdown button with "Graph API Explorer" and select your (created) app.
 
+### Get a token
+
 1.2 Click "Get Token" to retrieve a user or page access token.
+You could live stream a video on your own feed, on a page, on a group or on an event.
 
-You'll be prompted to select permissions, we'll continue without so click "Get Access Token".
+1.3 You'll be prompted to select permissions, it will require different permissions depending on where you want to post the video:
 
-A "short lived" access token appears, short lived means that it'll  
+To your own feed (User) it needs: publish_actions.
+To a page: publish_actions, manage_pages.
+To a group: publish_actions, user_managed_groups.
+To an event: publish_actions, user_events.
 
+1.4 Check the permissions you need and click "Get Access Token" to continue.
+
+A "short lived" access token appears, short lived means that it will vanish when you log-out or when your session expires (ca. 45 minutes)
+If you need a token that lasts longer or doesn't expire, you can follow this link:
+https://stackoverflow.com/questions/17197970/facebook-permanent-page-access-token
+
+### POST request
+
+1.5 Underneath your access token to the left, you'll see a book icon (examine it if you feel like). To the right of the book icon, you see the word "GET", change it to "POST" by clicking it.
+
+1.6 In the query field you'll see something like this "me?fields=id,name", change it to "me/live_videos" or "<your-page-id>/live_videos" and click "Submit"
+
+This should return an object with an id, stream_url, secure_stream_url and stream_secondary_urls
+
+You have now created your Facebook live stream but you'll need external software to record your stream.
 
 2. Reading
 3. Updating
