@@ -111,29 +111,75 @@ Something like this:
   ]
 }
 
-## Open Broadcasting Software
+### Open Broadcasting Software
 
 OBS (Open Broadcasting Software) is referenced to and shown in the Facebook documentation, download link: https://obsproject.com/download
 
 Follow this link to set-up OBS: https://github.com/jp9000/obs-studio/wiki/Install-Instructions
 
-Once it's downloaded an "Auto-Configuration Wizard" will pop-up, make good use of this. Make sure you set the stream type to "Custom Streaming Service" and the streaming service to "Facebook Live". Enter your stream url and key. You can retrieve this key through a Facebook dialog but you can also just fetch it from your stream url.
+Once it's downloaded an "Auto-Configuration Wizard" will pop-up, make good use of this. Make sure you set the streaming service to "Facebook Live". Enter your stream url and key. You can retrieve this key through a Facebook dialog but you can also just fetch it from your stream url.
 
 Example: "stream_url": "rtmp://rtmp-api.facebook.com:80/rtmp/1548733171824663?ds=1&s_l=1&a=ATghSBT1Dp_Gp7Rh"
 
 The part after "/rtmp/" is your stream key, so "1548733171824663?ds=1&s_l=1&a=ATghSBT1Dp_Gp7Rh".
 The first part refers to your user, page, group or event id.
 
+### Problem
+OBS didn't want to connect so I'll approach it differently.
 
+### Facebook built-in stream widget (solution)
 
-2. Reading
-3. Updating
-4. Deleting
-5. Viewer Experience
+1. Open another window (don't close the Graph API Explorer) and navigate to the desired facebook profile, page, group or event owned by you and start a live video.
 
+## 2. Reading
+2. In the Graph API Explorer, query "<facebook-id>/live_videos" example: "me/live_videos", press submit. You should see your video listed where "status" is "LIVE", click on the id
+and press submit again to get the specific data for that video.
+
+We'll work with the views & comments of the live video.
+Add fields to get specific data, example: "<live_video-id>?fields=live_views,comments".
+
+this will result in something like this:
+
+{
+  "comments": {
+    "data": [
+      {
+        "from": {
+          "name": "Auguste Van Nieuwenhuyzen",
+          "id": "1548926531805327"
+        },
+        "message": "Mooi",
+        "id": "10209691024654989_10209691105297005"
+      },
+      {
+        "from": {
+          "name": "Auguste Van Nieuwenhuyzen",
+          "id": "1548926531805327"
+        },
+        "message": "Ok",
+        "id": "10209691024654989_10209691105857019"
+      }
+    ],
+    "paging": {
+      "cursors": {
+        "before": "WTI5dGJXVnVkRjlqZAFhKemIzSTZANVEF5TURrMk9URXhNRFV5T1Rjd01EVTZANVFE1TnpJM016a3lOdz09",
+        "after": "WTI5dGJXVnVkRjlqZAFhKemIzSTZANVEF5TURrMk9URXhNRFU0TlRjd01UazZANVFE1TnpJM016a3pOZAz09"
+      }
+    }
+  },
+  "live_views": 1,
+  "id": "10209691024734991"
+}
+
+This is usable data for the ONORobot, let's make the app!
 
 Side Notes:
 RTMP (Real-time Messaging Protocol): https://en.wikipedia.org/wiki/Real-Time_Messaging_Protocol
 
 src: https://developers.facebook.com/docs/videos/live-video/getting-started
+
+# ONORobot
+
+
+
 
