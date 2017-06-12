@@ -26,7 +26,7 @@ config = {
     'full_name':            'Facebook Live',
     'icon':                 'fa-video-camera',
     'color':                'red',
-    'difficulty':           1,
+    'difficulty':           3,
     'tags':                 ['template', 'developer'],
     'allowed_background':   False,
     'connection':           Robot.Connection.OFFLINE,
@@ -52,6 +52,8 @@ def setup_pages(server):
         return server.render_template(config['formatted_name'] + '.html', **data)
 
     server.register_app_blueprint(app_bp)
+
+    
 
 
 def get_page_data(page_id, fields, access_token):
