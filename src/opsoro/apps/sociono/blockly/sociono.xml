@@ -1,1 +1,2 @@
-<block type="sociono_twitter"></block>
+<block type="twitter_initialization"></block>
+<block type="sociono_get_tweet"></block>
