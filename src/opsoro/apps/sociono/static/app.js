@@ -52,8 +52,7 @@ $(document).ready(function(){
 			}
 		};
 	};
-
-
+  
 	var SocialScriptModel = function(){
 		var self = this;
 
