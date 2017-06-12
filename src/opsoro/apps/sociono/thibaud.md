@@ -1,9 +1,7 @@
 # Thibauds's Documentation
 
 # init.py
-
 The server side code for an app goes inside `__init__.py`
-
 # removing data from text
 make sure to import re (regular expressions) since we are using this for removing the link
 
@@ -18,6 +16,7 @@ in the folder of the app sociono there is a subfolder called blockly, this is us
 2. in sociono.js the blocks are initialized and gets code binded to it.
   2.1`Blockly.Blocks['type_name'] = {}` is where the layout is declared
   2.2.`Blockly.Lua['type_name'] = function(block) {}` is where we will put the code that is to be generated in
+for this project we have made a custom class twitter.py that holds the code used for the blockly module
 
 # unicode
 unicode is a way to encode signs as a stream of bytes.
@@ -28,36 +27,19 @@ unicode escape Produce[s] a string that is suitable as Unicode literal in Python
 decode makes emoji from code while encode makes code from emoji
 
 # filtering emoticons
-We wil use regular expressions to check if a post has an emoticon and we wil keep count of the amount of times given emoticon is present
-then an if structure is used to keep track of the emoticons in the post. Here it is checked if an emoticon is present and add the emoticon's name to the array.
+We wil use regular expressions to check if a post has an emoticon and we wil keep count of the amount of times given emoticon is present.
+```winking = len(re.findall(u"[\U0001F609]", emoticonStr))``` example of the code used to check if an emoticon is present or not. If no emoticons are present a simple none is returned
 
-if no emoticons are present a simple none is returned
-
-link used as reference: ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt
+After this is done we check if the amount of ie. ```winking``` is higher then 0. If this is true we add it to the array
 ```
-1F620: angry face
-1F628: fearful face
-1F602: laughing with tears
-1F603: laughing with open mouth
-1F62A: sleepy face
-1F62B: tired face
-1F629: weary face
-2639: frowning face
-263A: smiling face (white)
-263b: smiling face (black)
-1F609: winking face
-1F914: thinking face
-1F922: nauseated face
-1F632: astonished face
-1F610: neutral face'
+if winking > 0:
+    emotions.append("tong")
+if angry > 0:
+    emotions.append("angry")
 ```
-# App.js
-in App.js hebben we addTweetLine aangepast zodat de emoticon wordt meegegeven.
-in addTweetLine heb Je voiceLines hierin geven we de paramater van de emoticon meegegeven
-als er een match gevonden wordt roepen we de funtie op robotSendReceiveAllDOF met de dof array van de matchende positie
 
-
-Door gebruik te maken van stoppable_thread voeren we een loop uit waarin we de emoji array aflopen en elke emoji in die array afspelen
+# Playing emoticons
+By using the stoppableThread we execute a loop where we will iterate through an array with the emoticons that shall be played.
 ```
 if request.form['action'] == 'playTweet':
         if request.form['data']:
@@ -67,13 +49,12 @@ if request.form['action'] == 'playTweet':
             global Emoticons
             post_emoticons = json.loads(request.form['data'])
             Emoticons = post_emoticons['text']['emoticon']
-            print_info(Emoticons)
             loop_T = StoppableThread(target=asyncEmotion)
 
             playTweetInLanguage(tweepyObj)
 ```
 
-asyncEmotion iterates all items in the emoticon array and plays it. we use ```time.sleep()``` to halt the program for a few second so the animation can complete without getting interupted by the next onethis is done on a different thread since ```time.sleep()``` halts all code from executing for a set duration. without this call the animations will play but they will be unnoticed since they will start playing directly when the call is made. The previous animation will be started but can not finish since there is a new one coming in
+asyncEmotion iterates all items in the array and plays it. we use ```time.sleep()``` to halt the program for a few second so the animation can complete without getting interrupted by the next one. This is done on a different thread since ```time.sleep()``` halts all code from being executed for a set duration. without this call the animations will play but they will be unnoticed. They will start playing directly when the call is made causing the previous animation unable to finish because a new one should directly be executed.
 ```
 def asyncEmotion():
     time.sleep(0.05)
@@ -98,6 +79,27 @@ the stoppable_thread function shown above.
   - ```playedAnimations``` are the animations that have been played. if this is equal to the length of emoticons the loop will stop itself
   - we increase the amount of played animations by 1 after we have played an emotion.
   - ```time.sleep(2) ``` halts the code for 2 seconds so that the animation can complete
+
 # Issues
 Emoticons
   for some reason when you play an emoticon robot will be unable to exit. and the user will see a keyboard interupt but will be unable to shutdown the robot
+  
+# references
+link used as reference: ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt
+```
+1F620: angry face
+1F628: fearful face
+1F602: laughing with tears
+1F603: laughing with open mouth
+1F62A: sleepy face
+1F62B: tired face
+1F629: weary face
+2639: frowning face
+263A: smiling face (white)
+263b: smiling face (black)
+1F609: winking face
+1F914: thinking face
+1F922: nauseated face
+1F632: astonished face
+1F610: neutral face'
+```
