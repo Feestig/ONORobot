@@ -87,21 +87,22 @@ $(document).ready(function(){
 		};
 
 		self.toggleTweepy = function() {
+			if(self.isStreaming()) { // stop tweety if button is clicked again
+				self.stopTweepy();
+				self.isStreaming(!self.isStreaming());
+				return;
+			}
 			if(!socialID.value){
 				showMainWarning("Please enter a value");
 				return;
 			}
-			if(self.isStreaming()) { // stop tweety if button is clicked again
-				self.stopTweepy();
-			} else {
-				if(socialID.value != searchField){
-					searchField = socialID.value;
-					self.voiceLines.removeAll();
-				}
-
-				sendPost('startTweepy', JSON.stringify({socialID: socialID.value, autoRead: self.autoRead()}));
+			if(socialID.value != searchField){
+				searchField = socialID.value;
+				self.voiceLines.removeAll();
 			}
+			sendPost('startTweepy', JSON.stringify({socialID: socialID.value, autoRead: self.autoRead()}));
 			self.isStreaming(!self.isStreaming()); //change streaming status
+
 		}
 
 		self.stopTweepy = function() {

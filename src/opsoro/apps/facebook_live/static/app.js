@@ -1,5 +1,28 @@
 $(document).ready(function() {
 
+  var sendPost = function(action, data){
+    $.ajax({
+			dataType: 'json',
+			type: 'POST',
+			url: '/apps/facebook_live/',
+			data: {action: action, data: data },
+			success: function(data){
+				if (!data.success) {
+					showMainError(data.message);
+				} else {
+					return data.config;
+				}
+			}
+		});
+  }
+
+  var StartStream = function(){
+    sendPost('getLiveVideos', {});
+  }
+  var StopStream = function(){
+    sendPost('stopStream', {});
+  }
+
   var CommentModel = function(commentData){
     var self = this;
 
@@ -11,11 +34,16 @@ $(document).ready(function() {
       var self = this;
 
       self.comments = ko.observableArray();
+      self.isStreaming = ko.observable(false);
 
-      self.getLiveVideos = function(){
-        $.post('/apps/facebook_live/', { action: 'getLiveVideos' }, function(resp) {
-          console.log("Requesting the live videos")
-        });
+      self.toggleStreaming = function(){
+        if(self.isStreaming()){
+          StopStream();
+        }
+        else{
+          StartStream();
+        }
+        self.isStreaming(! self.isStreaming());
       }
 
       self.filterLiveVideoData = function(arr_of_video_objs) {
