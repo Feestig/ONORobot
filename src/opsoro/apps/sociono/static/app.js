@@ -141,46 +141,48 @@ $(document).ready(function(){
 		}
 
 		// Setup websocket connection.
-		app_socket_handler = function(data) {
-      		switch (data.action) {
-				case "autoLoopTweepyStop":
-					if (self.selectedVoiceLine() != undefined) {
-						self.selectedVoiceLine().isPlaying(false);
-					 	self.selectedVoiceLine().hasPlayed(true);
-					}
-					robotSendStop();
-					break;
-				case "autoLoopTweepyNext":
-					if (self.selectedVoiceLine() != undefined) {
-						self.selectedVoiceLine().isPlaying(false);
-					 	self.selectedVoiceLine().hasPlayed(true);
 
-					 	self.autoLoopTweepyRun()
-					}
-					break;
-				case "dataFromTweepy":
-					self.addTweetLine(data);
-					break;
-			}
-		};
 
 		// Custom TTS Speak function
 		self.robotSendTTSLang = function(tweepyData) {
 			sendPost('playTweet', JSON.stringify(tweepyData));
 		};
 
-		// Enter functionaliteit
-		$(document).keyup(function (e) {
-		    if ($(".socialID:focus") && (e.keyCode === 13)) {
-				self.toggleTweepy();
-		    }
-		});
+
 	};
 
 	// This makes Knockout get to work
 	var model = new SocialScriptModel();
 	ko.applyBindings(model);
 
+	// Enter functionaliteit
+	$(document).keyup(function (e) {
+			if ($(".socialID:focus") && (e.keyCode === 13)) {
+			model.toggleTweepy();
+			}
+	});
 
+	app_socket_handler = function(data) {
+				switch (data.action) {
+			case "autoLoopTweepyStop":
+				if (model.selectedVoiceLine() != undefined) {
+					model.selectedVoiceLine().isPlaying(false);
+					model.selectedVoiceLine().hasPlayed(true);
+				}
+				robotSendStop();
+				break;
+			case "autoLoopTweepyNext":
+				if (model.selectedVoiceLine() != undefined) {
+					model.selectedVoiceLine().isPlaying(false);
+					model.selectedVoiceLine().hasPlayed(true);
+
+					model.autoLoopTweepyRun()
+				}
+				break;
+			case "dataFromTweepy":
+				model.addTweetLine(data);
+				break;
+		}
+	};
 
 });
