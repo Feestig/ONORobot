@@ -10,13 +10,9 @@
 {% block sidebar_right %}{% endblock %}
 
 {% block app_content %}
-<button class="button round info" data-bind="click: startFacebookLiveDialog()">
-	<span class="text">Start Facebook live</span>
-</button>
+<input type="text" data-bind="value: $root.streamingKey"/>
 
-<input type="text" data-bind="value: streamKey"/>
-
-<button class="button round info" data-bind="click: startFunction()">
+<button class="button round info" data-bind="click: startFunction">
 	<span class="text">GO</span>
 </button>
 
@@ -27,7 +23,11 @@
 {% endblock %}
 {% block app_scripts %}
 
-	<!-- <script src="/site_media/static/js/....js"></script> -->
+	<script src="/static/js/vendor/jquery-ui-sortable/jquery-ui.js"></script>
+	<script src="/static/js/knockout-sortable.min.js"></script>
+
+	<script src="/static/js/sockjs.min.js"></script>
+	<script src="/static/js/vendor/jquery-ui-touch/jquery.ui.touch-punch.min.js"></script>
 
 {% endblock %}
 {% block app_modals %}
