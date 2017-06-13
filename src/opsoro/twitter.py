@@ -46,10 +46,12 @@ consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
-loop_T = None # loop for Stoppable Thread
+loop_T = None # loop var for wait_for_tweet
 loop_E = None # loop var for Emoticons
+loop_S = None # loop var for wait_for_sound
 Emoticons = []
-autoRead = False
+Tweets = []
+autoRead = True
 hasRecievedTweet = False
 
 class MyStreamListener(tweepy.StreamListener):
@@ -79,6 +81,7 @@ class _twitter(object):
         global hasRecievedTweet
         global myStream
         social_id = []
+        social_id.append(hashtag)
         print_info(social_id)
         hasRecievedTweet = False #if adding ui elements to blockly this can be used to get out of a loop
         myStream.filter(track=social_id, async=True);
@@ -87,15 +90,12 @@ class _twitter(object):
         global hasRecievedTweet
         myStream.disconnect()
         hasRecievedTweet = False
+        if not Tweets:
+            print_info(Tweets)
     def get_tweet(self, hashtag):
         global loop_T
-        global autoRead
-        autoRead = True
         self.start_streamreader(hashtag)
         loop_T = StoppableThread(target=self.wait_for_tweet)
-    def set_autoread(self, bool_autoread):
-        global autoRead
-        autoRead = bool_autoread
     #streamreader stops after recieving a single tweet
     def wait_for_tweet(self):
         time.sleep(1)  # delay
@@ -112,6 +112,7 @@ class _twitter(object):
                 pass
             #print_info(hasRecievedTweet)
     def processJson(self, status):
+        global Tweets
         data = {
             "user": {
                 "username": status._json["user"]["screen_name"],
@@ -124,6 +125,7 @@ class _twitter(object):
                 "emoticon": self.checkForEmoji(status)
             }
         }
+        Tweets.insert(len(Tweets),data)
         return data
     def filterTweet(self, status):
         encodedstattext = status.text.encode('utf-8')
@@ -145,6 +147,8 @@ class _twitter(object):
             return strTweet.replace("@","von ", 1)
         elif status.lang == "fr":
             return strTweet.replace("@","de ", 1)
+        else
+            return strTweet
     def playTweetInLanguage(self, tweet):
         #print_info(tweet)
 
@@ -216,7 +220,7 @@ class _twitter(object):
         global Emoticons
         currentAnimationArrayLength = len(Emoticons)
         playedAnimations = 0
-        print_info(Emoticons)
+        #print_info(Emoticons)
         while not loop_E.stopped():
             if currentAnimationArrayLength > playedAnimations:
                 Expression.set_emotion_name(Emoticons[playedAnimations], -1)
@@ -225,6 +229,21 @@ class _twitter(object):
             if currentAnimationArrayLength == playedAnimations:
                 loop_E.stop()
                 pass
+    def wait_for_sound():
+        time.sleep(0.05)  # delay
 
+        global loop_S
+        while not loop_S.stopped():
+            Sound.wait_for_sound()
+            global autolooping
+            if autolooping == 1:
+                send_action("autoLoopTweepyNext")
+            loop_S.stop()
+        pass
+    # def set_autoread(self, bool_autoread):
+    #     global autoRead
+    #     autoRead = bool_autoread
 # Global instance that can be accessed by apps and scripts
 Twitter = _twitter()
+
+# loop_S = StoppableThread(target=wait_for_sound)
