@@ -114,7 +114,6 @@ class _twitter(object):
                 # self.playSound() #commented see twitter.md*
                 loop_T.stop()
                 pass
-            #print_info(hasRecievedTweet)
     #functions for filtering tweets
     def processJson(self, status):
         # global Tweets #commented see twitter.md*
@@ -212,7 +211,6 @@ class _twitter(object):
         global Emoticons
         currentAnimationArrayLength = len(Emoticons)
         playedAnimations = 0
-        #print_info(Emoticons)
         while not loop_E.stopped():
             if currentAnimationArrayLength > playedAnimations:
                 Expression.set_emotion_name(Emoticons[playedAnimations], -1)
@@ -238,16 +236,12 @@ class _twitter(object):
     #function below will play each tweet after each other in an orderly fashion see twitter.md*
     # def playSound(self):
     #     global loop_S
-    #     print_info("playSound")
-    #     print_info(len(Tweets))
     #     if len(Tweets) == 1:
     #         self.playTweetInLanguage(Tweets[0])
     #         self.playEmotion(Tweets[0])
     #     elif len(Tweets) > 1:
     #         loop_S = StoppableThread(target=self.wait_for_sound)
     # def playMultipleTweets(self, position):
-    #     print_info("position")
-    #     print_info(position)
     #     self.playTweetInLanguage(Tweets[position])
     # def wait_for_sound(self):
     #     time.sleep(0.05)  # delay
@@ -258,8 +252,6 @@ class _twitter(object):
     #         Sound.wait_for_sound()
     #         global autoRead
     #         if autoRead == 1:
-    #             print_info("soundpos in loop")
-    #             print_info(SoundPosition)
     #             self.playMultipleTweets(SoundPosition)
     #             SoundPosition = SoundPosition + 1
     #         if SoundPosition == len(Tweets):

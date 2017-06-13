@@ -57,15 +57,75 @@ def stop_streamreader(self):
 - [x] stop streamListener
 - [x] filter the tweet
 - [x] robot read tweet in language
-- [ ] play emoticons
+- [x] play emoticons
 - [x] create seperate blocks for start stream and stop stream
 - [x][ ] make some presets that can be loaded into blockly
+- [x] play multiple tweets
 
-# Issues
- - [ ] Autoread not waiting until finished
- - [x] twitter breaks up the words and filtes on letters | created an array that contains the filter. If you send it out as a string var it will filter on the characters instead
- - [ ] if get a single tweet is used the streamListener will filter until it gets a tweet after running scrip start button doesn't lock the script while exuceting. 
+# commented code *
+these codes need to be uncommented. If this is done the program will wait untill it's finished before playing a new tweet
+```
+loop_S = None # loop var for wait_for_sound
+SoundPosition = 0 #global var for the sound position
+Tweets = [] # this array keeps track of all incoming tweets
+```
+in stop_streamreader. this checks if the array with tweets is not empty. In this case it will play the sound
+```
+if Tweets:
+    self.playSound()
+```
+in wait_for_tweet before loop_T.stop():
+```
+self.playSound()
+```
+in processJson
+```
+global Tweets
+Tweets.insert(len(Tweets),data) #inserts a tweet at the last position
+```
+if the array has 1 item it will play the sound and emotion once. else it will use a stoppable thread to play all the tweets.
+```
+def playSound(self):
+   global loop_S
+   if len(Tweets) == 1:
+       self.playTweetInLanguage(Tweets[0])
+       self.playEmotion(Tweets[0])
+   elif len(Tweets) > 1:
+       loop_S = StoppableThread(target=self.wait_for_sound)
+```
+plays the sound of the arrays current position
+```
+def playMultipleTweets(self, position):
+   self.playTweetInLanguage(Tweets[position])
+```
+The StoppableThread iterates through the array and increases by 1 after the sound has played. If the position is equal to the lenght of the array it will stop.
+```
+def wait_for_sound(self):
+   time.sleep(0.05)
 
- [ ] unsolved | [x] solved
-# Notes
- - while streaming for more tweets the function to play emoticons is disabled
+   global loop_S
+   global SoundPosition
+   while not loop_S.stopped():
+       Sound.wait_for_sound()
+       global autoRead
+       if autoRead == 1:
+           self.playMultipleTweets(SoundPosition)
+           SoundPosition = SoundPosition + 1
+       if SoundPosition == len(Tweets):
+           loop_S.stop()
+           pass
+```
+function to stop the streamreader without giving the order to play a sound.
+```
+ def stop_streamreader_on_exit(self):
+     global myStream
+     global hasRecievedTweet
+     myStream.disconnect()
+     hasRecievedTweet = False
+```
+comment these 3 lines in the streamlistener
+```
+if autoRead == True:
+      Twitter.playEmotion(dataToSend)
+      Twitter.playTweetInLanguage(dataToSend)
+```
