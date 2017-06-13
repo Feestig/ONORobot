@@ -1,9 +1,16 @@
 $(document).ready(function() {
 
+  var CommentModel = function(commentData){
+    var self = this;
+
+    self.username = ko.observable(commentData["username"] || "");
+    self.comment = ko.observable(commentData["comment"] || "");
+  }
 
   var FacebookLiveModel = function() {
       var self = this;
       self.streamingKey = ko.observable("");
+      self.comments = ko.observableArray();
 
       self.startFunction = function(){
         if(!self.streamingKey()){
@@ -14,6 +21,8 @@ $(document).ready(function() {
 
         });
       }
+
+
 
   };
 
