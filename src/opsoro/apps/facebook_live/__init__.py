@@ -16,7 +16,7 @@ from functools import partial
 import os
 
 import json
-import urllib2d
+import urllib2
 from functools import partial
 from random import randint
 
@@ -57,12 +57,14 @@ def setup_pages(server):
 
         return server.render_template(config['formatted_name'] + '.html', **data)
 
+
     @app_bp.route('/', methods=['POST'])
     @server.app_view
     def post():
-        data = {'actions': {}, 'emotions': [], 'sounds': []}
+        data = {'actions': {}, 'data': []}
         if request.form['action'] == 'startLive':
             #Auguste plaats code hierd
+            print_info("hello")
 
         return server.render_template(config['formatted_name'] + '.html', **data)
 
