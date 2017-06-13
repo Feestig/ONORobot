@@ -1,5 +1,34 @@
 $(document).ready(function() {
 
+  var sendPost = function(action, data){
+    $.ajax({
+			dataType: 'json',
+			type: 'POST',
+			url: '/apps/facebook_live/',
+			data: {action: action, data: data },
+			success: function(data){
+				if (!data.success) {
+					showMainError(data.message);
+				} else {
+					return data.config;
+				}
+			}
+		});
+  }
+
+  var StartStream = function(){
+    sendPost('getLiveVideos', {});
+  }
+  var StopStream = function(){
+    sendPost('stopStream', {});
+  }
+
+  var CommentModel = function(commentData){
+    var self = this;
+
+    self.username = ko.observable(commentData["username"] || "");
+    self.comment = ko.observable(commentData["comment"] || "");
+  }
 
   var FacebookLiveModel = function() {
       var self = this;
@@ -8,6 +37,7 @@ $(document).ready(function() {
       self.embedIFrame = ko.observable("")
       self.views = ko.observable(0)
       self.comments = ko.observableArray();
+      self.isStreaming = ko.observable(false);
 
 
       self.commentPreview = ko.pureComputed(function(){
@@ -18,6 +48,16 @@ $(document).ready(function() {
         $.post('/apps/facebook_live/', { action: 'getLiveVideos' }, function(resp) {
           console.log("Requesting the live videos")
         });
+      }
+
+      self.toggleStreaming = function(){
+        if(self.isStreaming()){
+          StopStream();
+        }
+        else{
+          StartStream();
+        }
+        self.isStreaming(! self.isStreaming());
       }
 
       self.filterLiveVideoData = function(arr_of_video_objs) {
@@ -51,13 +91,13 @@ $(document).ready(function() {
       self.handleLiveVideoComments = function(view_count, arr_comments) {
 
         if (arr_comments.length > 0) {
+
           var arr = [];
           for (var i = 0; i < arr_comments.length; i++) {
             arr.push(arr_comments[i].message);
           }
 
           self.comments(arr);
-
         } else {
           // No comments yet
         }
@@ -73,8 +113,6 @@ $(document).ready(function() {
         }
         console.log(self.views())
       }
-
-
   };
 
   // This makes Knockout get to work

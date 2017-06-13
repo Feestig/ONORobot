@@ -38,6 +38,20 @@ config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
 access_token = 'EAAEGfayCJKUBAOAp9Ah4ZCeAw3vS2I6IaBjZA2nIVtVIXr3fgOFL5wJK6FVJyVIRBhFRR1eRZAxvwtB6YNVdES6kMP9U1PCTIRFoo9Jb7hWMrZB7O4pNxmB3ayyzq2ZANtR6pgXJAZBKQ3H3wtzJON1e8EV9pdwlM2Pe4EqZCMw8jQKZABppDkwihK4ZBzvm7VUYZD'  # Access Token
 
+video_id = None
+thread_fb_t = None
+secOphalenData = 2
+
+def thread_fb():
+    time.sleep(0.05)  # delay
+
+    global video_id
+    global thread_fb_t
+
+    while not thread_fb_t.stopped():
+        getLiveVideoData(video_id)
+        time.sleep(secOphalenData)
+        pass
 
 def send_data(action, data):
     Users.send_app_data(config['formatted_name'], action, data)
@@ -60,6 +74,7 @@ def setup_pages(server):
 
         return server.render_template(config['formatted_name'] + '.html', **data)
 
+
     @app_bp.route('/', methods=['POST'])
     @server.app_view
     def post():
@@ -70,22 +85,25 @@ def setup_pages(server):
             if graph_response:
                 send_data(request.form['action'], graph_response)
 
-        if request.form['action'] == 'liveVideoIDs':
-            if request.form['data']:
-                liveVideoIds = json.loads(request.form['data']) # de-stringify js object!
-                print_info(liveVideoIds[0])
-                fields = "id,live_views,comments,status,stream_url,secure_stream_url,embed_html"
-                graph_response = get_graph_data(liveVideoIds[0], fields, access_token)
-                print_info(graph_response)
-                if graph_response:
-                    send_data("liveVideoStats", graph_response)
-
-
+            if request.form['action'] == 'liveVideoIDs':
+                if request.form['data']:
+                    global video_id
+                    global thread_fb_t
+                    video_id = json.loads(request.form['data'])[0]
+                    thread_fb_t = StoppableThread(target=thread_fb)
+            if request.form['action'] == 'stopStream':
+                #global thread_fb_t
+                thread_fb_t.stop()
 
         return server.render_template(config['formatted_name'] + '.html', **data)
 
     server.register_app_blueprint(app_bp)
 
+def getLiveVideoData(facebook_id):
+    fields = "id,live_views,comments,status,stream_url,secure_stream_url,embed_html"
+    graph_response = get_graph_data(facebook_id, fields, access_token)
+    if graph_response:
+        send_data('liveVideoStats', graph_response)
 
 
 def get_graph_data(facebook_id, fields, access_token):
@@ -118,4 +136,5 @@ def start(server):
     pass
 
 def stop(server):
+    thread_fb_t.stop()
     pass
