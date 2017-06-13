@@ -10,10 +10,8 @@
 {% block sidebar_right %}{% endblock %}
 
 {% block app_content %}
-<input type="text" data-bind="value: $root.streamingKey"/>
-
-<button class="button round info" data-bind="click: startFunction">
-	<span class="text">GO</span>
+<button class="button round info" data-bind="click: getLiveVideos">
+	<span class="text">Get your Live Videos Stats!</span>
 </button>
 
 	{% if not online %}
