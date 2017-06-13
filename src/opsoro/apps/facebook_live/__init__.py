@@ -85,15 +85,16 @@ def setup_pages(server):
             if graph_response:
                 send_data(request.form['action'], graph_response)
 
-            if request.form['action'] == 'liveVideoIDs':
-                if request.form['data']:
-                    global video_id
-                    global thread_fb_t
-                    video_id = json.loads(request.form['data'])[0]
-                    thread_fb_t = StoppableThread(target=thread_fb)
-            if request.form['action'] == 'stopStream':
-                #global thread_fb_t
-                thread_fb_t.stop()
+        if request.form['action'] == 'liveVideoIDs':
+            if request.form['data']:
+                global video_id
+                global thread_fb_t
+                video_id = json.loads(request.form['data'])[0]
+                #print_info(video_id)
+                thread_fb_t = StoppableThread(target=thread_fb)
+        if request.form['action'] == 'stopStream':
+            #global thread_fb_t
+            thread_fb_t.stop()
 
         return server.render_template(config['formatted_name'] + '.html', **data)
 
@@ -102,6 +103,7 @@ def setup_pages(server):
 def getLiveVideoData(facebook_id):
     fields = "id,live_views,comments,status,stream_url,secure_stream_url,embed_html"
     graph_response = get_graph_data(facebook_id, fields, access_token)
+    #print_info(graph_response)
     if graph_response:
         send_data('liveVideoStats', graph_response)
 
