@@ -1,32 +1,14 @@
 Blockly.Lua.addReservedWords("Twitter");
 
-Blockly.Blocks['twitter_initialization'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField("initialize twitter");
-    this.appendStatementInput("twitter init")
-        .setCheck(null);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour(230);
-    this.setTooltip('');
-    this.setHelpUrl('');
-  }
-};
-Blockly.Lua['twitter_initialization'] = function(block) {
-  var statements_twitter_init = Blockly.Lua.statementToCode(block, 'twitter init');
-  var code = 'Twitter:init_twitter()';
-  return code;
-};
 Blockly.Blocks['sociono_get_tweet'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("get a single tweet ")
+        .appendField("get a single tweet based on hashtag ")
         .appendField(new Blockly.FieldTextInput("#opsoro"), "filter");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(230);
-    this.setTooltip('');
+    this.setTooltip('give in the hashtag you want to filter');
     this.setHelpUrl('');
   }
 };
@@ -65,5 +47,23 @@ Blockly.Blocks['sociono_stop_stream'] = {
 };
 Blockly.Lua['sociono_stop_stream'] = function(block) {
   var code = 'Twitter:stop_streamreader()\n';
+  return code;
+};
+Blockly.Blocks['sociono_set_autoread'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("autoread ")
+        .appendField(new Blockly.FieldDropdown([["On","True"], ["Off","False"]]), "NAME");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+    this.setTooltip('set the autoread option on or off');
+    this.setHelpUrl('');
+  }
+};
+Blockly.Lua['sociono_set_autoread'] = function(block) {
+  var dropdown_name = block.getFieldValue('NAME');
+  // TODO: Assemble Lua into code variable.
+  var code = 'Twitter:set_autoread('+dropdown_name+')\n';
   return code;
 };

@@ -61,6 +61,11 @@ def stop_streamreader(self):
 - [x] create seperate blocks for start stream and stop stream
 - [x][ ] make some presets that can be loaded into blockly
 
-# Notes and Issues
- - Autoread not waiting until finished
+# Issues
+ - [ ] Autoread not waiting until finished
+ - [x] twitter breaks up the words and filtes on letters | created an array that contains the filter. If you send it out as a string var it will filter on the characters instead
+ - [ ] if get a single tweet is used the streamListener will filter until it gets a tweet after running scrip start button doesn't lock the script while exuceting. 
+
+ [ ] unsolved | [x] solved
+# Notes
  - while streaming for more tweets the function to play emoticons is disabled

@@ -49,15 +49,13 @@ auth.set_access_token(access_token, access_token_secret)
 loop_T = None # loop for Stoppable Thread
 loop_E = None # loop var for Emoticons
 Emoticons = []
-autoRead = True
+autoRead = False
 hasRecievedTweet = False
 
 class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
         dataToSend = Twitter.processJson(status)
-        #print_info(dataToSend)
-        print_info(status.text)
         if dataToSend['text']['filtered'] != None:
             global hasRecievedTweet
             hasRecievedTweet = True
@@ -77,13 +75,13 @@ class _twitter(object):
         super(_twitter, self).__init__()
         #self.arg = arg
 
-    def start_streamreader(self, twitterwords):
+    def start_streamreader(self, hashtag):
         global hasRecievedTweet
         global myStream
+        social_id = []
+        print_info(social_id)
         hasRecievedTweet = False #if adding ui elements to blockly this can be used to get out of a loop
-        myStream.filter(track=twitterwords, async=True);
-        print_info(twitterwords)
-
+        myStream.filter(track=social_id, async=True);
     def stop_streamreader(self):
         global myStream
         global hasRecievedTweet
@@ -91,8 +89,13 @@ class _twitter(object):
         hasRecievedTweet = False
     def get_tweet(self, hashtag):
         global loop_T
+        global autoRead
+        autoRead = True
         self.start_streamreader(hashtag)
         loop_T = StoppableThread(target=self.wait_for_tweet)
+    def set_autoread(self, bool_autoread):
+        global autoRead
+        autoRead = bool_autoread
     #streamreader stops after recieving a single tweet
     def wait_for_tweet(self):
         time.sleep(1)  # delay
@@ -223,10 +226,5 @@ class _twitter(object):
                 loop_E.stop()
                 pass
 
-#    def get_tweet(self, hashtag, filter):
-#result_type: popular/ mixed/ recent
-#        for tweet in tweepy.Cursor(api.search, q='#yoursearch',result_type='popular').items(5):
-#            print(tweet)
-#        print_info("tweet by hashtag and filter")
 # Global instance that can be accessed by apps and scripts
 Twitter = _twitter()
