@@ -52,7 +52,7 @@ $(document).ready(function(){
 			}
 		};
 	};
-  
+
 	var SocialScriptModel = function(){
 		var self = this;
 
@@ -170,6 +170,7 @@ $(document).ready(function(){
 	// This makes Knockout get to work
 	var model = new SocialScriptModel();
 	ko.applyBindings(model);
-	//model.fileIsModified(false);
+
+
 
 });

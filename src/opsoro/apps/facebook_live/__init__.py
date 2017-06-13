@@ -8,6 +8,7 @@ from opsoro.robot import Robot
 from opsoro.expression import Expression
 from opsoro.sound import Sound
 from opsoro.stoppable_thread import StoppableThread
+from opsoro.users import Users
 
 import time
 
@@ -15,7 +16,7 @@ from functools import partial
 import os
 
 import json
-import urllib2
+import urllib2d
 from functools import partial
 from random import randint
 
@@ -34,6 +35,11 @@ config = {
 }
 config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
+
+def send_data(action, data):
+    Users.send_app_data(config['formatted_name'], action, data)
+
+
 def setup_pages(server):
     app_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
@@ -51,9 +57,16 @@ def setup_pages(server):
 
         return server.render_template(config['formatted_name'] + '.html', **data)
 
-    server.register_app_blueprint(app_bp)
+    @app_bp.route('/', methods=['POST'])
+    @server.app_view
+    def post():
+        data = {'actions': {}, 'emotions': [], 'sounds': []}
+        if request.form['action'] == 'startLive':
+            #Auguste plaats code hierd
 
-    
+        return server.render_template(config['formatted_name'] + '.html', **data)
+
+    server.register_app_blueprint(app_bp)
 
 
 def get_page_data(page_id, fields, access_token):

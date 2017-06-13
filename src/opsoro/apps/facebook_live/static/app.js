@@ -1,18 +1,31 @@
 $(document).ready(function() {
-    var FacebookLiveModel = function() {
-        var self = this;
-        self.streamingKey = ko.observable("");
 
-        self.startFunction = function(){
-          console.log(self.streamingKey());
-          if(!self.streamingKey()){
-            showMainWarning("Enter stream key")
-          }
+
+  var FacebookLiveModel = function() {
+      var self = this;
+      self.streamingKey = ko.observable("");
+
+      self.startFunction = function(){
+        if(!self.streamingKey()){
+          showMainWarning("Enter stream key")
+          return;
         }
+        $.post('/apps/facebook_live/', { action: 'startLive', data: self.streamingKey() }, function(resp) {
+
+        });
+      }
 
   };
+
+  app_socket_handler = function(data) {
+        switch (data.action) {
+      case "facebookComment":
+      console.log("got comment");
+    }
+  };
+
     // This makes Knockout get to work
-    var model = new FacebookLiveModel();
-    ko.applyBindings(model);
+  var model = new FacebookLiveModel();
+  ko.applyBindings(model);
 
 });
