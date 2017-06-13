@@ -187,6 +187,10 @@ src: https://developers.facebook.com/docs/videos/live-video/getting-started
 		Send response from python to JS & validate it there
 ### 3. Filter out live video (status="LIVE"), get it's ID
 		Send back video IDs of the live videos only
+
+	#### 3.1 Set lay-out with live_video data -> embed iFrame error: this video can't be embed (not embeddable while streaming?)
+			Werkt nu toch via Facebook en dan OBS ???
+
 ### 4. Use ID for Facebook call for comments & views
 		get request for live_views & comments
 

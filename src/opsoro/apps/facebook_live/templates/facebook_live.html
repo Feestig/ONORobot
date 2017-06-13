@@ -10,9 +10,19 @@
 {% block sidebar_right %}{% endblock %}
 
 {% block app_content %}
-<button class="button round info" data-bind="click: getLiveVideos">
-	<span class="text">Get your Live Videos Stats!</span>
-</button>
+	<button class="button round info" data-bind="click: getLiveVideos">
+		<span class="text">Get your Live Videos Stats!</span>
+	</button>
+
+	<div class="iframe-container" data-bind="html: embedIFrame">
+		
+	</div>
+	<div data-bind="html: commentPreview">
+		
+	</div>
+	<div>
+		Views: <span data-bind="text: views"></span>
+	</div>
 
 	{% if not online %}
 		<!-- Content in this section is not displayed online, only on the robot. For example: it is a perfect place to put controls that access hardware stuff, which is not available online. -->

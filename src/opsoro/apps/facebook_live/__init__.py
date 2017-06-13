@@ -36,7 +36,7 @@ config = {
 config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
 
-access_token = 'EAAEGfayCJKUBAJfOYmWQOKsIkbZBCPSvEg2YhH57UXZCWWoPZB4ovnNyaXQneH9A94irRBIZCXbRtxFccZCPV4cTnmWGPREaObrsSK5ZB4eGe7Xz33IzfssZCTMYAucwVEhjzuFOOkHiWka8LoDuFPntbBhIKIu5U3lhaXZB4jCcNs6NLj9834v1ZCqRd3wi40EcZD'  # Access Token
+access_token = 'EAAEGfayCJKUBAOAp9Ah4ZCeAw3vS2I6IaBjZA2nIVtVIXr3fgOFL5wJK6FVJyVIRBhFRR1eRZAxvwtB6YNVdES6kMP9U1PCTIRFoo9Jb7hWMrZB7O4pNxmB3ayyzq2ZANtR6pgXJAZBKQ3H3wtzJON1e8EV9pdwlM2Pe4EqZCMw8jQKZABppDkwihK4ZBzvm7VUYZD'  # Access Token
 
 
 def send_data(action, data):
@@ -73,7 +73,8 @@ def setup_pages(server):
         if request.form['action'] == 'liveVideoIDs':
             if request.form['data']:
                 liveVideoIds = json.loads(request.form['data']) # de-stringify js object!
-                fields = "live_views,comments"
+                print_info(liveVideoIds[0])
+                fields = "id,live_views,comments,status,stream_url,secure_stream_url,embed_html"
                 graph_response = get_graph_data(liveVideoIds[0], fields, access_token)
                 print_info(graph_response)
                 if graph_response:
