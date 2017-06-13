@@ -10,6 +10,21 @@ $(document).ready(function(){
 
 	var searchField = "";
 
+	var sendPost = function(action, data){
+		$.ajax({
+			dataType: 'json',
+			type: 'POST',
+			url: '/apps/sociono/',
+			data: {action: action, data: data },
+			success: function(data){
+				if (!data.success) {
+					showMainError(data.message);
+				} else {
+					return data.config;
+				}
+			}
+		});
+	}
 
 	// Here's my data model
 	var VoiceLine = function(tweepyData){
@@ -84,40 +99,15 @@ $(document).ready(function(){
 					self.voiceLines.removeAll();
 				}
 
-				$.ajax({
-					dataType: 'json',
-					type: 'POST',
-					url: '/apps/sociono/',
-					data: {action: 'startTweepy', data: JSON.stringify({socialID: socialID.value, autoRead: self.autoRead()}) },
-					success: function(data){
-						if (!data.success) {
-							showMainError(data.message);
-						} else {
-							return data.config;
-						}
-					}
-				});
+				sendPost('startTweepy', JSON.stringify({socialID: socialID.value, autoRead: self.autoRead()}));
 			}
 			self.isStreaming(!self.isStreaming()); //change streaming status
 		}
 
 		self.stopTweepy = function() {
-
-			$.ajax({
-				dataType: 'json',
-				type: 'POST',
-				url: '/apps/sociono/',
-				data: {action: 'stopTweepy' },
-				success: function(data){
-					if (!data.success) {
-						showMainError(data.message);
-					} else {
-						return data.config;
-					}
-				}
-			});
-
+			sendPost('stopTweepy', {})
 		}
+
 		self.toggleAutoLoopTweepy = function() {
 			if (self.index_voiceLine() > 0) {
 				self.autoLoopTweepyStop();
@@ -135,20 +125,7 @@ $(document).ready(function(){
 		self.autoLoopTweepyNext = function() {
 			self.selectedVoiceLine(self.voiceLines()[self.index_voiceLine() - 1]); // starting at 1 so -1
 			self.selectedVoiceLine().pressPlay();
-
-			$.ajax({
-				dataType: 'json',
-				type: 'POST',
-				url: '/apps/sociono/',
-				data: {action: 'autoLoopTweepyNext' },
-				success: function(data){
-					if (!data.success) {
-						showMainError(data.message);
-					} else {
-						return data.config;
-					}
-				}
-			});
+			sendPost('autoLoopTweepyNext', {});
 
 		}
 
@@ -160,20 +137,7 @@ $(document).ready(function(){
 		}
 
 		self.autoLoopTweepyStop = function() {
-			$.ajax({
-				dataType: 'json',
-				type: 'POST',
-				url: '/apps/sociono/',
-				data: {action: 'autoLoopTweepyStop' },
-				success: function(data){
-					if (!data.success) {
-						showMainError(data.message);
-					} else {
-						return data.config;
-					}
-				}
-			});
-
+			sendPost('autoLoopTweepyStop', {});
 		}
 
 		// Setup websocket connection.
@@ -202,19 +166,7 @@ $(document).ready(function(){
 
 		// Custom TTS Speak function
 		self.robotSendTTSLang = function(tweepyData) {
-			$.ajax({
-				dataType: 'json',
-				type: 'POST',
-				url: '/apps/sociono/',
-				data: {action: 'playTweet', data: JSON.stringify(tweepyData) },
-				success: function(data){
-					if (!data.success) {
-						showMainError(data.message);
-					} else {
-						return data.config;
-					}
-				}
-			});
+			sendPost('playTweet', JSON.stringify(tweepyData));
 		};
 
 		// Enter functionaliteit
