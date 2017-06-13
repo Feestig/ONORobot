@@ -56,7 +56,7 @@ class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
         dataToSend = Twitter.processJson(status)
-        print_info(dataToSend)
+        #print_info(dataToSend)
         print_info(status.text)
         if dataToSend['text']['filtered'] != None:
             global hasRecievedTweet
@@ -81,7 +81,6 @@ class _twitter(object):
         global hasRecievedTweet
         global myStream
         hasRecievedTweet = False #if adding ui elements to blockly this can be used to get out of a loop
-        print_info("test")
         myStream.filter(track=twitterwords, async=True);
         print_info(twitterwords)
 
@@ -92,8 +91,6 @@ class _twitter(object):
         hasRecievedTweet = False
     def get_tweet(self, hashtag):
         global loop_T
-
-        print_info("twitterwords")
         self.start_streamreader(hashtag)
         loop_T = StoppableThread(target=self.wait_for_tweet)
     #streamreader stops after recieving a single tweet
@@ -110,7 +107,7 @@ class _twitter(object):
                 print_info("stop twitter stream")
                 loop_T.stop()
                 pass
-            print_info(hasRecievedTweet)
+            #print_info(hasRecievedTweet)
     def processJson(self, status):
         data = {
             "user": {
@@ -146,7 +143,7 @@ class _twitter(object):
         elif status.lang == "fr":
             return strTweet.replace("@","de ", 1)
     def playTweetInLanguage(self, tweet):
-        print_info(tweet)
+        #print_info(tweet)
 
         if not os.path.exists("/tmp/OpsoroTTS/"):
             os.makedirs("/tmp/OpsoroTTS/")
