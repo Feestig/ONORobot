@@ -61,6 +61,7 @@ $(document).ready(function() {
       }
 
       self.filterLiveVideoData = function(arr_of_video_objs) {
+        console.log(arr_of_video_objs)
         var arr_live_videos_only = [];
         var arr_live_video_ids = [];
         $.each(arr_of_video_objs, function(key, value) {
@@ -73,6 +74,7 @@ $(document).ready(function() {
         console.log(arr_live_video_ids)
 
         if (arr_live_video_ids && arr_live_video_ids.length > 0) {
+
           self.postLiveVideoIDs(arr_live_video_ids);
         }
 
@@ -89,7 +91,17 @@ $(document).ready(function() {
         });
       }
 
-      self.handleLiveVideoComments = function(view_count, arr_comments) {
+      self.handleLayout = function(liveVideo) { // handling static lay-out the things that don't have to change every 5 seconds
+        if (liveVideo.embed_html) {
+
+          self.embedIFrame(liveVideo.embed_html);
+
+        }
+      }
+
+      self.handleLiveVideoComments = function(view_count, arr_comments) { // the stuff that changes every 5 seconds
+
+        self.views(view_count);
 
         if (arr_comments.length > 0) {
 
@@ -103,16 +115,6 @@ $(document).ready(function() {
           // No comments yet
         }
 
-      }
-
-      self.handleLayout = function(liveVideo) {
-        console.log(liveVideo);
-        if (liveVideo.embed_html) {
-
-          self.embedIFrame(liveVideo.embed_html);
-          self.views(liveVideo.live_views);
-        }
-        console.log(self.views())
       }
   };
 

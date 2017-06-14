@@ -102,6 +102,7 @@ def setup_pages(server):
 def getLiveVideoData(facebook_id):
     fields = "id,live_views,comments,status,stream_url,secure_stream_url,embed_html"
     graph_response = get_graph_data(facebook_id, fields, access_token)
+    #print_info(graph_response)
     if graph_response:
         print_info(graph_response)
         send_data('liveVideoStats', graph_response)
