@@ -97,18 +97,15 @@ $(document).ready(function() {
 
       self.handleLiveVideoComments = function(view_count, arr_comments) { // the stuff that changes every 5 seconds
         self.views(view_count);
-        console.log(arr_comments.length);
-        console.log((self.comments.length < arr_comments.length));
-        if(self.comments.length < arr_comments.length){
-          if(self.autoRead()){
+        if(self.comments().length != arr_comments.length){
+          if(self.autoRead() && self.comments().length < arr_comments.length && self.comments().length != 0){
             //send laatste comment om voor te lezen
-            console.log(arr_comments[arr_comments.length -1]);
             robotSendTTS(arr_comments[arr_comments.length -1]["message"]);
           }
           //hervul de lijst om laatste comments te krijgen
-          this.comments.removeAll();
+          self.comments.removeAll();
           for (var i = 0; i < arr_comments.length; i++) {
-            this.comments.unshift(new CommentModel(arr_comments[i]));
+            self.comments.unshift(new CommentModel(arr_comments[i]));
           }
         }
       }
