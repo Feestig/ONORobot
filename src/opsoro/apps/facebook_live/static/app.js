@@ -83,6 +83,7 @@ $(document).ready(function() {
       }
 
       self.postLiveVideoIDs = function(liveVideoIDs) {
+        console.log(JSON.stringify(liveVideoIDs));
         $.post('/apps/facebook_live/', { action: 'liveVideoIDs', data: JSON.stringify(liveVideoIDs) }, function() {
           console.log("Live video IDs posted")
         });
