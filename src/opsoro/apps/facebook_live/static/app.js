@@ -37,6 +37,7 @@ $(document).ready(function() {
       self.views = ko.observable(0)
       self.comments = ko.observableArray();
       self.isStreaming = ko.observable(false);
+      self.autoRead = ko.observable(false);
 
 
       self.getLiveVideos = function(){
@@ -60,7 +61,7 @@ $(document).ready(function() {
         var arr_live_videos_only = [];
         var arr_live_video_ids = [];
         $.each(arr_of_video_objs, function(key, value) {
-          if (value.status && value.status == "LIVE" && value.id == "1550981988266448") { // This video is Live!
+          if (value.status && value.status == "LIVE") { // This video is Live!
             arr_of_video_objs.push(value)
             arr_live_video_ids.push(value.id)
           }
@@ -87,18 +88,28 @@ $(document).ready(function() {
       }
 
       self.handleLayout = function(liveVideo) { // handling static lay-out the things that don't have to change every 5 seconds
+        console.log(liveVideo.embed_html);
         if (liveVideo.embed_html) {
 
           self.embedIFrame(liveVideo.embed_html);
-
         }
       }
 
       self.handleLiveVideoComments = function(view_count, arr_comments) { // the stuff that changes every 5 seconds
         self.views(view_count);
-        this.comments.removeAll();
-        for (var i = 0; i < arr_comments.length; i++) {
-          this.comments.unshift(new CommentModel(arr_comments[i]));
+        console.log(arr_comments.length);
+        console.log((self.comments.length < arr_comments.length));
+        if(self.comments.length < arr_comments.length){
+          if(self.autoRead()){
+            //send laatste comment om voor te lezen
+            console.log(arr_comments[arr_comments.length -1]);
+            robotSendTTS(arr_comments[arr_comments.length -1]["message"]);
+          }
+          //hervul de lijst om laatste comments te krijgen
+          this.comments.removeAll();
+          for (var i = 0; i < arr_comments.length; i++) {
+            this.comments.unshift(new CommentModel(arr_comments[i]));
+          }
         }
       }
   };
@@ -119,7 +130,7 @@ $(document).ready(function() {
         }
         break;
       case "liveVideoStats":
-
+        console.log(data)
         if (data.live_views && data.comments) {
           model.handleLiveVideoComments(data.live_views, data.comments.data)
         }

@@ -36,7 +36,7 @@ config = {
 config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
 
-access_token = 'EAAEGfayCJKUBAH0vDZCTEM9lJRl7IiHRpgGJjg2x0SuDunZCR4XF6gyiF7w2PRFrRT3EgD2GbJqJJHofZAWOKd7N9SlzeO1k2UZAukrWHyQOcFBDa85XVwfibwGgB6eZC8NN9lioZCawGffcDOivvmlKDpmravoJhX2u03rgT2J9dMji3ajs5wwAwm1ayyHa8ZD'  # Access Token
+access_token = 'EAAEGfayCJKUBAAVq5wdLf0hPL7lNDpJ2diMp3Y9MpESdZAovf67TKwNv9wOKHHVgsdNgV3ZBxIETKQSJJbv9CIprlCOy5CEyrcU8okXG0ODKOpTJWnbpG6U3H4WCZCxB7Ucc2zQNwsRGrtfcJBO9fg1hF0pTVlR0NNRlHnSuFZC5uYqKenYzuNe8fyxS3pgZD'  # Access Token
 
 video_id = None
 thread_fb_t = None
