@@ -16,10 +16,21 @@
 	</button>
 
 	<div class="iframe-container" data-bind="html: embedIFrame">
-		
 	</div>
-	<div data-bind="html: commentPreview">
-		
+
+	<div>
+		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
+	</div>
+
+	<div data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
+		<div>
+			<div>
+				<span data-bind="text: username"></span>
+			</div>
+			<div>
+				<span data-bind="text: comment"></span>
+			</div>
+		</div>
 	</div>
 	<div>
 		Views: <span data-bind="text: views"></span>
