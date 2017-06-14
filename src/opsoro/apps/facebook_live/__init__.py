@@ -79,6 +79,7 @@ def setup_pages(server):
     @server.app_view
     def post():
         data = {'actions': {}, 'emotions': [], 'sounds': []}
+
         if request.form['action'] == 'getLiveVideos':
             fields = "live_videos"
             graph_response = get_graph_data("me", fields, access_token)
