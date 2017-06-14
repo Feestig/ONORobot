@@ -1,32 +1,14 @@
 Blockly.Lua.addReservedWords("Twitter");
 
-Blockly.Blocks['twitter_initialization'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField("initialize twitter");
-    this.appendStatementInput("twitter init")
-        .setCheck(null);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour(230);
-    this.setTooltip('');
-    this.setHelpUrl('');
-  }
-};
-Blockly.Lua['twitter_initialization'] = function(block) {
-  var statements_twitter_init = Blockly.Lua.statementToCode(block, 'twitter init');
-  var code = 'Twitter:init_twitter()';
-  return code;
-};
 Blockly.Blocks['sociono_get_tweet'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("get a single tweet ")
+        .appendField("get a single tweet based on hashtag ")
         .appendField(new Blockly.FieldTextInput("#opsoro"), "filter");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(230);
-    this.setTooltip('');
+    this.setTooltip('give in the hashtag you want to filter');
     this.setHelpUrl('');
   }
 };
@@ -49,7 +31,7 @@ Blockly.Blocks['sociono_start_stream'] = {
 };
 Blockly.Lua['sociono_start_stream'] = function(block) {
   var text_filter = block.getFieldValue('filter');
-  var code = 'Twitter:start_streamreader("'+text_filter+'")\n';
+  var code = 'Twitter:start_streamreader("'+text_filter+'")\nfunction quit()\n  Twitter:stop_streamreader()\nend';
   return code;
 };
 Blockly.Blocks['sociono_stop_stream'] = {
@@ -67,3 +49,19 @@ Blockly.Lua['sociono_stop_stream'] = function(block) {
   var code = 'Twitter:stop_streamreader()\n';
   return code;
 };
+// commented see twitter.md*
+// Blockly.Blocks['sociono_stop_stream_exit'] = {
+//   init: function() {
+//     this.appendDummyInput()
+//         .appendField("stop twitter stream with no feedback");
+//     this.setPreviousStatement(true, null);
+//     this.setNextStatement(true, null);
+//     this.setColour(230);
+//     this.setTooltip('a backup fucntion to be put in the when script stopped. stops the streamreader without returning any feedback');
+//     this.setHelpUrl('');
+//   }
+// };
+// Blockly.Lua['sociono_stop_stream_exit'] = function(block) {
+//   var code = 'Twitter:stop_streamreader_on_exit()\n';
+//   return code;
+// };

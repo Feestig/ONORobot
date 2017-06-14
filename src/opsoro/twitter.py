@@ -46,26 +46,20 @@ consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
-loop_T = None # loop for Stoppable Thread
+loop_T = None # loop var for wait_for_tweet
 loop_E = None # loop var for Emoticons
 Emoticons = []
-autoRead = True
 hasRecievedTweet = False
 
 class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
         dataToSend = Twitter.processJson(status)
-        #print_info(dataToSend)
-        print_info(status.text)
         if dataToSend['text']['filtered'] != None:
             global hasRecievedTweet
             hasRecievedTweet = True
-            if autoRead == True:
-                Twitter.playEmotion(dataToSend)
-                Twitter.playTweetInLanguage(dataToSend) # if auto read = true -> read tweets when they come in
-
-
+            Twitter.playEmotion(dataToSend)
+            Twitter.playTweetInLanguage(dataToSend)
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
@@ -77,18 +71,19 @@ class _twitter(object):
         super(_twitter, self).__init__()
         #self.arg = arg
 
-    def start_streamreader(self, twitterwords):
+    def start_streamreader(self, hashtag):
         global hasRecievedTweet
         global myStream
+        social_id = []
+        social_id.append(hashtag)
         hasRecievedTweet = False #if adding ui elements to blockly this can be used to get out of a loop
-        myStream.filter(track=twitterwords, async=True);
-        print_info(twitterwords)
-
+        myStream.filter(track=social_id, async=True);
     def stop_streamreader(self):
         global myStream
         global hasRecievedTweet
         myStream.disconnect()
         hasRecievedTweet = False
+        Sound.stop_sound()
     def get_tweet(self, hashtag):
         global loop_T
         self.start_streamreader(hashtag)
@@ -107,7 +102,7 @@ class _twitter(object):
                 print_info("stop twitter stream")
                 loop_T.stop()
                 pass
-            #print_info(hasRecievedTweet)
+    #functions for filtering tweets
     def processJson(self, status):
         data = {
             "user": {
@@ -142,21 +137,9 @@ class _twitter(object):
             return strTweet.replace("@","von ", 1)
         elif status.lang == "fr":
             return strTweet.replace("@","de ", 1)
-    def playTweetInLanguage(self, tweet):
-        #print_info(tweet)
-
-        if not os.path.exists("/tmp/OpsoroTTS/"):
-            os.makedirs("/tmp/OpsoroTTS/")
-
-        full_path = os.path.join(
-            get_path("/tmp/OpsoroTTS/"), "Tweet.wav")
-
-        if os.path.isfile(full_path):
-            os.remove(full_path)
-
-        TTS.create_espeak(tweet['text']['filtered'], full_path, tweet['text']['lang'], "f", "5", "150")
-
-        Sound.play_file(full_path)
+        else:
+            return strTweet
+    #filter emoticons
     def checkForEmoji(self,status):
         emotions = []
         emoticonStr = status.text
@@ -201,6 +184,7 @@ class _twitter(object):
         if not emotions:
             emotions.append("none")
         return emotions
+    #functions to play emotions
     def playEmotion(self, tweet):
         global loop_E
         global Emoticons
@@ -213,7 +197,6 @@ class _twitter(object):
         global Emoticons
         currentAnimationArrayLength = len(Emoticons)
         playedAnimations = 0
-        print_info(Emoticons)
         while not loop_E.stopped():
             if currentAnimationArrayLength > playedAnimations:
                 Expression.set_emotion_name(Emoticons[playedAnimations], -1)
@@ -222,11 +205,20 @@ class _twitter(object):
             if currentAnimationArrayLength == playedAnimations:
                 loop_E.stop()
                 pass
+    #functions concerning sound
+    def playTweetInLanguage(self, tweet):
+        if not os.path.exists("/tmp/OpsoroTTS/"):
+            os.makedirs("/tmp/OpsoroTTS/")
 
-#    def get_tweet(self, hashtag, filter):
-#result_type: popular/ mixed/ recent
-#        for tweet in tweepy.Cursor(api.search, q='#yoursearch',result_type='popular').items(5):
-#            print(tweet)
-#        print_info("tweet by hashtag and filter")
+        full_path = os.path.join(
+            get_path("/tmp/OpsoroTTS/"), "Tweet.wav")
+
+        if os.path.isfile(full_path):
+            os.remove(full_path)
+
+        TTS.create_espeak(tweet['text']['filtered'], full_path, tweet['text']['lang'], "f", "5", "150")
+
+        Sound.play_file(full_path)
+
 # Global instance that can be accessed by apps and scripts
 Twitter = _twitter()
