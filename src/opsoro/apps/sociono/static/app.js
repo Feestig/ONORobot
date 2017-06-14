@@ -10,6 +10,21 @@ $(document).ready(function(){
 
 	var searchField = "";
 
+	var sendPost = function(action, data){
+		$.ajax({
+			dataType: 'json',
+			type: 'POST',
+			url: '/apps/sociono/',
+			data: {action: action, data: data },
+			success: function(data){
+				if (!data.success) {
+					showMainError(data.message);
+				} else {
+					return data.config;
+				}
+			}
+		});
+	}
 
 	// Here's my data model
 	var VoiceLine = function(tweepyData){
@@ -72,28 +87,28 @@ $(document).ready(function(){
 		};
 
 		self.toggleTweepy = function() {
+			if(self.isStreaming()) { // stop tweety if button is clicked again
+				self.stopTweepy();
+				self.isStreaming(!self.isStreaming());
+				return;
+			}
 			if(!socialID.value){
 				showMainWarning("Please enter a value");
 				return;
 			}
-			if(self.isStreaming()) { // stop tweety if button is clicked again
-				self.stopTweepy();
-			} else {
-				if(socialID.value != searchField){
-					searchField = socialID.value;
-					self.voiceLines.removeAll();
-				}
-
-				$.post('/apps/sociono/', { action: 'startTweepy', data: JSON.stringify({ socialID: socialID.value, autoRead: self.autoRead() }) }, function(resp) {
-				});
+			if(socialID.value != searchField){
+				searchField = socialID.value;
+				self.voiceLines.removeAll();
 			}
+			sendPost('startTweepy', JSON.stringify({socialID: socialID.value, autoRead: self.autoRead()}));
 			self.isStreaming(!self.isStreaming()); //change streaming status
+
 		}
 
 		self.stopTweepy = function() {
-			$.post('/apps/sociono/', { action: 'stopTweepy' }, function(resp) { // message ... success functions?
-			});
+			sendPost('stopTweepy', {})
 		}
+
 		self.toggleAutoLoopTweepy = function() {
 			if (self.index_voiceLine() > 0) {
 				self.autoLoopTweepyStop();
@@ -111,8 +126,8 @@ $(document).ready(function(){
 		self.autoLoopTweepyNext = function() {
 			self.selectedVoiceLine(self.voiceLines()[self.index_voiceLine() - 1]); // starting at 1 so -1
 			self.selectedVoiceLine().pressPlay();
-			$.post('/apps/sociono/', { action: 'autoLoopTweepyNext' }, function(resp) {
-			});
+			sendPost('autoLoopTweepyNext', {});
+
 		}
 
 		self.autoLoopTweepyRun = function() {
@@ -123,54 +138,52 @@ $(document).ready(function(){
 		}
 
 		self.autoLoopTweepyStop = function() {
-			// post to stop sound
-			$.post('/apps/sociono/', { action: 'autoLoopTweepyStop' }, function(resp) {
-				self.index_voiceLine(0) // set to null to reset
-			});
+			sendPost('autoLoopTweepyStop', {});
 		}
 
 		// Setup websocket connection.
-		app_socket_handler = function(data) {
-      		switch (data.action) {
-				case "autoLoopTweepyStop":
-					if (self.selectedVoiceLine() != undefined) {
-						self.selectedVoiceLine().isPlaying(false);
-					 	self.selectedVoiceLine().hasPlayed(true);
-					}
-					robotSendStop();
-					break;
-				case "autoLoopTweepyNext":
-					if (self.selectedVoiceLine() != undefined) {
-						self.selectedVoiceLine().isPlaying(false);
-					 	self.selectedVoiceLine().hasPlayed(true);
 
-					 	self.autoLoopTweepyRun()
-					}
-					break;
-				case "dataFromTweepy":
-					self.addTweetLine(data);
-					break;
-			}
-		};
 
 		// Custom TTS Speak function
 		self.robotSendTTSLang = function(tweepyData) {
-			$.post('/apps/sociono/', { action: 'playTweet', data: JSON.stringify(tweepyData) }, function(resp) {
-			});
+			sendPost('playTweet', JSON.stringify(tweepyData));
 		};
 
-		// Enter functionaliteit
-		$(document).keyup(function (e) {
-		    if ($(".socialID:focus") && (e.keyCode === 13)) {
-				self.toggleTweepy();
-		    }
-		});
+
 	};
 
 	// This makes Knockout get to work
 	var model = new SocialScriptModel();
 	ko.applyBindings(model);
 
+	// Enter functionaliteit
+	$(document).keyup(function (e) {
+			if ($(".socialID:focus") && (e.keyCode === 13)) {
+			model.toggleTweepy();
+			}
+	});
 
+	app_socket_handler = function(data) {
+				switch (data.action) {
+			case "autoLoopTweepyStop":
+				if (model.selectedVoiceLine() != undefined) {
+					model.selectedVoiceLine().isPlaying(false);
+					model.selectedVoiceLine().hasPlayed(true);
+				}
+				robotSendStop();
+				break;
+			case "autoLoopTweepyNext":
+				if (model.selectedVoiceLine() != undefined) {
+					model.selectedVoiceLine().isPlaying(false);
+					model.selectedVoiceLine().hasPlayed(true);
+
+					model.autoLoopTweepyRun()
+				}
+				break;
+			case "dataFromTweepy":
+				model.addTweetLine(data);
+				break;
+		}
+	};
 
 });
