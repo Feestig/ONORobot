@@ -91,7 +91,6 @@ def setup_pages(server):
                 global video_id
                 global thread_fb_t
                 video_id = json.loads(request.form['data'])[0]
-                #print_info(video_id)
                 thread_fb_t = StoppableThread(target=thread_fb)
         if request.form['action'] == 'stopStream':
             #global thread_fb_t
@@ -106,6 +105,7 @@ def getLiveVideoData(facebook_id):
     graph_response = get_graph_data(facebook_id, fields, access_token)
     #print_info(graph_response)
     if graph_response:
+        print_info(graph_response)
         send_data('liveVideoStats', graph_response)
 
 
