@@ -7,3 +7,8 @@ iframe {
 	height: 500px!important;
 	width: 750px!important;
 }
+
+.commentPreview{
+	display: block;
+	float: right;
+}

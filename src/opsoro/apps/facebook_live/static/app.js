@@ -65,7 +65,7 @@ $(document).ready(function() {
         var arr_live_videos_only = [];
         var arr_live_video_ids = [];
         $.each(arr_of_video_objs, function(key, value) {
-          if (value.status && value.status == "LIVE" && value.id == "1549951018369545") { // This video is Live!
+          if (value.status && value.status == "LIVE") { // This video is Live!
             arr_of_video_objs.push(value)
             arr_live_video_ids.push(value.id)
           }
