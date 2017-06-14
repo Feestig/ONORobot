@@ -48,11 +48,7 @@ auth.set_access_token(access_token, access_token_secret)
 
 loop_T = None # loop var for wait_for_tweet
 loop_E = None # loop var for Emoticons
-loop_S = None # loop var for wait_for_sound
-#SoundPosition = 0 #global var for the sound position
 Emoticons = []
-#Tweets = [] #commented see twitter.md*
-autoRead = True
 hasRecievedTweet = False
 
 class MyStreamListener(tweepy.StreamListener):
@@ -62,11 +58,8 @@ class MyStreamListener(tweepy.StreamListener):
         if dataToSend['text']['filtered'] != None:
             global hasRecievedTweet
             hasRecievedTweet = True
-            if autoRead == True:
-                Twitter.playEmotion(dataToSend)
-                Twitter.playTweetInLanguage(dataToSend) # if auto read = true -> read tweets when they come in
-
-
+            Twitter.playEmotion(dataToSend)
+            Twitter.playTweetInLanguage(dataToSend)
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
@@ -91,10 +84,6 @@ class _twitter(object):
         myStream.disconnect()
         hasRecievedTweet = False
         Sound.stop_sound()
-        #commented see twitter.md*
-        #if Tweets:
-        #    self.playSound()
-
     def get_tweet(self, hashtag):
         global loop_T
         self.start_streamreader(hashtag)
@@ -111,12 +100,10 @@ class _twitter(object):
                 global myStream
                 myStream.disconnect()
                 print_info("stop twitter stream")
-                # self.playSound() #commented see twitter.md*
                 loop_T.stop()
                 pass
     #functions for filtering tweets
     def processJson(self, status):
-        # global Tweets #commented see twitter.md*
         data = {
             "user": {
                 "username": status._json["user"]["screen_name"],
@@ -129,7 +116,6 @@ class _twitter(object):
                 "emoticon": self.checkForEmoji(status)
             }
         }
-        # Tweets.insert(len(Tweets),data) #commented see twitter.md*
         return data
     def filterTweet(self, status):
         encodedstattext = status.text.encode('utf-8')
@@ -233,34 +219,6 @@ class _twitter(object):
         TTS.create_espeak(tweet['text']['filtered'], full_path, tweet['text']['lang'], "f", "5", "150")
 
         Sound.play_file(full_path)
-    #function below will play each tweet after each other in an orderly fashion see twitter.md*
-    # def playSound(self):
-    #     global loop_S
-    #     if len(Tweets) == 1:
-    #         self.playTweetInLanguage(Tweets[0])
-    #         self.playEmotion(Tweets[0])
-    #     elif len(Tweets) > 1:
-    #         loop_S = StoppableThread(target=self.wait_for_sound)
-    # def playMultipleTweets(self, position):
-    #     self.playTweetInLanguage(Tweets[position])
-    # def wait_for_sound(self):
-    #     time.sleep(0.05)  # delay
-    #
-    #     global loop_S
-    #     global SoundPosition
-    #     while not loop_S.stopped():
-    #         Sound.wait_for_sound()
-    #         global autoRead
-    #         if autoRead == 1:
-    #             self.playMultipleTweets(SoundPosition)
-    #             SoundPosition = SoundPosition + 1
-    #         if SoundPosition == len(Tweets):
-    #             loop_S.stop()
-    #             pass
-    # def stop_streamreader_on_exit(self):
-    #     global myStream
-    #     global hasRecievedTweet
-    #     myStream.disconnect()
-    #     hasRecievedTweet = False
+
 # Global instance that can be accessed by apps and scripts
 Twitter = _twitter()

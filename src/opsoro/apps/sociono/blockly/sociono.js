@@ -31,7 +31,7 @@ Blockly.Blocks['sociono_start_stream'] = {
 };
 Blockly.Lua['sociono_start_stream'] = function(block) {
   var text_filter = block.getFieldValue('filter');
-  var code = 'Twitter:start_streamreader("'+text_filter+'")\n';
+  var code = 'Twitter:start_streamreader("'+text_filter+'")\nfunction quit()\n  Twitter:stop_streamreader()\nend';
   return code;
 };
 Blockly.Blocks['sociono_stop_stream'] = {

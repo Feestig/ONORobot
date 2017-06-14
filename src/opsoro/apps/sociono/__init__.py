@@ -220,6 +220,8 @@ def languageCheck(strTweet,status):
         return strTweet.replace("@","von ", 1)
     elif status.lang == "fr":
         return strTweet.replace("@","de ", 1)
+    else:
+        return strTweet
 
 
 def playTweetInLanguage(tweepyObj):

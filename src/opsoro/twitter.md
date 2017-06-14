@@ -129,3 +129,7 @@ if autoRead == True:
       Twitter.playEmotion(dataToSend)
       Twitter.playTweetInLanguage(dataToSend)
 ```
+# testing
+ - when pressing stop script sound will continue to play it's current sentence.
+  Possible solution: bind stop script to a Sound.stop_sound
+als het in een cyrilisch alfabet staat wordt de tekst niet afgespeeld
