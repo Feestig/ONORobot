@@ -21,6 +21,7 @@
 		Views: <span data-bind="text: views"></span>
 	</div>
 
+
 	<div class="rightside" data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 		<div>
 			<div>
@@ -34,6 +35,9 @@
 
 	<div class="togglebox">
 		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
+	</div>
+	<div class="togglebox">
+		<label><input type="checkbox"/> React to comments</label>
 	</div>
 	<!--<div id="comments" data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 		<div>
