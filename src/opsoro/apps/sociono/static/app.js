@@ -81,6 +81,7 @@ $(document).ready(function(){
 		self.isStreaming = ko.observable(false);// made observable to toggle button layout
 		self.index_voiceLine = ko.observable(0);
 		self.autoRead = ko.observable(false);
+		self.autoLooping = ko.observable(false);
 
 		self.addTweetLine = function(data){
 			self.voiceLines.unshift(new VoiceLine(data)); // unshift to push to first index of arr
@@ -110,7 +111,7 @@ $(document).ready(function(){
 		}
 
 		self.toggleAutoLoopTweepy = function() {
-			if (self.index_voiceLine() > 0) {
+			if (self.autoLooping()) {
 				self.autoLoopTweepyStop();
 			} else {
 				self.autoLoopTweepyStart();
@@ -119,6 +120,7 @@ $(document).ready(function(){
 
 		self.autoLoopTweepyStart = function() {
 			self.isStreaming(false); // set the streaming button back on "Start"
+			self.autoLooping(true);
 			self.index_voiceLine(1); // set on null on initialize (reset)
 			self.autoLoopTweepyNext();
 		}
@@ -138,6 +140,7 @@ $(document).ready(function(){
 		}
 
 		self.autoLoopTweepyStop = function() {
+			self.autoLooping(false);
 			sendPost('autoLoopTweepyStop', {});
 		}
 

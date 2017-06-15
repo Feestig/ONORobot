@@ -62,10 +62,10 @@ loop_E = None # loop var for Emoticons
 autolooping = None
 Emoticons = []
 
-access_token = '735437381696905216-BboISY7Qcqd1noMDY61zN75CdGT0OSc'
-access_token_secret = 'd3A8D1ttrCxYV76pBOB389YqoLB32LiE0RVyoFwuMKUMb'
-consumer_key = 'AcdgqgujzF06JF6zWrfwFeUfF'
-consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
+access_token = '141268248-yAGsPydKTDgkCcV0RZTPc5Ff7FGE41yk5AWF1dtN'
+access_token_secret = 'UalduP04BS4X3ycgBJKn2QJymMhJUbNfQZlEiCZZezW6V'
+consumer_key = 'tNYqa3yLHTGhBvGNblUHHerlJ'
+consumer_secret = 'NxBbCA8VJZvxk1SNKWw3CWd5oSnJyNAcH9Kns5Lv1DV0cqrQiz'
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -142,8 +142,11 @@ def setup_pages(opsoroapp):
                 global Emoticons
                 tweepyObj = json.loads(request.form['data'])
                 Emoticons = tweepyObj['text']['emoticon']
+                print_info(Emoticons)
                 loop_E = StoppableThread(target=asyncEmotion)
-                playTweetInLanguage(tweepyObj)
+                print_info(tweepyObj['text']['filtered'])
+                if(not tweepyObj['text']['filtered'] == ""):
+                    playTweetInLanguage(tweepyObj)
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
@@ -158,6 +161,7 @@ class MyStreamListener(tweepy.StreamListener):
             send_data('dataFromTweepy', dataToSend)
 
             if autoRead == True:
+                #smiley aanpassen
                 playTweetInLanguage(dataToSend) # if auto read = true -> read tweets when they come in
 
 myStreamListener = MyStreamListener()
@@ -225,14 +229,15 @@ def languageCheck(strTweet,status):
 
 
 def playTweetInLanguage(tweepyObj):
+    print_info("play tweet in language")
     if not os.path.exists("/tmp/OpsoroTTS/"):
         os.makedirs("/tmp/OpsoroTTS/")
 
-    full_path = os.path.join(
-        get_path("/tmp/OpsoroTTS/"), "Tweet.wav")
+    full_path = os.path.join(get_path("/tmp/OpsoroTTS/"), "Tweet.wav")
+    print_info(full_path)
 
-    if os.path.isfile(full_path):
-        os.remove(full_path)
+    if(tweepyObj['text']['lang'] == 'und'):
+        return
 
     TTS.create_espeak(tweepyObj['text']['filtered'], full_path, tweepyObj['text']['lang'], "f", "5", "150")
     Sound.play_file(full_path)

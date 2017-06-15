@@ -20,6 +20,7 @@
 
 	<div>
 		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
+			<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
 	</div>
 
 	<div data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
@@ -59,7 +60,9 @@
 
 	<script src="/static/js/vendor/jquery-ui-sortable/jquery-ui.js"></script>
 	<script src="/static/js/knockout-sortable.min.js"></script>
-
+	<script>
+	var emotions_data = {{ emotions|tojson|safe }};
+	</script>
 	<script src="/static/js/sockjs.min.js"></script>
 	<script src="/static/js/vendor/jquery-ui-touch/jquery.ui.touch-punch.min.js"></script>
 

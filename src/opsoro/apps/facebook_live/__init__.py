@@ -36,7 +36,7 @@ config = {
 config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
 
-access_token = 'EAAEGfayCJKUBAAxLeDshftcnHfpm8tumGF9GWmkYVyRFUfVAYs5zVZAuUWjBHC6HsPzGCcj8wAV0aNo0WvYSbb5BFrHZCHlYrKcStcgAwSUcWyr5eAj6jh3vPZAMFtegRGkTCZC7NUZCXCZBv84rpxQ2qgoZCbA5ZBmfy8z9ox6FADLoCFZAtnismGY8kFd9Vk8MZD'  # Access Token
+access_token = 'EAAEGfayCJKUBAKtWH4UBPaqioaFX3ylSvUMT9OrF3RKy1YL4oZCkwEPjvfPJe4jMYF3pjXtb8dhjweRPZBcCBPavl9FZC78KuRZBwXJiahnBsCgZB713g2VnuPSQiua7I0VQl49KfcZCH04GycXsslyK6nSTqfpTqYls07T2gWKGVoPwApcly62BfTZA92gZCyQZD'  # Access Token
 
 video_id = None
 thread_fb_t = None
@@ -67,10 +67,13 @@ def setup_pages(server):
         data = {
             'actions': {},
             'data': [],
+            'emotions': []
         }
         action = request.args.get('action', None)
         if action != None:
             data['actions'][action] = request.args.get('param', None)
+
+        data['emotions'] = Expression.expressions
 
         return server.render_template(config['formatted_name'] + '.html', **data)
 
