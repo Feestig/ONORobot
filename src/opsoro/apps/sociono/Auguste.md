@@ -234,6 +234,11 @@ src: https://developers.facebook.com/docs/videos/live-video/getting-started
 
 
 
+## Facebook Login, pages, videos, feed with SDK
+
+Add your test domain url to FB app
+
+
 
 
 Extra: Multiple videos ? Display all, check the one you want

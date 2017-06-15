@@ -1,5 +1,28 @@
 $(document).ready(function() {
 
+  /* Facebook SDK Init */
+
+  $(function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+  if ($('#facebook-jssdk').length > 0) {
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId            : '288611811599525',
+        autoLogAppEvents : true,
+        xfbml            : true,
+        version          : 'v2.9'
+      });
+      FB.AppEvents.logPageView();
+    }
+  }
+
+
   var sendPost = function(action, data){
     $.ajax({
 			dataType: 'json',
@@ -23,11 +46,15 @@ $(document).ready(function() {
     sendPost('stopStream', {});
   }
 
+  /* Models */
+
   var CommentModel = function(commentData){
     var self = this;
     self.username = ko.observable(commentData["from"]["name"] || "");
     self.comment = ko.observable(commentData["message"] || "");
   }
+
+  /* Facebook Login */
 
   var FacebookLiveModel = function() {
       var self = this;
@@ -39,6 +66,83 @@ $(document).ready(function() {
       self.isStreaming = ko.observable(false);
       self.autoRead = ko.observable(false);
 
+      self.loggedIn = ko.observable(false)
+      self.accessToken = ko.observable("");
+      self.userID = ko.observable("");
+      self.newLiveVideoID = ko.observable("");
+      self.isVideo = ko.observable(false);
+
+      self.getLoginStatus = function() {
+        FB.getLoginStatus(function(response){ 
+          if (response.status === 'connected') {
+            console.log(response)
+            self.setData(response);
+          } else {
+            self.fbLogin()
+          }
+        });
+      }
+
+      self.fbLogin = function() {
+        FB.login(function(response) {
+          console.log(response)
+          if (response.status === 'connected') {
+            console.log(response)
+            self.setData(response);
+          } else {
+            // error ?
+            console.log(response)
+          }
+        });      
+      }
+
+      self.fbLogout = function() {
+        FB.logout(function(response) {
+          console.log(response)
+          this.unsetData();
+        });
+      }
+
+      self.setData = function(response) {
+        self.loggedIn(true)
+        self.accessToken(response.authResponse.accessToken)
+        self.userID(response.authResponse.userID)
+      }
+
+      self.unsetData = function() {
+        self.loggedIn(false)
+        self.accessToken("")
+        self.userID("")
+      }
+
+      /* Videos */
+
+      self.startNewLiveStream = function() {
+        FB.ui({
+            display: 'popup',
+            method: 'live_broadcast',
+            phase: 'create',
+        }, function(response) {
+            if (!response.id) {
+              alert('dialog canceled');
+              return;
+            }
+            self.newLiveVideoID(response.id);
+            self.isVideo(true);
+            FB.ui({
+              display: 'popup',
+              method: 'live_broadcast',
+              phase: 'publish',
+              broadcast_data: response,
+            }, function(response) {
+              console.log(response)
+              
+            });
+          }
+        );
+      }
+
+      /* old */
 
       self.getLiveVideos = function(){
         $.post('/apps/facebook_live/', { action: 'getLiveVideos' }, function(resp) {
@@ -56,8 +160,8 @@ $(document).ready(function() {
         self.isStreaming(! self.isStreaming());
       }
 
-      self.filterLiveVideoData = function(arr_of_video_objs) {
-        console.log(arr_of_video_objs)
+      self.filterLiveVideoData = function(videoID) {
+        console.log(videoID)
         var arr_live_videos_only = [];
         var arr_live_video_ids = [];
         $.each(arr_of_video_objs, function(key, value) {
@@ -134,5 +238,4 @@ $(document).ready(function() {
         break;
     }
   };
-
 });

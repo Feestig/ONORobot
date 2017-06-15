@@ -1,8 +1,6 @@
 {% extends "app_base.html" %}
 {% block app_head %}
-
-	<!-- <script src="/site_media/static/js/....js"></script> -->
-
+	
 {% endblock %}
 
 <!-- These sidebars can be removed by removing the block tags -->
@@ -10,6 +8,28 @@
 {% block sidebar_right %}{% endblock %}
 
 {% block app_content %}
+	
+	<div id="fb-root"></div> <!-- required for the fb init -->
+
+	<div>
+		<button class="button info" data-bind="click: fbLogin, enable: !loggedIn()">
+			Log into Facebook
+		</button> 	
+		<button class="button info" data-bind="click: fbLogout, enable: loggedIn()">
+			Log out of Facebook
+		</button>	
+		<p>Your user ID: <span data-bind="text: userID()"></span></p>
+	</div>
+	<div>
+		<input type="text" style="width: 40%; display: inline-block;" id="facebookID" data-bind="enable: !isVideo(), value: isVideo() ? newLiveVideo() : ''" required="true" placeholder="Enter a Facebook page id or a existing live_video id ...">
+		<button class="button info" data-bind="enable: loggedIn()">
+			Go!
+		</button>
+		<span>- or -</span>
+		<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
+			Start a new live stream!
+		</button>
+	</div>
 
 	<button class="button round info" data-bind="click: toggleStreaming">
 		<span class="text" data-bind="text: ! isStreaming() ? 'Start' : 'Stop' "></span>
