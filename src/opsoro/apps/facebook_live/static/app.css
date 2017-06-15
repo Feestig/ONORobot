@@ -1,14 +1,42 @@
+/*sudn run*/
 .iframe-container {
 	max-height: 500px;
 	max-width: 750px;
+	height: 500px;
+	width: 750px;
+	background-color: black;
+	float: left;
 }
-
+.button {
+	display: block;
+	width: 30%;
+}
 iframe {
 	height: 500px!important;
 	width: 750px!important;
 }
-
-.commentPreview{
-	display: block;
+.rightside {
+	background-color: red;
+	display: inline-block;
 	float: right;
+	width: 32%;
+	margin: 0 0.5em 0 0.5em;
+	padding: 0.5em
+}
+.ko_container {
+	padding: 0.5em;
+	background-color: blue;
+	width: 32%;
+	height: 600px;
+	overflow: hidden;
+}
+.leftside{
+
+}
+.togglebox {
+	background-color: green;
+	display: block;
+	width: auto;
+	float: left;
+	padding: 0.5em;
 }
