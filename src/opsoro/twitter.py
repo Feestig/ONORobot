@@ -94,9 +94,12 @@ class _twitter(object):
         print_info("stop twitter")
     def get_tweet(self, hashtag):
         global loop_T
-        print_info(hashtag)
-        self.start_streamreader(hashtag)
-        loop_T = StoppableThread(target=self.wait_for_tweet)
+        if not (val is None):
+            print_info(hashtag)
+            self.start_streamreader(hashtag)
+            loop_T = StoppableThread(target=self.wait_for_tweet)
+        else:
+            print_info("no input given")
     #streamreader stops after recieving a single tweet
     def wait_for_tweet(self):
         time.sleep(1)
@@ -116,12 +119,13 @@ class _twitter(object):
         global loop_TC
         global TweetCount
         global TweetMax
-        TweetCount = 0
-        TweetMax = times
-        social_id = []
-        social_id.append(hashtag)
-        myStream.filter(track=social_id, async=True);
-        loop_TC = StoppableThread(target=self.count_tweets)
+        if not (val is None):
+            TweetCount = 0
+            TweetMax = times
+            social_id = []
+            social_id.append(hashtag)
+            myStream.filter(track=social_id, async=True);
+            loop_TC = StoppableThread(target=self.count_tweets)
     def count_tweets(self):
         time.sleep(1)  # delay
         global TweetMax
