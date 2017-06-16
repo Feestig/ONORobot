@@ -71,10 +71,13 @@ def setup_pages(server):
         data = {
             'actions': {},
             'data': [],
+            'emotions': []
         }
         action = request.args.get('action', None)
         if action != None:
             data['actions'][action] = request.args.get('param', None)
+
+        data['emotions'] = Expression.expressions
 
         return server.render_template(config['formatted_name'] + '.html', **data)
 

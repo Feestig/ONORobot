@@ -50,6 +50,11 @@ $(document).ready(function() {
     self.username = ko.observable(commentData["from"]["name"] || "");
     self.comment = ko.observable(commentData["message"] || "");
   }
+  var EmotionModel = function(name, index){
+    var self = this;
+    self.name = name;
+    self.index = index;
+  }
 
   /* Facebook Login */
 
@@ -62,6 +67,11 @@ $(document).ready(function() {
       self.comments = ko.observableArray();
       self.isStreaming = ko.observable(false);
       self.autoRead = ko.observable(false);
+      self.availableEmotions = ko.observableArray([new EmotionModel('None', 0)]);
+      self.selectedEmotion = ko.observable();
+      for (var i = 0; i < emotions_data.length; i++) {
+        self.availableEmotions.push(new EmotionModel(emotions_data[i]['name'], i+1));
+      }
 
       self.loggedIn = ko.observable(false)
       self.accessToken = ko.observable("");

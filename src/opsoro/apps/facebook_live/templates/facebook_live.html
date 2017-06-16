@@ -41,9 +41,15 @@
 
 	<div>
 		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
+		<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
 	</div>
 
-	<div data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
+	<div class="rightside">
+		Views: <span data-bind="text: views"></span>
+	</div>
+
+
+	<div class="rightside" data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 		<div>
 			<div>
 				<span data-bind="text: username"></span>
@@ -53,22 +59,13 @@
 			</div>
 		</div>
 	</div>
-	<div>
-		Views: <span data-bind="text: views"></span>
-	</div>
 
-	<!--<div id="comments" data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
-		<div>
-			<div class="avatar">
-				<a>
-					<img/>
-				</a>
-			</div>
-			<div class="content">
-				<span data-bind="html: comment"></span>
-			</div>
-		</div>
-	</div>-->
+	<div class="togglebox">
+		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
+	</div>
+	<div class="togglebox">
+		<label><input type="checkbox"/> React to comments</label>
+	</div>
 
 
 	{% if not online %}
@@ -80,7 +77,9 @@
 
 	<script src="/static/js/vendor/jquery-ui-sortable/jquery-ui.js"></script>
 	<script src="/static/js/knockout-sortable.min.js"></script>
-
+	<script>
+	var emotions_data = {{ emotions|tojson|safe }};
+	</script>
 	<script src="/static/js/sockjs.min.js"></script>
 	<script src="/static/js/vendor/jquery-ui-touch/jquery.ui.touch-punch.min.js"></script>
 
