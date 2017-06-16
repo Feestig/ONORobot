@@ -13,7 +13,7 @@ $(document).ready(function() {
   if ($('#facebook-jssdk').length > 0) {
     window.fbAsyncInit = function() {
       FB.init({
-        appId            : '1831783030386815', // OPSORO APP ID, domain error!!
+        appId            : '288611811599525',
         autoLogAppEvents : true,
         xfbml            : true,
         version          : 'v2.9'
