@@ -35,26 +35,20 @@ config = {
 }
 config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
-
-access_token = 'EAAEGfayCJKUBAKtWH4UBPaqioaFX3ylSvUMT9OrF3RKy1YL4oZCkwEPjvfPJe4jMYF3pjXtb8dhjweRPZBcCBPavl9FZC78KuRZBwXJiahnBsCgZB713g2VnuPSQiua7I0VQl49KfcZCH04GycXsslyK6nSTqfpTqYls07T2gWKGVoPwApcly62BfTZA92gZCyQZD'  # Access Token
-
-video_id = None
 thread_fb_t = None
-secOphalenData = 2
+secOphalenData = 3
 
 def thread_fb():
     time.sleep(0.05)  # delay
 
-    global video_id
     global thread_fb_t
-
+    send_data("threadRunning")
     while not thread_fb_t.stopped():
-        getLiveVideoData(video_id)
         time.sleep(secOphalenData)
         pass
 
-def send_data(action, data):
-    Users.send_app_data(config['formatted_name'], action, data)
+def send_data(action):
+    Users.send_app_data(config['formatted_name'], action, {})
 
 
 def setup_pages(server):
@@ -80,56 +74,16 @@ def setup_pages(server):
     def post():
         data = {'actions': {}, 'emotions': [], 'sounds': []}
 
-        if request.form['action'] == 'getLiveVideos':
-            fields = "live_videos"
-            graph_response = get_graph_data("me", fields, access_token)
-            if graph_response:
-                send_data(request.form['action'], graph_response)
-
-        if request.form['action'] == 'liveVideoIDs':
-            if request.form['data']:
-                global video_id
-                global thread_fb_t
-                video_id = json.loads(request.form['data'])[0]
-                thread_fb_t = StoppableThread(target=thread_fb)
-        if request.form['action'] == 'stopStream':
+        if request.form['action'] == 'postToThread':
+            global thread_fb_t
+            thread_fb_t = StoppableThread(target=thread_fb)
+        if request.form['action'] == 'stopThread':
             #global thread_fb_t
             thread_fb_t.stop()
 
         return server.render_template(config['formatted_name'] + '.html', **data)
 
     server.register_app_blueprint(app_bp)
-
-def getLiveVideoData(facebook_id):
-    fields = "id,live_views,comments,status,stream_url,secure_stream_url,embed_html"
-    graph_response = get_graph_data(facebook_id, fields, access_token)
-    #print_info(graph_response)
-    if graph_response:
-        print_info(graph_response)
-        send_data('liveVideoStats', graph_response)
-
-
-def get_graph_data(facebook_id, fields, access_token):
-    api_endpoint = "https://graph.facebook.com/v2.8/"
-    fb_graph_url = api_endpoint + facebook_id + '?fields=' + fields + '&access_token=' + access_token
-
-    print_info(fb_graph_url)
-
-    try:
-        api_request = urllib2.Request(fb_graph_url)
-        api_response = urllib2.urlopen(api_request)
-
-        try:
-            return json.loads(api_response.read())
-        except (ValueError, KeyError, TypeError):
-            return "JSON error"
-
-    except IOError, e:
-        if hasattr(e, 'code'):
-            return e.code
-        elif hasattr(e, 'reason'):
-            return e.reason
-
 
 # Default functions for setting up, starting and stopping an app
 def setup(server):
