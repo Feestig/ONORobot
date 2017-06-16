@@ -138,19 +138,21 @@ def setup_pages(opsoroapp):
 
         if request.form['action'] == 'playTweet':
             if request.form['data']:
-                global loop_E
-                global Emoticons
                 tweepyObj = json.loads(request.form['data'])
-                Emoticons = tweepyObj['text']['emoticon']
-                print_info(Emoticons)
-                loop_E = StoppableThread(target=asyncEmotion)
-                print_info(tweepyObj['text']['filtered'])
-                if(not tweepyObj['text']['filtered'] == ""):
-                    playTweetInLanguage(tweepyObj)
+                playTweet(tweepyObj)
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
     opsoroapp.register_app_blueprint(sociono_bp)
+
+def playTweet(tweepyDataModel):
+    global loop_E
+    global Emoticons
+    Emoticons = tweepyDataModel['text']['emoticon']
+    loop_E = StoppableThread(target=asyncEmotion)
+    print_info(tweepyDataModel)
+    if(not tweepyDataModel['text']['filtered'] == ""):
+        playTweetInLanguage(tweepyDataModel)
 
 
 #getting new tweet
@@ -159,10 +161,9 @@ class MyStreamListener(tweepy.StreamListener):
         dataToSend = processJson(status)
         if dataToSend['text']['filtered'] != None:
             send_data('dataFromTweepy', dataToSend)
-
             if autoRead == True:
-                #smiley aanpassen
-                playTweetInLanguage(dataToSend) # if auto read = true -> read tweets when they come in
+                playTweet(dataToSend)
+
 
 myStreamListener = MyStreamListener()
 myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
@@ -179,12 +180,14 @@ def stop(opsoroapp):
 
 def startTwitter(twitterWords):
     global myStream
+    myStream = tweepy.Stream(auth= api.auth, listener=myStreamListener)
     myStream.filter(track=twitterWords, async=True)
 
 
 def stopTwitter():
     global myStream
     myStream.disconnect()
+    print_info("twitter stop")
 
 #process tweepy json
 def processJson(status):
@@ -240,7 +243,7 @@ def playTweetInLanguage(tweepyObj):
         return
 
     TTS.create_espeak(tweepyObj['text']['filtered'], full_path, tweepyObj['text']['lang'], "f", "5", "150")
-    Sound.play_file(full_path)
+    Sound._play(full_path)
 
 
 # Emoticon functions

@@ -11,6 +11,8 @@ $(document).ready(function(){
 	var searchField = "";
 
 	var sendPost = function(action, data){
+		console.log("sending post request:");
+		console.log(data);
 		$.ajax({
 			dataType: 'json',
 			type: 'POST',
