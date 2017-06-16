@@ -1,8 +1,6 @@
 {% extends "app_base.html" %}
 {% block app_head %}
-
-	<!-- <script src="/site_media/static/js/....js"></script> -->
-
+	
 {% endblock %}
 
 <!-- These sidebars can be removed by removing the block tags -->
@@ -10,20 +8,48 @@
 {% block sidebar_right %}{% endblock %}
 
 {% block app_content %}
+	
+	<div id="fb-root"></div> <!-- required for the fb init -->
+
+	<div>
+		<button class="button info" data-bind="click: fbLogin, enable: !loggedIn()">
+			Log into Facebook
+		</button> 	
+		<button class="button info" data-bind="click: fbLogout, enable: loggedIn()">
+			Log out of Facebook
+		</button>	
+		<p>Your user ID: <span data-bind="text: userID()"></span></p>
+	</div>
+	<div>
+		<input type="text" style="width: 40%; display: inline-block;" id="facebookID" data-bind="enable: !isVideo(), value: isVideo() ? newLiveVideo().id : ''" required="true" placeholder="Enter a Facebook page id or a existing live_video id ...">
+		<button class="button info" data-bind="enable: loggedIn()">
+			Go!
+		</button>
+		<span>- or -</span>
+		<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
+			Start a new live stream!
+		</button>
+	</div>
 
 	<button class="button round info" data-bind="click: toggleStreaming">
 		<span class="text" data-bind="text: ! isStreaming() ? 'Start' : 'Stop' "></span>
 	</button>
 
-	<div class="iframe-container" data-bind="html: embedIFrame">
+	<div class="iframe-container">
+		<iframe data-bind="attr: { src: iFrameSrc }" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true"></iframe>"
 	</div>
 
 	<div>
 		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
-			<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
+		<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
 	</div>
 
-	<div data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
+	<div class="rightside">
+		Views: <span data-bind="text: views"></span>
+	</div>
+
+
+	<div class="rightside" data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 		<div>
 			<div>
 				<span data-bind="text: username"></span>
@@ -33,22 +59,13 @@
 			</div>
 		</div>
 	</div>
-	<div>
-		Views: <span data-bind="text: views"></span>
-	</div>
 
-	<!--<div id="comments" data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
-		<div>
-			<div class="avatar">
-				<a>
-					<img/>
-				</a>
-			</div>
-			<div class="content">
-				<span data-bind="html: comment"></span>
-			</div>
-		</div>
-	</div>-->
+	<div class="togglebox">
+		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
+	</div>
+	<div class="togglebox">
+		<label><input type="checkbox"/> React to comments</label>
+	</div>
 
 
 	{% if not online %}
