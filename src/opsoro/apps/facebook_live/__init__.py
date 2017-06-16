@@ -35,8 +35,6 @@ config = {
 }
 config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
-access_token = 'EAAEGfayCJKUBAKtWH4UBPaqioaFX3ylSvUMT9OrF3RKy1YL4oZCkwEPjvfPJe4jMYF3pjXtb8dhjweRPZBcCBPavl9FZC78KuRZBwXJiahnBsCgZB713g2VnuPSQiua7I0VQl49KfcZCH04GycXsslyK6nSTqfpTqYls07T2gWKGVoPwApcly62BfTZA92gZCyQZD'  # Access Token
-
 video_id = None
 thread_fb_t = None
 secOphalenData = 2
@@ -66,10 +64,13 @@ def setup_pages(server):
         data = {
             'actions': {},
             'data': [],
+            'emotions': []
         }
         action = request.args.get('action', None)
         if action != None:
             data['actions'][action] = request.args.get('param', None)
+
+        data['emotions'] = Expression.expressions
 
         return server.render_template(config['formatted_name'] + '.html', **data)
 

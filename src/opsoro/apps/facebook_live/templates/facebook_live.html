@@ -16,6 +16,10 @@
 	</button>
 	<div class="iframe-container" data-bind="html: embedIFrame">
 
+
+	<div>
+		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
+			<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
 	</div>
 	<div class="rightside">
 		Views: <span data-bind="text: views"></span>
@@ -62,7 +66,9 @@
 
 	<script src="/static/js/vendor/jquery-ui-sortable/jquery-ui.js"></script>
 	<script src="/static/js/knockout-sortable.min.js"></script>
-
+	<script>
+	var emotions_data = {{ emotions|tojson|safe }};
+	</script>
 	<script src="/static/js/sockjs.min.js"></script>
 	<script src="/static/js/vendor/jquery-ui-touch/jquery.ui.touch-punch.min.js"></script>
 

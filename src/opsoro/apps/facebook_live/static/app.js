@@ -28,6 +28,11 @@ $(document).ready(function() {
     self.username = ko.observable(commentData["from"]["name"] || "");
     self.comment = ko.observable(commentData["message"] || "");
   }
+  var EmotionModel = function(name, index){
+    var self = this;
+    self.name = name;
+    self.index = index;
+  }
 
   var FacebookLiveModel = function() {
       var self = this;
@@ -38,6 +43,11 @@ $(document).ready(function() {
       self.comments = ko.observableArray();
       self.isStreaming = ko.observable(false);
       self.autoRead = ko.observable(false);
+      self.availableEmotions = ko.observableArray([new EmotionModel('None', 0)]);
+      self.selectedEmotion = ko.observable();
+      for (var i = 0; i < emotions_data.length; i++) {
+        self.availableEmotions.push(new EmotionModel(emotions_data[i]['name'], i+1));
+      }
 
 
       self.getLiveVideos = function(){
@@ -81,16 +91,11 @@ $(document).ready(function() {
       }
 
       self.postLiveVideoIDs = function(liveVideoIDs) {
-        console.log(JSON.stringify(liveVideoIDs));
-        $.post('/apps/facebook_live/', { action: 'liveVideoIDs', data: JSON.stringify(liveVideoIDs) }, function() {
-          console.log("Live video IDs posted")
-        });
+        sendPost('liveVideoIDs', JSON.stringify(liveVideoIDs) );
       }
 
       self.handleLayout = function(liveVideo) { // handling static lay-out the things that don't have to change every 5 seconds
-        console.log(liveVideo.embed_html);
         if (liveVideo.embed_html) {
-
           self.embedIFrame(liveVideo.embed_html);
         }
       }
@@ -101,6 +106,9 @@ $(document).ready(function() {
           if(self.autoRead() && self.comments().length < arr_comments.length && self.comments().length != 0){
             //send laatste comment om voor te lezen
             robotSendTTS(arr_comments[arr_comments.length -1]["message"]);
+          }
+          if( self.selectedEmotion()['index'] != 0){
+            
           }
           //hervul de lijst om laatste comments te krijgen
           self.comments.removeAll();
