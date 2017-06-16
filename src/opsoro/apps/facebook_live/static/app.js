@@ -166,7 +166,7 @@ $(document).ready(function() {
 
         if(self.isVideo()) {
           self.newLiveVideo(data);
-          obj.fields = "status,live_views,comments{from,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
+          obj.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
           self.setIFrame(data)
         } else {
           obj.fields = "";
@@ -184,6 +184,7 @@ $(document).ready(function() {
       }
 
       self.setIFrame = function(liveVideo) {
+        // embed_html could be used here aswell, but this data is only available 
         self.iFrameSrc("https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/" + self.userID + "/videos/" + liveVideo.id) // all iFrame links are the same except for the username/ID and video ID
       }
 
@@ -206,7 +207,7 @@ $(document).ready(function() {
             //hervul de lijst om laatste comments te krijgen
             self.comments.removeAll();
             for (var i = 0; i < arr_comments.length; i++) {
-              self.comments.unshift(new CommentModel(arr_comments[i]));
+              self.comments.unshift(new CommentModel(arr_comments[i])); // self.comments(arr_comments.sort(-1)) ???
             }
           }
         }
