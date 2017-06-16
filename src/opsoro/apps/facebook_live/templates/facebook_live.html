@@ -12,22 +12,23 @@
 	<div id="fb-root"></div> <!-- required for the fb init -->
 
 	<div>
-		<button class="button info" data-bind="click: fbLogin, enable: !loggedIn()">
-			Log into Facebook
-		</button> 	
-		<button class="button info" data-bind="click: fbLogout, enable: loggedIn()">
-			Log out of Facebook
-		</button>	
+		<button class="button info" data-bind="click: !loggedIn() ? fbLogin : fbLogout, text: !loggedIn() ? 'Log into Facebook' : 'Log out of Facebook'"></button> 		
 		<p>Your user ID: <span data-bind="text: userID()"></span></p>
 	</div>
 	<div>
 		<div data-bind="visible: isNewVideo()">
 			<span>Your new live video ID:</span><span data-bind="text: "></span>
 		</div>
-		<input type="text" style="width: 40%; display: inline-block;" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID()" required="true" placeholder="Enter a Facebook page id or a existing live_video id ...">
+
+		<div>
+			<span>Enter a Facebook ID: </span>
+			<input type="text" style="width: 40%; display: inline-block;" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter a Facebook page id or a existing live_video id ...">
+
+			<p>Is of type: <select data-bind="options: ofTypes, optionsText: 'text', value: selectedType"></select></p>
+		</div>
 		
 		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && !isNewVideo()">
-			<span class="text" data-bind="text: ! isStreaming() ? 'Start' : 'Stop' "></span>
+			<span class="text" data-bind="text: ! isStreaming() ? 'Start Stream' : 'Stop Stream' "></span>
 		</button>
 
 		<span>- or -</span>
@@ -36,7 +37,7 @@
 		</button>
 	</div>
 
-	<div class="iframe-container" data-bind="html: embedIframe">
+	<div class="iframe-container" data-bind="visible: isNewVideo() || isLiveVideo(), html: embedIframe">
 
 	</div>
 

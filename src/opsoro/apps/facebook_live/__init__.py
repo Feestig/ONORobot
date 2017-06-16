@@ -92,7 +92,7 @@ def setup_pages(server):
                 handlePostData(request.form['data'])
 
         if request.form['action'] == 'stopThread':
-            #global thread_fb_t
+            global thread_fb_t
             thread_fb_t.stop()
 
         return server.render_template(config['formatted_name'] + '.html', **data)
