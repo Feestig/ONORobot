@@ -34,20 +34,28 @@ Blockly.Lua['sociono_stop_stream'] = function(block) {
   var code = 'Twitter:stop_streamreader()\n';
   return code;
 };
-Blockly.Blocks['sociono_start_stream'] = {
+Blockly.Blocks['start_streamreader_loop'] = {
   init: function() {
+    this.appendValueInput("streamreader_filter")
+        .setCheck("String")
+        .appendField("start streamreader and filter by:");
+    this.appendValueInput("amount")
+        .setCheck("Number")
+        .appendField("for");
     this.appendDummyInput()
-        .appendField("Start twitter stream and filter by")
-        .appendField(new Blockly.FieldTextInput("#opsoro"), "filter");
+        .appendField("times");
+    this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(230);
-    this.setTooltip('');
+    this.setTooltip('start streamreader and filter on a variable. for a set amount of times');
     this.setHelpUrl('');
   }
 };
-Blockly.Lua['sociono_start_stream'] = function(block) {
-  var text_filter = block.getFieldValue('filter');
-  var code = 'Twitter:start_streamreader("'+text_filter+'")\n';
+Blockly.Lua['start_streamreader_loop'] = function(block) {
+  var value_streamreader_filter = Blockly.Lua.valueToCode(block, 'streamreader_filter', Blockly.Lua.ORDER_ATOMIC);
+  var value_amount = Blockly.Lua.valueToCode(block, 'amount', Blockly.Lua.ORDER_ATOMIC);
+  var statements_input = Blockly.Lua.statementToCode(block, 'input');
+  var code = 'Twitter:start_streamreader_amount('+value_streamreader_filter+','+ value_amount+')\n';
   return code;
 };
