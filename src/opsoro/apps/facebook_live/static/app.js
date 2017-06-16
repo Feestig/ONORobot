@@ -62,7 +62,7 @@ $(document).ready(function() {
       var self = this;
 
       // Observables
-      self.iFrameSrc = ko.observable("")
+      self.embedIframe = ko.observable("")
       self.views = ko.observable(0)
       self.comments = ko.observableArray();
       self.isStreaming = ko.observable(false);
@@ -73,11 +73,14 @@ $(document).ready(function() {
         self.availableEmotions.push(new EmotionModel(emotions_data[i]['name'], i+1));
       }
 
-      self.loggedIn = ko.observable(false)
-      self.accessToken = ko.observable("");
-      self.userID = ko.observable("");
-      self.newLiveVideo = ko.observable("");
-      self.isVideo = ko.observable(false);
+      self.loggedIn = ko.observable(false);
+      self.accessToken = ko.observable(""); // retrieved from log in, needed for every Facebook call
+      self.userID = ko.observable(""); // when logged into facebook, could be used if you'd like to get your own wall posts ect. 
+
+      self.newLiveVideo = ko.observable(""); // holds the new live video's data
+      self.isNewVideo = ko.observable(false); // check for starting a new live video -> toggle lay-out & functionality
+      self.fbDataResponse = ko.observable(); // catches the facebook response every interval ... needed to set embed_html once
+      self.facebookID = ko.observable(""); // when user enters his own input id
 
       self.getLoginStatus = function() {
         FB.getLoginStatus(function(response){ 
@@ -126,6 +129,7 @@ $(document).ready(function() {
         FB.api('/' + obj.fb_id + '?fields=' + obj.fields + '&access_token=' + self.accessToken(), function(response) {
           if(response && !response.error) {
             console.log(response);
+            self.fbDataResponse(response) // could use this instead of passing through params
             self.handleLayout(response)
             // todo: check if status is live
           } else {
@@ -156,28 +160,40 @@ $(document).ready(function() {
             }, function(response) {
               console.log(response)
               //  alert("video status: \n" + response.status);
+              if (response.status === "live") {
+                self.setIFrame(); // bind iframe
+              }
 
             });
-            self.isVideo(true);
+            self.isNewVideo(true);
             self.handleData(response)
           }
         );
       }
 
+      /* Custom page input */
+
       self.toggleStreaming = function(){
         if(self.isStreaming()){
           StopStream();
         }
+
+        console.log(self.facebookID());
+
         self.isStreaming(!self.isStreaming());
       }
 
-      self.handleData = function(data) {
-        var obj = { fb_id: data.id, fields: "" }
+      /* General */
 
-        if(self.isVideo()) {
+      self.handleData = function(data) { // function will be used for a new live video but also for custom id input so don't set isNewVideo(true) likewise in here
+        
+        self.facebookID(data.id);
+
+        var obj = { fb_id: self.facebookID(), fields: "" }
+
+        if(self.isNewVideo()) {
           self.newLiveVideo(data);
           obj.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
-          self.setIFrame(data)
         } else {
           obj.fields = "";
         }
@@ -193,13 +209,10 @@ $(document).ready(function() {
         });
       }
 
-      self.setIFrame = function(liveVideo) {
-        // embed_html could be used here aswell, but this data is only available 
-        self.iFrameSrc("https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/" + self.userID + "/videos/" + liveVideo.id) // all iFrame links are the same except for the username/ID and video ID
-      }
-
-      self.handleLayout = function(data) { // handling static lay-out the things that don't have to change every 5 seconds 
-        // handle comments ect 
+      self.setIFrame = function() {
+        if (self.isNewVideo() && self.fbDataResponse().embed_html) {
+          self.embedIframe(self.fbDataResponse().embed_html);
+        }
       }
 
       self.handleLayout = function(data) { // the stuff that changes every 5 seconds
@@ -215,10 +228,7 @@ $(document).ready(function() {
               robotSendTTS(arr_comments[arr_comments.length -1]["message"]);
             }
             //hervul de lijst om laatste comments te krijgen
-            self.comments.removeAll();
-            for (var i = 0; i < arr_comments.length; i++) {
-              self.comments.unshift(new CommentModel(arr_comments[i])); // self.comments(arr_comments.sort(-1)) ???
-            }
+            self.comments(arr_comments.reverse())
           }
         }
       }
