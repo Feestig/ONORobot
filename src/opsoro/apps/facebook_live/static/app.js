@@ -112,13 +112,15 @@ $(document).ready(function() {
         self.userID("")
       }
 
-      self.fbGET = function(facebook_id, fields, accessToken) {
-        FB.api('/' + facebook_id + '?fields=' + fields + '&access_token=' + accessToken, function(response) {
+      self.fbGET = function(obj) {
+        FB.api('/' + obj.fb_id + '?fields=' + obj.fields + '&access_token=' + self.accessToken(), function(response) {
           if(response && !response.error) {
             console.log(response);
-            //self.handleLayout(response)
+            self.handleLayout(response)
+            // todo: check if status is live
           } else {
             // error
+            console.log(response)
           }
         })
       }
@@ -160,16 +162,17 @@ $(document).ready(function() {
       }
 
       self.handleData = function(data) {
-        var obj = { fb_id: data.id, fields: "", access_token: self.accessToken }
+        var obj = { fb_id: data.id, fields: "" }
 
         if(self.isVideo()) {
           self.newLiveVideo(data);
-          obj.fields = "live_views,comments{from,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
+          obj.fields = "status,live_views,comments{from,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
           self.setIFrame(data)
         } else {
           obj.fields = "";
         }
 
+        console.log(obj)
         self.postToThread(obj)
 
       }
@@ -188,17 +191,23 @@ $(document).ready(function() {
         // handle comments ect 
       }
 
-      self.handleLiveVideoComments = function(view_count, arr_comments) { // the stuff that changes every 5 seconds
-        self.views(view_count);
-        if(self.comments().length != arr_comments.length){
-          if(self.autoRead() && self.comments().length < arr_comments.length && self.comments().length != 0){
-            //send laatste comment om voor te lezen
-            robotSendTTS(arr_comments[arr_comments.length -1]["message"]);
-          }
-          //hervul de lijst om laatste comments te krijgen
-          self.comments.removeAll();
-          for (var i = 0; i < arr_comments.length; i++) {
-            self.comments.unshift(new CommentModel(arr_comments[i]));
+      self.handleLayout = function(data) { // the stuff that changes every 5 seconds
+
+        self.views(data.live_views);
+
+        if(data.comments && data.comments.data.length > 0) {
+          var arr_comments = data.comments.data;
+
+          if(self.comments().length != arr_comments.length){
+            if(self.autoRead() && self.comments().length < arr_comments.length && self.comments().length != 0){
+              //send laatste comment om voor te lezen
+              robotSendTTS(arr_comments[arr_comments.length -1]["message"]);
+            }
+            //hervul de lijst om laatste comments te krijgen
+            self.comments.removeAll();
+            for (var i = 0; i < arr_comments.length; i++) {
+              self.comments.unshift(new CommentModel(arr_comments[i]));
+            }
           }
         }
       }
@@ -212,7 +221,9 @@ $(document).ready(function() {
   app_socket_handler = function(data) {
     switch (data.action) {
       case "threadRunning":
-        model.fbGET()
+        if(data.fb_id && data.fields) {
+          model.fbGET(data)
+        }
         break;
     }
   };

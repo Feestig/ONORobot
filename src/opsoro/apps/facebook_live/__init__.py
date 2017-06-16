@@ -36,19 +36,29 @@ config = {
 config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
 thread_fb_t = None
-secOphalenData = 3
+fb_params_stringified = None
+secOphalenData = 5
 
 def thread_fb():
     time.sleep(0.05)  # delay
-
     global thread_fb_t
-    send_data("threadRunning")
+    global fb_params_stringified
+    print_info(fb_params_stringified)
     while not thread_fb_t.stopped():
+        send_data('threadRunning', fb_params_stringified)
         time.sleep(secOphalenData)
         pass
 
-def send_data(action):
-    Users.send_app_data(config['formatted_name'], action, {})
+def send_data(action, data):
+    Users.send_app_data(config['formatted_name'], action, data)
+
+def handlePostData(data):
+    global thread_fb_t
+    global fb_params_stringified
+    fb_params_stringified = json.loads(data) #doesn't need to be parsed to json because we'll send it back to the js instantly or does it just for python??
+    print_info(fb_params_stringified)
+    thread_fb_t = StoppableThread(target=thread_fb)
+
 
 
 def setup_pages(server):
@@ -75,8 +85,9 @@ def setup_pages(server):
         data = {'actions': {}, 'emotions': [], 'sounds': []}
 
         if request.form['action'] == 'postToThread':
-            global thread_fb_t
-            thread_fb_t = StoppableThread(target=thread_fb)
+            if request.form['data']:
+                handlePostData(request.form['data'])
+
         if request.form['action'] == 'stopThread':
             #global thread_fb_t
             thread_fb_t.stop()
