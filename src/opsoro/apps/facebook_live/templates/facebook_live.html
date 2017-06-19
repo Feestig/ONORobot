@@ -22,9 +22,11 @@
 
 		<div>
 			<span>Enter a Facebook ID: </span>
-			<input type="text" style="width: 40%; display: inline-block;" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter a Facebook page id or a existing live_video id ...">
-
-			<p>Is of type: <select data-bind="options: ofTypes, optionsText: 'text', value: selectedType"></select></p>
+			<input type="text" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter a Facebook page id or a existing live_video id ...">
+		</div>
+		<div>
+			<span>Is of type:</span>
+			<select data-bind="options: ofTypes, optionsText: 'text', value: selectedType"></select>
 		</div>
 
 		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && !isNewVideo()">
@@ -49,10 +51,10 @@
 	<div class="rightside" data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 		<div id="voicelines" class="bubble">
 			<div>
-				<span class="voiceline locked name" data-bind="text: from.name">placeholder naam</span>
+				<span class="voiceline locked name" data-bind="text: from.name"></span>
 			</div>
 			<div class="voiceline locked">
-				<span data-bind="text: message">placeholder text</span>
+				<span data-bind="text: message"></span>
 			</div>
 		</div>
 	</div>

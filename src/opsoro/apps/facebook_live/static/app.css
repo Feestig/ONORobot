@@ -1,9 +1,22 @@
+input[type="text"]{
+	margin-left: 0.5rem;
+	width: 40%;
+	display: inline-block;
+}
+iframe {
+	height: 425px!important;
+	width: 750px!important;
+}
+select {
+	display: inline-block;
+	width: 40%;
+	margin-left: 0.5rem;
+}
 .iframe-container {
 	max-height: 500px;
 	max-width: 750px;
 	height: 425px;
 	width: 750px;
-	/*background-color: black;*/
 	float: left;
 }
 .button {
@@ -12,12 +25,7 @@
 .block {
 	display: block;
 }
-iframe {
-	height: 425px!important;
-	width: 750px!important;
-}
 .rightside {
-	/*background-color: red;*/
 	display: inline-block;
 	float: right;
 	width: 32%;
@@ -32,7 +40,6 @@ iframe {
 }
 .ko_container {
 	padding: 0.5em;
-	/*background-color: blue;*/
 	width: 32%;
 	overflow: hidden;
 	height:390px;
@@ -59,7 +66,7 @@ iframe {
 	padding: 0.5em 0.5em 0.5em 0.5em;
 	/*background-color: yellow;*/
 }
-/*voicelines*/
+/*facebook messages*/
 .voiceline.locked
 {
     min-height: 2rem;
@@ -67,13 +74,15 @@ iframe {
 }
 #voicelines .voiceline.locked
 {
-    margin-left: 1rem;
-		font-style: italic;
+    margin-left: 2rem;
 }
 #voicelines .voiceline.locked.name
 {
     margin-left: 0.5rem;
+		font-style: italic;
+		font-weight: bold;
 }
+/*comment bubble*/
 .bubble
 {
     font-size: .9rem;
@@ -81,19 +90,19 @@ iframe {
     position: relative;
     margin-bottom: .25rem;
     margin-left: 0.75rem;
+		padding: 0.5rem;
 
     -webkit-border-radius: .5rem;
        -moz-border-radius: .5rem;
             border-radius: .5rem;
     background: #ddd;
 }
-.bubble:after
+/*.bubble:after
 {
     position: absolute;
     top: .3rem;
     bottom: auto;
     left: -1.1rem;
-    /* reduce the damage in FF3.0 */
 
     display: block;
 
@@ -105,9 +114,20 @@ iframe {
     border-style: solid;
     border-color: #f3961c transparent;
     border-color: transparent #ddd;
-}
+}*/
 
 .bubble .fa
 {
     color: #4d4d4d;
+}
+/*add a bit of responsiveness*/
+@media screen and (max-width: 1000px) {
+	.rightside {
+		display: block;
+		width: 100%;
+	}
+	.ko_container {
+		width: 100%;
+
+	}
 }

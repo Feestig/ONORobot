@@ -107,8 +107,8 @@ class _textSplitter(object):
             # print_info(splittedText)
             for text in splittedText:
                  print_info(text)
-                 if text != splittedText[-1]:
-                     splittedText.append(delimiter)
+                #  if text != splittedText[-1]:
+                #      splittedText.append(delimiter)
                  pass
             print_info(splittedText)
                 # splittedText =  [e+delimiter for e in text.split(delimiter) if e]
