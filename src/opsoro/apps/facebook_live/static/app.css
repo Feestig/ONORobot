@@ -3,12 +3,10 @@
 	max-width: 750px;
 	height: 425px;
 	width: 750px;
-	background-color: black;
+	/*background-color: black;*/
 	float: left;
 }
 .button {
-	/*display: block;
-	width: 30%;*/
 	margin-top: 1.5em;
 }
 .block {
