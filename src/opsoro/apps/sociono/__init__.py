@@ -174,7 +174,7 @@ def setup(opsoroapp):
     pass
 
 def start(opsoroapp):
-    textSplitter.convertEmoji()
+    # textSplitter.convertEmoji()
     pass
 
 def stop(opsoroapp):

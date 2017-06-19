@@ -98,27 +98,40 @@ class _textSplitter(object):
         emotions = []
         # emoticonStr = status.text
         # print_info(strTweet)
-        # delimiters = {"\U0001F609","\U0001F620","\U0000263A", "\U0000263b","\U0001f642", "\U0001F914", "\U00002639", "\U0001F922","\U0001F632","\U0001F610","\U0001F628","\U0001F603","\U0001F62B","\U0001f641" }
+        delimiters = {"\U0001F609","\U0001F620","\U0000263A", "\U0000263b","\U0001f642", "\U0001F914", "\U00002639", "\U0001F922","\U0001F632","\U0001F610","\U0001F628","\U0001F603","\U0001F62B","\U0001f641" }
         #regexPattern = '|'.join(map(re.escape, delimiters))
-        delimiters = {"\U0001F609" }
-        for delimiter in delimiters:
-            text = 'thvander, test \U0001F609 emoji \U0001F609 2'
-            splittedText = text.split(delimiter)
-            # print_info(splittedText)
-            for text in splittedText:
-                 print_info(text)
-                #  if text != splittedText[-1]:
-                #      splittedText.append(delimiter)
-                 pass
-            print_info(splittedText)
-                # splittedText =  [e+delimiter for e in text.split(delimiter) if e]
-                # print_info(splittedText)
-                # print_info(re.split('(\W)', text))
 
-            # for text in splittedText:
-            #     print_info(text)
-            #     pass
-        #print_info(re.split(delimiters, strTweet))
+        text = 'thvander U0001f642, test U0001F609 emoji U0001F609 U0001f642 2'
+        split = text.split(delimiters)
+        print_info(split)
+        for splitpart in split:
+            print_info(splitpart)
+        # splittedText = []
+        # for delimiter in delimiters:
+        #     print_info(delimiter)
+        #     if re.search(delimiter, text):
+        #         splittedText = re.split("("+delimiter+")", text)
+        #
+        # splittedTextcopy = splittedText
+        # print_info(splittedTextcopy)
+        # for text in splittedTextcopy:
+        #     delimiters.pop()
+        #     subtext = re.split("("+delimiter+")", text)
+        #     print_info(subtext)
+        #
+        # delimiters.pop()
+        # print_info(delimiters)
+        # for delimiter in delimiters:
+        #     for text in splittedText:
+        #         print_info(text)
+        #         pass
+# if re.search(delimiter, text):
+#      print_info("emoji found" + text)
+
+# for text in splittedText:
+#     print_info(text)
+#     subsplit = re.split("("+delimiter+")", text)
+#     print_info(subsplit)
 
         # winking = len(re.findall(u"[\U0001F609]", emoticonStr))
         # angry = len(re.findall(u"[\U0001F620]", emoticonStr))
