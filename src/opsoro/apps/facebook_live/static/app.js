@@ -1,9 +1,11 @@
 $(document).ready(function() {
 
   /* Facebook SDK Init */
+
+
   window.fbAsyncInit = function() {
     FB.init({
-      appId            : '288611811599525',
+      appId            : '1710409469251997',
       autoLogAppEvents : true,
       xfbml            : true,
       version          : 'v2.9'
@@ -26,11 +28,6 @@ $(document).ready(function() {
      js.src = "//connect.facebook.net/en_US/sdk.js";
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
-
-
-  var StopStream = function(){
-    sendPost('stopSThread', {});
-  }
 
 
   /* Models */
@@ -85,6 +82,7 @@ $(document).ready(function() {
 
       /* General observables */
       self.autoRead = ko.observable(false);
+      self.reactComment = ko.observable(false);
       self.availableEmotions = ko.observableArray([new EmotionModel('None', 0)]);
       self.selectedEmotion = ko.observable();
       for (var i = 0; i < emotions_data.length; i++) {
@@ -113,7 +111,7 @@ $(document).ready(function() {
             // error ?
             console.log(response)
           }
-        });
+        },{scope: 'user_videos, user_posts, user_photos, user_actions.video'});
       }
 
       self.fbLogout = function() {
@@ -137,9 +135,8 @@ $(document).ready(function() {
 
       self.fbGET = function(obj) {
         FB.api('/' + obj.fb_id + '?fields=' + obj.fields + '&access_token=' + self.accessToken(), function(response) {
-          if(response && !response.error) {
-
-            console.log(response);
+          if(response && !response.error){
+            //console.log(response);
             self.fbDataResponse(response) // could use this instead of passing through params
 
             if (self.isNewVideo()) {
@@ -174,14 +171,13 @@ $(document).ready(function() {
         FB.ui({
             display: 'popup',
             method: 'live_broadcast',
-            phase: 'create',
-            fields: 'embed_html'
+            phase: 'create'
         }, function(response) {
-          response.id = '10209726011169630';
             if (!response.id) {
               alert('dialog canceled');
               return;
             }
+            console.log(response);
             self.isNewVideo(true);
             self.handleData(response)
           }
@@ -193,9 +189,9 @@ $(document).ready(function() {
           display: 'popup',
           method: 'live_broadcast',
           phase: 'publish',
-          broadcast_data: response,
+          broadcast_data: obj,
         }, function(response) {
-          console.log(response)
+          //console.log(response)
           //  alert("video status: \n" + response.status);
           if (response.status === "live") {
             self.postToThread(obj)
@@ -225,7 +221,6 @@ $(document).ready(function() {
         self.isStreaming(!self.isStreaming()); // will this be instantly executed or only after the functions above ??
       }
 
-
       self.requestByCustomID = function(obj) {
 
         // Let's get the type of the requested info first ...
@@ -233,7 +228,6 @@ $(document).ready(function() {
 
         // ------------- Hier gebleven ------------------
 
-        console.log(self.selectedType());
 
         switch(self.selectedType().index) {
           case 0: // Page
@@ -255,7 +249,6 @@ $(document).ready(function() {
 
       }
 
-
       /* General */
 
       self.stopStream = function(){
@@ -273,7 +266,9 @@ $(document).ready(function() {
 
         self.facebookID(data.id);
 
-        var obj = { fb_id: self.facebookID(), fields: "" }
+        var obj = data;
+        obj.fb_id = self.facebookID();
+        obj.fields = "";
 
         if(self.isNewVideo()) {
           self.newLiveVideo(data);
@@ -304,10 +299,19 @@ $(document).ready(function() {
           var arr_comments = data.comments.data;
 
           if(self.comments().length != arr_comments.length){
-            if(self.autoRead() && self.comments().length < arr_comments.length && self.comments().length != 0){
-              //send laatste comment om voor te lezen
-              robotSendTTS(arr_comments[arr_comments.length -1]["message"]);
-            }
+            if(self.comments().length < arr_comments.length && self.comments().length != 0){
+              if(self.autoRead()){
+                //send laatste comment om voor te lezen
+                robotSendTTS(arr_comments[arr_comments.length -1]["message"]);
+              }
+
+              var emotion = self.selectedEmotion();
+              if(! emotion['index'] == 0){
+                robotSendEmotionRPhi(1.0, emotions_data[emotion['index'] -1].poly * 18, -1);
+              }
+
+          }
+
             //hervul de lijst om laatste comments te krijgen
             self.comments(arr_comments.reverse())
           }

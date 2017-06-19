@@ -1,6 +1,6 @@
 {% extends "app_base.html" %}
 {% block app_head %}
-	
+
 {% endblock %}
 
 <!-- These sidebars can be removed by removing the block tags -->
@@ -8,11 +8,11 @@
 {% block sidebar_right %}{% endblock %}
 
 {% block app_content %}
-	
+
 	<div id="fb-root"></div> <!-- required for the fb init -->
 
 	<div>
-		<button class="button info" data-bind="click: !loggedIn() ? fbLogin : fbLogout, text: !loggedIn() ? 'Log into Facebook' : 'Log out of Facebook'"></button> 		
+		<button class="button info" data-bind="click: !loggedIn() ? fbLogin : fbLogout, text: !loggedIn() ? 'Log into Facebook' : 'Log out of Facebook'"></button>
 		<p>Your user ID: <span data-bind="text: userID()"></span></p>
 	</div>
 	<div>
@@ -26,7 +26,7 @@
 
 			<p>Is of type: <select data-bind="options: ofTypes, optionsText: 'text', value: selectedType"></select></p>
 		</div>
-		
+
 		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && !isNewVideo()">
 			<span class="text" data-bind="text: ! isStreaming() ? 'Start Stream' : 'Stop Stream' "></span>
 		</button>
@@ -64,9 +64,6 @@
 
 	<div class="togglebox">
 		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
-	</div>
-	<div class="togglebox">
-		<label><input type="checkbox"/> React to comments</label>
 	</div>
 
 
