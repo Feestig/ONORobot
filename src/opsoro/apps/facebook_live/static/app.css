@@ -13,10 +13,8 @@ select {
 	margin-left: 0.5rem;
 }
 .iframe-container {
-	max-height: 500px;
+	max-height: 425px;
 	max-width: 750px;
-	height: 425px;
-	width: 750px;
 	float: left;
 }
 .button {
