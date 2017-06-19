@@ -170,8 +170,7 @@ $(document).ready(function() {
         FB.ui({
             display: 'popup',
             method: 'live_broadcast',
-            phase: 'create',
-            fields: 'embed_html'
+            phase: 'create'
         }, function(response) {
             if (!response.id) {
               alert('dialog canceled');
@@ -188,7 +187,7 @@ $(document).ready(function() {
           display: 'popup',
           method: 'live_broadcast',
           phase: 'publish',
-          broadcast_data: response,
+          broadcast_data: obj,
         }, function(response) {
           console.log(response)
           //  alert("video status: \n" + response.status);
@@ -246,7 +245,6 @@ $(document).ready(function() {
 
         // self.postToThread(obj)
 
-
       }
 
       /* General */
@@ -266,7 +264,9 @@ $(document).ready(function() {
 
         self.facebookID(data.id);
 
-        var obj = { fb_id: self.facebookID(), fields: "" }
+        var obj = data;
+        obj.fb_id = self.facebookID();
+        obj.fields = "";
 
         if(self.isNewVideo()) {
           self.newLiveVideo(data);
