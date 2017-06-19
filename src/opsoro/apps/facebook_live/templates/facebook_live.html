@@ -12,31 +12,33 @@
 	<div id="fb-root"></div> <!-- required for the fb init -->
 
 	<div>
-		<button class="button info" data-bind="click: fbLogin, enable: !loggedIn()">
-			Log into Facebook
-		</button> 	
-		<button class="button info" data-bind="click: fbLogout, enable: loggedIn()">
-			Log out of Facebook
-		</button>	
+		<button class="button info" data-bind="click: !loggedIn() ? fbLogin : fbLogout, text: !loggedIn() ? 'Log into Facebook' : 'Log out of Facebook'"></button> 		
 		<p>Your user ID: <span data-bind="text: userID()"></span></p>
 	</div>
 	<div>
-		<input type="text" style="width: 40%; display: inline-block;" id="facebookID" data-bind="enable: !isVideo(), value: isVideo() ? newLiveVideo().id : ''" required="true" placeholder="Enter a Facebook page id or a existing live_video id ...">
-		<button class="button info" data-bind="enable: loggedIn()">
-			Go!
+		<div data-bind="visible: isNewVideo()">
+			<span>Your new live video ID:</span><span data-bind="text: "></span>
+		</div>
+
+		<div>
+			<span>Enter a Facebook ID: </span>
+			<input type="text" style="width: 40%; display: inline-block;" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter a Facebook page id or a existing live_video id ...">
+
+			<p>Is of type: <select data-bind="options: ofTypes, optionsText: 'text', value: selectedType"></select></p>
+		</div>
+		
+		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && !isNewVideo()">
+			<span class="text" data-bind="text: ! isStreaming() ? 'Start Stream' : 'Stop Stream' "></span>
 		</button>
+
 		<span>- or -</span>
 		<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
 			Start a new live stream!
 		</button>
 	</div>
 
-	<button class="button round info" data-bind="click: toggleStreaming">
-		<span class="text" data-bind="text: ! isStreaming() ? 'Start' : 'Stop' "></span>
-	</button>
+	<div class="iframe-container" data-bind="visible: isNewVideo() || isLiveVideo(), html: embedIframe">
 
-	<div class="iframe-container">
-		<iframe data-bind="attr: { src: iFrameSrc }" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true"></iframe>"
 	</div>
 
 	<div>
@@ -52,10 +54,10 @@
 	<div class="rightside" data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 		<div>
 			<div>
-				<span data-bind="text: username"></span>
+				<span data-bind="text: from.name"></span>
 			</div>
 			<div>
-				<span data-bind="text: comment"></span>
+				<span data-bind="text: message"></span>
 			</div>
 		</div>
 	</div>
