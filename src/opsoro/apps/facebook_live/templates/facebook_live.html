@@ -47,12 +47,12 @@
 
 
 	<div class="rightside" data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
-		<div>
+		<div id="voicelines" class="bubble">
 			<div>
-				<span data-bind="text: from.name"></span>
+				<span class="voiceline locked name" data-bind="text: from.name">placeholder naam</span>
 			</div>
-			<div>
-				<span data-bind="text: message"></span>
+			<div class="voiceline locked">
+				<span data-bind="text: message">placeholder text</span>
 			</div>
 		</div>
 	</div>
