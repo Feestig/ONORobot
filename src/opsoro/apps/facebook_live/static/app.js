@@ -13,7 +13,7 @@ $(document).ready(function() {
   if ($('#facebook-jssdk').length > 0) {
     window.fbAsyncInit = function() {
       FB.init({
-        appId            : '288611811599525',
+        appId            : '1710409469251997', // ARNO APP ID, domain error!!
         autoLogAppEvents : true,
         xfbml            : true,
         version          : 'v2.9'
@@ -80,7 +80,7 @@ $(document).ready(function() {
       self.isVideo = ko.observable(false);
 
       self.getLoginStatus = function() {
-        FB.getLoginStatus(function(response){ 
+        FB.getLoginStatus(function(response){
           if (response.status === 'connected') {
             console.log(response)
             self.setData(response);
@@ -100,7 +100,7 @@ $(document).ready(function() {
             // error ?
             console.log(response)
           }
-        });      
+        });
       }
 
       self.fbLogout = function() {
@@ -144,6 +144,7 @@ $(document).ready(function() {
             phase: 'create',
             fields: 'embed_html'
         }, function(response) {
+          response.id = '10209726011169630';
             if (!response.id) {
               alert('dialog canceled');
               return;
@@ -172,7 +173,7 @@ $(document).ready(function() {
       }
 
       self.handleData = function(data) {
-        var obj = { fb_id: data.id, fields: "" }
+        var obj = { fb_id: data.id, fields: "" } //arno stream id
 
         if(self.isVideo()) {
           self.newLiveVideo(data);
@@ -194,12 +195,12 @@ $(document).ready(function() {
       }
 
       self.setIFrame = function(liveVideo) {
-        // embed_html could be used here aswell, but this data is only available 
+        // embed_html could be used here aswell, but this data is only available
         self.iFrameSrc("https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/" + self.userID + "/videos/" + liveVideo.id) // all iFrame links are the same except for the username/ID and video ID
       }
 
-      self.handleLayout = function(data) { // handling static lay-out the things that don't have to change every 5 seconds 
-        // handle comments ect 
+      self.handleLayout = function(data) { // handling static lay-out the things that don't have to change every 5 seconds
+        // handle comments ect
       }
 
       self.handleLayout = function(data) { // the stuff that changes every 5 seconds
