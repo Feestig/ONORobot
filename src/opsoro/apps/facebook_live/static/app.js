@@ -11,14 +11,9 @@ $(document).ready(function() {
       version          : 'v2.9'
     });
     FB.AppEvents.logPageView();
-
     // Start using the FB SDK
-
     model.fbInitialized(true);
-
-    // check if loggedIn ? Not working I think, unless you automatically logout every page refresh?
-    model.getLoginStatus();
-
+    model.checkFBLogin();
   }
 
   $(function(d, s, id){
@@ -90,14 +85,25 @@ $(document).ready(function() {
         self.availableEmotions.push(new EmotionModel(emotions_data[i]['name'], i+1));
       }
 
+      self.checkFBLogin = function(){
+        if(self.getLoginStatus()){
+          self.loggedIn(true);
+        }
+        else{
+          self.fbLogin();
+          if(self.getLoginStatus()){
+            //self.loggedIn(true);
+          }
+        }
+      }
+
       self.getLoginStatus = function() {
         FB.getLoginStatus(function(response){
           if (response.status === 'connected') {
-            console.log(response)
-            self.setData(response);
+            return true;
           } else {
             // self.fbLogin()
-            self.unsetData();
+            return false;
           }
         });
       }
@@ -118,7 +124,7 @@ $(document).ready(function() {
       self.fbLogout = function() {
         FB.logout(function(response) {
           console.log(response)
-          this.unsetData();
+          self.unsetData();
         });
       }
 
