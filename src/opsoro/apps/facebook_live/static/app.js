@@ -5,7 +5,7 @@ $(document).ready(function() {
 
   window.fbAsyncInit = function() {
     FB.init({
-      appId            : '288611811599525',
+      appId            : '1710409469251997',
       autoLogAppEvents : true,
       xfbml            : true,
       version          : 'v2.9'
@@ -110,7 +110,7 @@ $(document).ready(function() {
             // error ?
             console.log(response)
           }
-        });      
+        }, {scope: 'user_videos, user_posts, user_photos, user_actions.video'});      
       }
 
       self.fbLogout = function() {

@@ -30,11 +30,12 @@
 		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && !isNewVideo()">
 			<span class="text" data-bind="text: ! isStreaming() ? 'Start Stream' : 'Stop Stream' "></span>
 		</button>
-
-		<span>- or -</span>
-		<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
-			Start a new live stream!
-		</button>
+		<div data-bind="visible: !isStreaming()">
+			<span>- or -</span>
+			<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
+				Start a new live stream!
+			</button>
+		</div>
 	</div>
 
 	<div class="iframe-container" data-bind="visible: isNewVideo() || isLiveVideo(), html: embedIframe">
