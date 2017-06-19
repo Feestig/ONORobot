@@ -3,42 +3,63 @@
 	max-width: 750px;
 	height: 425px;
 	width: 750px;
-	/*background-color: black;*/
+	background-color: black;
 	float: left;
 }
 .button {
-	display: block;
-	width: 30%;
+	/*display: block;
+	width: 30%;*/
 	margin-top: 1.5em;
+}
+.block {
+	display: block;
 }
 iframe {
 	height: 425px!important;
 	width: 750px!important;
 }
 .rightside {
-	/*background-color: red;*/
+	background-color: red;
 	display: inline-block;
 	float: right;
 	width: 32%;
 	margin: 0 0.5em 0 0.5em;
-	padding: 0.5em
+	padding: 0.5em;
+	height:35px;
+}
+.rightside p{
+	display: inline-block;
+	float: right;
+	margin: 0;
 }
 .ko_container {
 	padding: 0.5em;
-	/*background-color: blue;*/
+	background-color: blue;
 	width: 32%;
-	height: 600px;
 	overflow: hidden;
+	height:390px;
+
 }
 .leftside{
 
 }
 .togglebox {
-	/*background-color: green;*/
+	background-color: green;
 	display: block;
-	width: auto;
+	width: 99.3%;
 	float: left;
 	padding: 0.5em;
+}
+.togglebox p {
+	display: inline-block;
+	float: right;
+	margin-right: 1.5em;
+}
+.togglebox label{
+	display: inline-block;
+	margin: 0.5em 0.5em 0.5em 0.5em;
+	padding: 0.5em 0.5em 0.5em 0.5em;
+	background-color: yellow;
 }
 /*voicelines naam comment*/
 .voiceline.locked

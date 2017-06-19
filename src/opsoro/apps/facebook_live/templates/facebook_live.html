@@ -1,6 +1,6 @@
 {% extends "app_base.html" %}
 {% block app_head %}
-	
+
 {% endblock %}
 
 <!-- These sidebars can be removed by removing the block tags -->
@@ -8,16 +8,16 @@
 {% block sidebar_right %}{% endblock %}
 
 {% block app_content %}
-	
+
 	<div id="fb-root"></div> <!-- required for the fb init -->
 
 	<div>
 		<button class="button info" data-bind="click: fbLogin, enable: !loggedIn()">
 			Log into Facebook
-		</button> 	
+		</button>
 		<button class="button info" data-bind="click: fbLogout, enable: loggedIn()">
 			Log out of Facebook
-		</button>	
+		</button>
 		<p>Your user ID: <span data-bind="text: userID()"></span></p>
 	</div>
 	<div>
@@ -31,21 +31,16 @@
 		</button>
 	</div>
 
-	<button class="button round info" data-bind="click: toggleStreaming">
+	<button class="block button round info" data-bind="click: toggleStreaming">
 		<span class="text" data-bind="text: ! isStreaming() ? 'Start' : 'Stop' "></span>
 	</button>
 
 	<div class="iframe-container">
 		<iframe data-bind="attr: { src: iFrameSrc }" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true"></iframe>"
 	</div>
-
-	<div>
-		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
-		<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
-	</div>
-
 	<div class="rightside">
 		Views: <span data-bind="text: views"></span>
+		<p>Reactions: 0<span></span></p>
 	</div>
 
 
@@ -59,13 +54,13 @@
 			</div>
 		</div>
 	</div>
-
 	<div class="togglebox">
 		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
-	</div>
-	<div class="togglebox">
 		<label><input type="checkbox"/> React to comments</label>
+		<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
 	</div>
+
+
 
 
 	{% if not online %}
