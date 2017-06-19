@@ -94,53 +94,57 @@ class _textSplitter(object):
     def split(self,text, emoji):
         re.split(emoji, text)
 
-    def convertEmoji(self,strTweet):
+    def convertEmoji(self):
         emotions = []
-        emoticonStr = status.text
-        print_info(strTweet)
+        # emoticonStr = status.text
+        # print_info(strTweet)
         delimiters = {"\U0001F609","\U0001F620","\U0000263A", "\U0000263b","\U0001f642", "\U0001F914", "\U00002639", "\U0001F922","\U0001F632","\U0001F610","\U0001F628","\U0001F603","\U0001F62B","\U0001f641" }
         #regexPattern = '|'.join(map(re.escape, delimiters))
         for delimiter in delimiters:
-            print_info(delimiter)
-            print_info(re.split(delimiter, 'thvander test \U0001F609 emoji'))
+            text = 'thvander, test \U0001F609 emoji \U0001F609 2'
+            splittedText = text.split(delimiter)
+            print_info(splittedText)
+            for text in splittedText:
+                print_info(text)
+                pass
         #print_info(re.split(delimiters, strTweet))
 
-        winking = len(re.findall(u"[\U0001F609]", emoticonStr))
-        angry = len(re.findall(u"[\U0001F620]", emoticonStr))
-        happy_a = len(re.findall(u"[\U0000263A]", emoticonStr))
-        happy_b = len(re.findall(u"[\U0000263b]", emoticonStr))
-        happy_c = len(re.findall(u"[\U0001f642]", emoticonStr))
-        thinking = len(re.findall(u"[\U0001F914]", emoticonStr))
-        frowning = len(re.findall(u"[\U00002639]", emoticonStr))
-        nauseated = len(re.findall(u"[\U0001F922]", emoticonStr))
-        astonished = len(re.findall(u"[\U0001F632]", emoticonStr))
-        neutral = len(re.findall(u"[\U0001F610]", emoticonStr))
-        fearful = len(re.findall(u"[\U0001F628]", emoticonStr))
-        laughing = len(re.findall(u"[\U0001F603]", emoticonStr))
-        tired = len(re.findall(u"[\U0001F62B]", emoticonStr))
-        sad = len(re.findall(u"[\U0001f641]", emoticonStr))
+        # winking = len(re.findall(u"[\U0001F609]", emoticonStr))
+        # angry = len(re.findall(u"[\U0001F620]", emoticonStr))
+        # happy_a = len(re.findall(u"[\U0000263A]", emoticonStr))
+        # happy_b = len(re.findall(u"[\U0000263b]", emoticonStr))
+        # happy_c = len(re.findall(u"[\U0001f642]", emoticonStr))
+        # thinking = len(re.findall(u"[\U0001F914]", emoticonStr))
+        # frowning = len(re.findall(u"[\U00002639]", emoticonStr))
+        # nauseated = len(re.findall(u"[\U0001F922]", emoticonStr))
+        # astonished = len(re.findall(u"[\U0001F632]", emoticonStr))
+        # neutral = len(re.findall(u"[\U0001F610]", emoticonStr))
+        # fearful = len(re.findall(u"[\U0001F628]", emoticonStr))
+        # laughing = len(re.findall(u"[\U0001F603]", emoticonStr))
+        # tired = len(re.findall(u"[\U0001F62B]", emoticonStr))
+        # sad = len(re.findall(u"[\U0001f641]", emoticonStr))
 
-        if winking > 0:
+        # if winking > 0:
             # winking
-        if angry > 0:
+        # if angry > 0:
             # angry
-        if happy_a > 0 or happy_b > 0 or happy_c > 0:
+        # if happy_a > 0 or happy_b > 0 or happy_c > 0:
             # happy
-        if frowning > 0:
+        # if frowning > 0:
             # frowning
-        if nauseated > 0:
+        # if nauseated > 0:
             # nauseated
-        if astonished > 0:
+        # if astonished > 0:
             # astonished
-        if neutral > 0:
+        # if neutral > 0:
             # neutral
-        if fearful > 0:
+        # if fearful > 0:
             # fear
-        if laughing > 0:
+        # if laughing > 0:
             # laughing
-        if tired > 0:
+        # if tired > 0:
             # tired
-        if sad > 0:
+        # if sad > 0:
             # sad
 
 textSplitter = _textSplitter()

@@ -17,7 +17,7 @@ iframe {
 	width: 750px!important;
 }
 .rightside {
-	background-color: red;
+	/*background-color: red;*/
 	display: inline-block;
 	float: right;
 	width: 32%;
@@ -32,7 +32,7 @@ iframe {
 }
 .ko_container {
 	padding: 0.5em;
-	background-color: blue;
+	/*background-color: blue;*/
 	width: 32%;
 	overflow: hidden;
 	height:390px;
@@ -42,7 +42,7 @@ iframe {
 
 }
 .togglebox {
-	background-color: green;
+	/*background-color: green;*/
 	display: block;
 	width: 99.3%;
 	float: left;
