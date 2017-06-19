@@ -65,7 +65,9 @@
 	<div class="togglebox">
 		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
 	</div>
-
+	<div class="togglebox">
+		<label><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
+	</div>
 
 	{% if not online %}
 		<!-- Content in this section is not displayed online, only on the robot. For example: it is a perfect place to put controls that access hardware stuff, which is not available online. -->

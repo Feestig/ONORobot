@@ -82,7 +82,8 @@ $(document).ready(function() {
 
       /* General observables */
       self.autoRead = ko.observable(false);
-      self.reactComment = ko.observable(false);
+      self.reactToLikes = ko.observable(false);
+      self.likes = ko.observable(0);
       self.availableEmotions = ko.observableArray([new EmotionModel('None', 0)]);
       self.selectedEmotion = ko.observable();
       for (var i = 0; i < emotions_data.length; i++) {
@@ -309,12 +310,41 @@ $(document).ready(function() {
               if(! emotion['index'] == 0){
                 robotSendEmotionRPhi(1.0, emotions_data[emotion['index'] -1].poly * 18, -1);
               }
-
+            }
           }
-
             //hervul de lijst om laatste comments te krijgen
             self.comments(arr_comments.reverse())
           }
+
+          console.log(data);
+          console.log(data.reactions.data.length);
+          if(self.reactToLikes() && data.reactions.data.lenght != self.likes()){
+
+            //nieuwe reactie
+            var index = 0;
+            self.likes(data.reactions.data.lenght);
+
+            switch (data.reactions.data[0]['type']) {
+              case 'HAHA':
+                index = 2;
+                break;
+              case 'LOVE':
+                index = 1;
+                break;
+              case 'LIKE':
+                index = 10;
+                break;
+              case 'WOW':
+                index = 3;
+                break;
+              case 'SAD':
+                index = 7;
+                break;
+              case 'ANGRY':
+                index = 5;
+                break;
+            }
+            robotSendEmotionRPhi(1.0, emotions_data[index].poly * 18, -1);
         }
       }
 
