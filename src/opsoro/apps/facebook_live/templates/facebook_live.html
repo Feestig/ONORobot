@@ -24,15 +24,15 @@
 			<span>Enter a Facebook ID: </span>
 			<input type="text" style="width: 40%; display: inline-block;" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter a Facebook page id or a existing live_video id ...">
 
-			<p>Is of type: <select data-bind="options: ofTypes, optionsText: 'text', value: selectedType"></select></p>
+			<p>Is of type: <select data-bind="enable: !isNewVideo(), options: ofTypes, optionsText: 'text', value: selectedType"></select></p>
 		</div>
 		
-		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && !isNewVideo()">
+		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn()">
 			<span class="text" data-bind="text: ! isStreaming() ? 'Start Stream' : 'Stop Stream' "></span>
 		</button>
-		<div data-bind="visible: !isStreaming()">
+		<div data-bind="visible: !isNewVideo()">
 			<span>- or -</span>
-			<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
+			<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn() && !isStreaming()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
 				Start a new live stream!
 			</button>
 		</div>
