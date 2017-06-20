@@ -3,7 +3,7 @@
 # init.py
 The server side code for an app goes inside `__init__.py`
 # removing data from text
-make sure to import re (regular expressions) since we are using this for removing the link
+make sure to import re (regular expressions) ```import re```  since we are using this for removing the link
 
 1. `strTweet.replace("RT","Re Tweet", 1)` to replace rt by re tweet so the robot lets the audience know it's a retweet. the 1 stands for the amount of times we will replace this
 2. we convert the string to a ascii format to git rid of possible artefact
@@ -83,7 +83,7 @@ the stoppable_thread function shown above.
 # Issues
 Emoticons
   for some reason when you play an emoticon robot will be unable to exit. and the user will see a keyboard interupt but will be unable to shutdown the robot
-  
+
 # references
 link used as reference: ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt
 ```

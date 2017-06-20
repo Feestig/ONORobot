@@ -37,10 +37,11 @@ import time
 def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
+
 access_token = '141268248-yAGsPydKTDgkCcV0RZTPc5Ff7FGE41yk5AWF1dtN'
 access_token_secret = 'UalduP04BS4X3ycgBJKn2QJymMhJUbNfQZlEiCZZezW6V'
-consumer_key = 'tNYqa3yLHTGhBvGNblUHHerlJ'
-consumer_secret = 'NxBbCA8VJZvxk1SNKWw3CWd5oSnJyNAcH9Kns5Lv1DV0cqrQiz'
+consumer_key = 'jHW1X0K58pKhPePYDVk1ko2E6'
+consumer_secret = '5SzUVSd0DD2aMPqwNRyGuS1ovWnEb4qSaMnPkAHZSKu5G42pri'
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -51,6 +52,8 @@ loop_TC = None # loop var for tweets by amount
 
 Emoticons = []
 hasRecievedTweet = False
+stopLoop = False
+
 TweetCount = 0
 TweetMax = 0
 
@@ -88,13 +91,15 @@ class _twitter(object):
     def stop_streamreader(self):
         global myStream
         global hasRecievedTweet
+        global stopLoop
+        stopLoop = True
         myStream.disconnect()
         hasRecievedTweet = True
         Sound.stop_sound()
         print_info("stop twitter")
     def get_tweet(self, hashtag):
         global loop_T
-        if not (val is None):
+        if not (hashtag is None):
             print_info(hashtag)
             self.start_streamreader(hashtag)
             loop_T = StoppableThread(target=self.wait_for_tweet)
@@ -119,21 +124,24 @@ class _twitter(object):
         global loop_TC
         global TweetCount
         global TweetMax
-        if not (val is None):
+        global stopLoop
+        if not (hashtag is None):
             TweetCount = 0
             TweetMax = times
             social_id = []
             social_id.append(hashtag)
             myStream.filter(track=social_id, async=True);
+            stopLoop = False
             loop_TC = StoppableThread(target=self.count_tweets)
     def count_tweets(self):
         time.sleep(1)  # delay
         global TweetMax
         global loop_TC
+        global stopLoop
         while not loop_TC.stopped():
             global TweetCount
             print_info(TweetCount)
-            if TweetCount == TweetMax:
+            if TweetCount == TweetMax or stopLoop == True:
                 global myStream
                 myStream.disconnect()
                 print_info("stop twitter stream")

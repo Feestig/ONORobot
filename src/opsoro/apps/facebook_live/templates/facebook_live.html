@@ -33,7 +33,7 @@
 		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && facebookID()">
 			<span class="text" data-bind="text: !isStreaming() && facebookID() ? 'Start Stream' : 'Stop Stream'"></span>
 		</button>
-		<div data-bind="visible: !isNewVideo() && !facebookID()">
+		<div class="startnew" data-bind="visible: !isNewVideo() && !facebookID()">
 			<span>- or -</span>
 			<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn() && !isStreaming()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
 				Start a new live stream!

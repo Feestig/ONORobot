@@ -36,7 +36,6 @@ import tweepy
 import re
 import json
 import time
-from .emoji import textSplitter
 
 config = {
     'full_name':            'Sociono',
@@ -59,14 +58,16 @@ dof_positions = {}
 sociono_t = None
 autoRead = None # globals -> can be decalerd in called methodes
 loop_T = None # loop var for Stoppable Thread
-loop_E = None # loop var for Emoticons
+loop_PlayTweet = None # loop that plays playArray
 autolooping = None
 Emoticons = []
+lang = 'eng' #lang that needs to be played
+tweetArrayToPlay = [] #tweet array that needs to be played
 
 access_token = '141268248-yAGsPydKTDgkCcV0RZTPc5Ff7FGE41yk5AWF1dtN'
 access_token_secret = 'UalduP04BS4X3ycgBJKn2QJymMhJUbNfQZlEiCZZezW6V'
 consumer_key = 'U2PILejmAYpd20ImoqdTZp4Rm'
-consumer_secret = 'nacB6eT gMR4cpZzckG7pTGpV3WKBXoyDhn3feU1R24kY2Kf0QF'
+consumer_secret = 'nacB6eTgMR4cpZzckG7pTGpV3WKBXoyDhn3feU1R24kY2Kf0QF'
 
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -84,7 +85,7 @@ def send_data(action, data):
 
 def wait_for_sound():
     time.sleep(0.05)  # delay
-
+    print_info("in wait for sound")
     global loop_T
     while not loop_T.stopped():
         Sound.wait_for_sound()
@@ -151,49 +152,64 @@ def setup_pages(opsoroapp):
     opsoroapp.register_app_blueprint(sociono_bp)
 
 def playTweet(tweepyDataModel):
-    global loop_E
-    global Emoticons
-    Emoticons = tweepyDataModel['text']['emoticon']
-    loop_E = StoppableThread(target=asyncEmotion)
-    print_info(tweepyDataModel)
-    if(not tweepyDataModel['text']['filtered'] == ""):
-        playTweetInLanguage(tweepyDataModel)
+    global loop_PlayTweet
+    if not loop_PlayTweet == None:
+        loop_PlayTweet.stop()
+        print_info('zou ook moeten stoppen')
+    global lang
+    global tweetArrayToPlay
+    lang = tweepyDataModel['text']['lang']
+    tweetArrayToPlay = tweepyDataModel['text']['playArray']
+    loop_PlayTweet = StoppableThread(target=asyncReadTweet) #start playing Tweet
 
 
 #getting new tweet
 class MyStreamListener(tweepy.StreamListener):
+
     def on_status(self, status):
+        print_info(status)
+        if(status == "stopIt"):
+            return False
         dataToSend = processJson(status)
         if dataToSend['text']['filtered'] != None:
             send_data('dataFromTweepy', dataToSend)
-            if autoRead == True:
-                playTweet(dataToSend)
+        if autoRead == True:
+            playTweet(dataToSend)
+    def on_error(slef, status_code):
+        print_info("Tweepy error: " + status_code)
 
 
 myStreamListener = MyStreamListener()
-myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
+myStream = None
 
 # Default functions for setting up, starting and stopping an app
 def setup(opsoroapp):
     pass
 
 def start(opsoroapp):
-    # textSplitter.convertEmoji()
     pass
 
 def stop(opsoroapp):
     stopTwitter()
+    if loop_PlayTweet != None:
+        loop_PlayTweet.stop()
 
 def startTwitter(twitterWords):
     global myStream
+    global myStreamListener
     myStream = tweepy.Stream(auth= api.auth, listener=myStreamListener)
     myStream.filter(track=twitterWords, async=True)
 
 
 def stopTwitter():
     global myStream
-    myStream.disconnect()
-    print_info("twitter stop")
+    global myStreamListener
+    if myStream != None:
+        myStream.disconnect()
+        myStream.running = False
+        #stream closes after one mor response from twitter
+        #myStreamListener.on_status("stopIt")
+        print_info("twitter stop")
 
 #process tweepy json
 def processJson(status):
@@ -206,7 +222,7 @@ def processJson(status):
             "original": status.text,
             "filtered": filterTweet(status),
             "lang": status.lang,
-            "emoticon": checkForEmoji(status)
+            "playArray": getPlayArray(status)
         }
     }
 
@@ -252,67 +268,102 @@ def playTweetInLanguage(tweepyObj):
     Sound._play(full_path)
 
 
+def playTweetInLanguage(text, lang):
+    print_info("play tweet in language")
+    if not os.path.exists("/tmp/OpsoroTTS/"):
+        os.makedirs("/tmp/OpsoroTTS/")
+
+    full_path = os.path.join(get_path("/tmp/OpsoroTTS/"), "Tweet.wav")
+    print_info(full_path)
+
+    TTS.create_espeak(text, full_path, lang, "f", "5", "150")
+    Sound._play(full_path)
+
+
 # Emoticon functions
-def asyncEmotion():
+def asyncReadTweet():
     time.sleep(0.05)
-    global loop_E
-    global Emoticons
-    currentAnimationArrayLength = len(Emoticons)
-    playedAnimations = 0
-    while not loop_E.stopped():
-        # if running:
-        if currentAnimationArrayLength > playedAnimations:
-            Expression.set_emotion_name(Emoticons[playedAnimations], -1)
-            playedAnimations = playedAnimations+1
-            time.sleep(2)
-        if currentAnimationArrayLength == playedAnimations:
-            loop_E.stop()
-            pass
+    global loop_PlayTweet
+    global tweetArrayToPlay
+    global lang
+    while not loop_PlayTweet.stopped():
+        for item in tweetArrayToPlay:
+            if item[0] == 'txt':
+                playTweetInLanguage(item[1], lang)
+                Sound.wait_for_sound()
+            else:
+                Expression.set_emotion_name(item[1], -1)
+        loop_PlayTweet.stop()
+        print_info('normaal stopped')
+
+
+
 
 
 #check if the post has an standard emoticon
-def checkForEmoji(status):
-    emotions = []
+def getPlayArray(status):
+    output = []
+    teller = -1
+    previousWasText = False
     emoticonStr = status.text
+    for text in emoticonStr:
+        emotions = []
+        winking = len(re.findall(u"[\U0001F609]", text))
+        angry = len(re.findall(u"[\U0001F620]", text))
+        happy_a = len(re.findall(u"[\U0000263A]", text))
+        happy_b = len(re.findall(u"[\U0000263b]", text))
+        happy_c = len(re.findall(u"[\U0001f642]", text))
+        thinking = len(re.findall(u"[\U0001F914]", text))
+        frowning = len(re.findall(u"[\U00002639]", text))
+        nauseated = len(re.findall(u"[\U0001F922]", text))
+        astonished = len(re.findall(u"[\U0001F632]", text))
+        neutral = len(re.findall(u"[\U0001F610]", text))
+        fearful = len(re.findall(u"[\U0001F628]", text))
+        laughing = len(re.findall(u"[\U0001F603]", text))
+        tired = len(re.findall(u"[\U0001F62B]", text))
+        sad = len(re.findall(u"[\U0001f641]", text))
 
-    winking = len(re.findall(u"[\U0001F609]", emoticonStr))
-    angry = len(re.findall(u"[\U0001F620]", emoticonStr))
-    happy_a = len(re.findall(u"[\U0000263A]", emoticonStr))
-    happy_b = len(re.findall(u"[\U0000263b]", emoticonStr))
-    happy_c = len(re.findall(u"[\U0001f642]", emoticonStr))
-    thinking = len(re.findall(u"[\U0001F914]", emoticonStr))
-    frowning = len(re.findall(u"[\U00002639]", emoticonStr))
-    nauseated = len(re.findall(u"[\U0001F922]", emoticonStr))
-    astonished = len(re.findall(u"[\U0001F632]", emoticonStr))
-    neutral = len(re.findall(u"[\U0001F610]", emoticonStr))
-    fearful = len(re.findall(u"[\U0001F628]", emoticonStr))
-    laughing = len(re.findall(u"[\U0001F603]", emoticonStr))
-    tired = len(re.findall(u"[\U0001F62B]", emoticonStr))
-    sad = len(re.findall(u"[\U0001f641]", emoticonStr))
+        if winking > 0:
+            emotions.append("tong")
+        if angry > 0:
+            emotions.append("angry")
+        if happy_a > 0 or happy_b > 0 or happy_c > 0:
+            emotions.append("happy")
+        if frowning > 0:
+            emotions.append("tired")
+        if nauseated > 0:
+            emotions.append("disgusted")
+        if astonished > 0:
+            emotions.append("surprised")
+        if neutral > 0:
+            emotions.append("neutral")
+        if fearful > 0:
+            emotions.append("afraid")
+        if laughing > 0:
+            emotions.append("laughing")
+        if tired > 0:
+            emotions.append("sleep")
+        if sad > 0:
+            emotions.append("sad")
 
-    if winking > 0:
-        emotions.append("tong")
-    if angry > 0:
-        emotions.append("angry")
-    if happy_a > 0 or happy_b > 0 or happy_c > 0:
-        emotions.append("happy")
-    if frowning > 0:
-        emotions.append("tired")
-    if nauseated > 0:
-        emotions.append("disgusted")
-    if astonished > 0:
-        emotions.append("surprised")
-    if neutral > 0:
-        emotions.append("neutral")
-    if fearful > 0:
-        emotions.append("afraid")
-    if laughing > 0:
-        emotions.append("laughing")
-    if tired > 0:
-        emotions.append("sleep")
-    if sad > 0:
-        emotions.append("sad")
-    #if no emotions are selected returns none
-    if not emotions:
-        emotions.append("none")
-    return emotions
+        if not emotions:
+            #this is a text obj
+            if not previousWasText:
+                teller = teller + 1
+                output.append([])
+                output[teller].append("txt")
+                output[teller].append(text)
+            else:
+                output[teller][1] += text
+
+            previousWasText = True
+        else:
+            #this is an emoticon
+            teller += 1
+            output.append([])
+            output[teller].append("emj")
+            output[teller].append(emotions[0])
+            previousWasText = False
+
+
+    return output

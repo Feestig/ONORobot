@@ -16,23 +16,38 @@ in the function ```setup_runtime``` add the line ```g["Twitter"] = Twitter```
 # Code
 there are a few global variables
 ```
-loop_T = None #loop for Stoppable Thread
-autoRead = True #bool that sets if the tweet needs to be readed automaticly
-hasRecievedTweet = False #bool that keeps track if the streamreader has recieved a tweet, used to exit the stoppableThread
+access_token = 'token'
+access_token_secret = 'token secret'
+consumer_key = 'consumer key'
+consumer_secret = 'consumer secret'
+
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+
+loop_T = None # loop var for wait_for_tweet
+loop_E = None # loop var for Emoticons
 loop_TC = None # loop var for tweets by amount
 
 Emoticons = []
-hasRecievedTweet = False
+hasRecievedTweet = False #bool that keeps track if the streamreader has recieved a tweet, used to exit the stoppableThread
+stopLoop = False # failsafe for a stoppableThread if true will exit the stoppableThread
+
 TweetCount = 0 # tweets recieved by stream.
 TweetMax = 0 # maximum allowed tweets
-### get a single tweet based on a hashtag
+
 ```
-the function ```get_tweet(self, hashtag)``` recieves the hashtag needed to listen in on and initializes a stoppableThread
+### get a single tweet based on a hashtag
+
+the function ```get_tweet(self, hashtag)``` recieves the hashtag needed to listen in on and initializes a stoppableThread. we also check wether the hastag exists so that the code doesn't run without a valid input.
 ```
 def get_tweet(self, hashtag):
-    global loop_T
-    self.start_streamreader(hashtag)
-    loop_T = StoppableThread(target=self.wait_for_tweet)
+      global loop_T
+      if not (hashtag is None):
+          print_info(hashtag)
+          self.start_streamreader(hashtag)
+          loop_T = StoppableThread(target=self.wait_for_tweet)
+      else:
+          print_info("no input given")
 ```
 in ```start_streamreader(self, twitterwords)``` a stream is started that listens for new tweets ```twitterwords``` is the hashtag that is being listened on.
 ```
@@ -58,47 +73,53 @@ def wait_for_tweet(self):
             loop_T.stop()
             pass
 ```
-```stop_streamreader()``` is used to stop the streamreader. In this function we will also stop the sound from playing
+```stop_streamreader()``` is used to stop the streamreader. In this function we will also stop the sound from playing. we set the value stopLoop to True. this serves as a backup for when you want to interrupt the get_tweet_amount
 
 ```
 def stop_streamreader(self):
     global myStream
     global hasRecievedTweet
+    global stopLoop
+    stopLoop = True
     myStream.disconnect()
     hasRecievedTweet = True
     Sound.stop_sound()
     print_info("stop twitter")
 ```
 ### return a set amount of tweets based on a hashtag
+start the stream and set the amout of tweets that it needs to show. The check for a valid input is also done here.
 ```
-start the stream and set the amout of tweets that it needs to show
 def start_streamreader_amount(self, hashtag, times):
-    global myStream
-    global loop_TC
-    global TweetCount
-    global TweetMax
-    TweetCount = 0
-    TweetMax = times
-    social_id = []
-    social_id.append(hashtag)
-    myStream.filter(track=social_id, async=True);
-    loop_TC = StoppableThread(target=self.count_tweets)
+      global myStream
+      global loop_TC
+      global TweetCount
+      global TweetMax
+      global stopLoop
+      if not (hashtag is None):
+          TweetCount = 0
+          TweetMax = times
+          social_id = []
+          social_id.append(hashtag)
+          myStream.filter(track=social_id, async=True);
+          stopLoop = False
+          loop_TC = StoppableThread(target=self.count_tweets)
 ```
-the StoppableThread is used the check if the amounts of recieved tweets is equal the the maximum of allowed tweets. If this is true the loop will stop and the stream will be stopped.
+the StoppableThread is used to check if the amounts of recieved tweets is equal the the maximum of allowed tweets ot if stopLoop is set to True. in these cases the loop and the stream will be stopped.
 ```
 def count_tweets(self):
-    time.sleep(1)  # delay
-    global TweetMax
-    global loop_TC
-    while not loop_TC.stopped():
-        global TweetCount
-        if TweetCount == TweetMax:
-            global myStream
-            myStream.disconnect()
-            print_info("stop twitter stream")
-            loop_TC.stop()
-            pass
-
+      time.sleep(1)  # delay
+      global TweetMax
+      global loop_TC
+      global stopLoop
+      while not loop_TC.stopped():
+          global TweetCount
+          print_info(TweetCount)
+          if TweetCount == TweetMax or stopLoop == True:
+              global myStream
+              myStream.disconnect()
+              print_info("stop twitter stream")
+              loop_TC.stop()
+              pass
 ```
 # deleted code *
 these codes need to be uncommented. If this is done the program will wait untill it's finished before playing a new tweet
