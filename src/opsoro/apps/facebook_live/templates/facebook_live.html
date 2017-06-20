@@ -45,12 +45,11 @@
 
 	</div>
 	<div class="rightside">
-		Views: <span data-bind="text: views"></span>
-		<p>Likes: <span data-bind="text: likes()"></span></p>
+		<p data-bind="visible: isNewVideo() || isLiveVideo()">Views: <span data-bind="text: views"></span></p>
+		<p data-bind="visible: isPost() || isLiveVideo() || isNewVideo()">Likes: <span data-bind="text: likes()"></span></p>
 	</div>
 
-
-	<div class="rightside" data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
+	<div class="rightside" data-bind="visible: comments().length > 0, sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 		<div id="voicelines" class="bubble">
 			<div>
 				<span class="voiceline locked name" data-bind="text: from.name"></span>
@@ -60,10 +59,24 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- For the page's posts -->
+	<div class="rightside" data-bind="sortable: { data: pagePosts, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }, visible: pagePosts().length > 0">
+		<div id="voicelines" class="bubble">
+			<div>
+				<span class="voiceline locked name" data-bind="text: story"></span>
+			</div>
+			<div class="voiceline locked">
+				<span data-bind="text: message"></span>
+			</div>
+		</div>
+	</div>
+
+
 	<div class="togglebox">
 		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
-		<label><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
-		<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
+		<label data-bind="visible: !isPage()"><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
+		<p data-bind="visible: !isPage()">Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
 	</div>
 
 	{% if not online %}

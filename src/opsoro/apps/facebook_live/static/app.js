@@ -26,11 +26,6 @@ $(document).ready(function() {
 
   /* Models */
 
-  var CommentModel = function(commentData){
-    var self = this;
-    self.username = ko.observable(commentData["from"]["name"] || "");
-    self.comment = ko.observable(commentData["message"] || "");
-  }
   var EmotionModel = function(name, index){
     var self = this;
     self.name = name;
@@ -144,7 +139,6 @@ $(document).ready(function() {
       }
 
       self.fbGET = function(obj) {
-        console.log(obj);
         FB.api('/' + obj.fb_id + '?fields=' + obj.fields + '&access_token=' + self.accessToken(), function(response) {
           if(response && !response.error){
             //console.log(response);
@@ -157,8 +151,7 @@ $(document).ready(function() {
 
             } else if(self.isPage()) {
               // get feed posts?
-              console.log(response);
-              self.handleLayout(response); // contains data & paging object
+              self.handleLayout(response.feed); // contains data & paging object
               
             } else if(self.isPost()) {
               // get post's comments ect ... ?
@@ -245,9 +238,6 @@ $(document).ready(function() {
         // Let's get the type of the requested info first ...
         // is page, is post, is video?
 
-        // ------------- Hier gebleven ------------------
-
-
         switch(self.selectedType().index) {
           case 0: // Page
             self.isLiveVideo(false);
@@ -257,7 +247,9 @@ $(document).ready(function() {
             break;
           case 1: // Post
             self.isLiveVideo(false);
-            obj.fields = "";
+            self.isPost(true);
+            obj.fields = "comments{from,message,permalink_url},reactions{name,link,type},likes{name}";
+            self.postToThread(obj);
             break;
           case 2: // Video
             self.isLiveVideo(true); // should be just isVideo ...
@@ -265,9 +257,6 @@ $(document).ready(function() {
             self.postToThread(obj);
             break;
         }
-
-
-        // self.postToThread(obj)
 
       }
 
@@ -287,6 +276,7 @@ $(document).ready(function() {
         self.embedIframe("");
         self.fbDataResponse("");
         self.comments.removeAll();
+        self.pagePosts.removeAll();
         self.isNewVideo(false);
         self.isLiveVideo(false);
         self.views(0);
@@ -328,16 +318,49 @@ $(document).ready(function() {
       self.handleLayout = function(data) { // the stuff that changes every 5 seconds
 
         if (self.isPage()) { // handle data differently if page
-          var data = data.data;
           var paging = data.paging;
 
-          $.each(data, function(key, val) {
-            self.pagePosts(val);
+          if (data.data && data.data.length > 0) {
 
-          });
+            // to avoid errors of undefined objects while binding
+            var arr = [];
+            $.each(data.data, function(key, val) {
+              if (!val.story) {
+                val.story = "";
+              }
+              if (!val.message) {
+                val.message = "";
+              }
+              arr.push(val);
+            });
 
-        } else { // isPost or Video
-          self.views(data.live_views);
+            // can't check the count diffrence because it's limit is 25 so it will always be 25
+            if(self.pagePosts().length > 0 && self.pagePosts()[0]['id'] != arr[0]['id']) { // 0 instead of last because order is diffrent (newest first)
+              if(self.autoRead()){
+                //send last comment to read out loud
+                var textToRead;
+                if (arr[0]["message"]) {
+                  textToRead = arr[0]["message"];
+                }
+                if (arr[0]["story"]) {
+                  textToRead = arr[0]["story"];
+                }
+                console.log(textToRead);
+                robotSendTTS(textToRead);
+              }
+
+              var emotion = self.selectedEmotion();
+              if(! emotion['index'] == 0){
+                robotSendEmotionRPhi(1.0, emotions_data[emotion['index'] -1].poly * 18, -1);
+              }
+            }
+            self.pagePosts(arr);
+          }
+        } else { // is Post or Video
+
+          if (self.isNewVideo() || self.isLiveVideo()) {
+            self.views(data.live_views);
+          }
 
           if(data.comments && data.comments.data.length > 0) {
             var arr_comments = data.comments.data;
@@ -356,9 +379,13 @@ $(document).ready(function() {
               }
             }
             // refill list to get last comments
-            self.comments(arr_comments.reverse())
+            self.comments(arr_comments.reverse());
           }
-          if(data.reactions.data.length != 0) self.likes(data.reactions.data.length);
+
+          if(data.reactions && data.reactions.data.length != 0) {
+            self.likes(data.reactions.data.length);
+          }
+          
           if(self.reactToLikes() && data.reactions != null && data.reactions.data.length != self.likes()){
 
             //nieuwe reactie
@@ -413,6 +440,8 @@ $(document).ready(function() {
   // This makes Knockout get to work
   var model = new FacebookLiveModel();
   ko.applyBindings(model);
+
+  // receiving data from python
   app_socket_handler = function(data) {
     switch (data.action) {
       case "threadRunning":
@@ -422,7 +451,18 @@ $(document).ready(function() {
         break;
     }
   };
+
+  // listener for when input is changed / facebookID, change the selectbox accordingly
+  model.facebookID.subscribe(function() {
+    if (model.facebookID().indexOf("_") > 0) { // post ids have an underscore in them
+      model.selectedType(model.ofTypes()[1]); // change the selectbox accordingly
+    }
+  })
+
 });
+
+
+// avoiding keyboard interrupts
 $( window ).unload(function() {
   $.ajax({
     dataType: 'json',
