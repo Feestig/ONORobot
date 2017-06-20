@@ -157,7 +157,7 @@ $(document).ready(function() {
 
             }
           } else {
-            // error
+            // error, check if key expired -> re-login ?
             console.log(response)
           }
         })
@@ -273,7 +273,6 @@ $(document).ready(function() {
         self.embedIframe("");
         self.isStreaming(false);
         self.selectedType(self.ofTypes()[0]); // reset to element 0
-        self.facebookID("");
         self.fbDataResponse("");
         self.comments.removeAll();
         self.isNewVideo(false);
