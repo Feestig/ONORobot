@@ -12,6 +12,9 @@ select {
 	width: 40%;
 	margin-left: 0.5rem;
 }
+.startnew {
+	display: inline-block;
+}
 .iframe-container {
 	max-height: 500px;
 	max-width: 750px;

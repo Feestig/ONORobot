@@ -87,6 +87,8 @@ loop_T = None # loop var for Stoppable Thread
 #         playTextInLanguage(text)
 #         #wait_for_sound
 #     pass
+delimiters = {"\U0001F609","\U0001F620","\U0000263A", "\U0000263b","\U0001f642", "\U0001F914", "\U00002639", "\U0001F922","\U0001F632","\U0001F610","\U0001F628","\U0001F603","\U0001F62B","\U0001f641" }
+
 class _textSplitter(object):
     """docstring for textSplitter."""
     def __init__(self):
@@ -98,20 +100,37 @@ class _textSplitter(object):
         emotions = []
         # emoticonStr = status.text
         # print_info(strTweet)
-        delimiters = {"\U0001F609","\U0001F620","\U0000263A", "\U0000263b","\U0001f642", "\U0001F914", "\U00002639", "\U0001F922","\U0001F632","\U0001F610","\U0001F628","\U0001F603","\U0001F62B","\U0001f641" }
-        #regexPattern = '|'.join(map(re.escape, delimiters))
-
+        #delimiters = {"\U0001F609","\U0001F620","\U0000263A", "\U0000263b","\U0001f642", "\U0001F914", "\U00002639", "\U0001F922","\U0001F632","\U0001F610","\U0001F628","\U0001F603","\U0001F62B","\U0001f641" }
+        #regepxPattern = '|'.join(map(re.escape, delimiters))
+        #poppedDelimiters = delimiters
         text = 'thvander U0001f642, test U0001F609 emoji U0001F609 U0001f642 2'
-        split = text.split(delimiters)
-        print_info(split)
-        for splitpart in split:
-            print_info(splitpart)
-        # splittedText = []
+        splittedText = []
+        self.testf(text, delimiters)
         # for delimiter in delimiters:
         #     print_info(delimiter)
         #     if re.search(delimiter, text):
         #         splittedText = re.split("("+delimiter+")", text)
-        #
+        #         print_info(splittedText)
+        #         self.test(splittedText, poppedDelimiters)
+
+    def testf(self, text, delimitersLocal):
+        global delimiters
+        while delimitersLocal:
+            if re.search(delimiter, text):
+                splittedText = re.split("("+delimiter+")", text)
+                print_info(splittedText)
+                delimitersLocal.pop();
+                
+            print_info(delimitersLocal)
+            pass
+        # for delimiter in delimitersLocal:
+        #     print_info(delimiter)
+        #     if re.search(delimiter, text):
+        #         splittedText = re.split("("+delimiter+")", text)
+        #         print_info(splittedText)
+        #         delimiters.pop();
+
+        pass
         # splittedTextcopy = splittedText
         # print_info(splittedTextcopy)
         # for text in splittedTextcopy:

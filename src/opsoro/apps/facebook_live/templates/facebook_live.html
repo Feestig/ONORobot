@@ -34,7 +34,7 @@
 
 			<span class="text" data-bind="text: ! isStreaming() ? 'Start Stream' : 'Stop Stream' "></span>
 		</button>
-		<div data-bind="visible: !isNewVideo()">
+		<div class="startnew" data-bind="visible: !isNewVideo()">
 			<span>- or -</span>
 			<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn() && !isStreaming()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
 				Start a new live stream!
