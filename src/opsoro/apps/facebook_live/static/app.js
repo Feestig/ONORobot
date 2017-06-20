@@ -71,6 +71,7 @@ $(document).ready(function() {
       self.ofTypes = ko.observableArray([new TypesModel('Page', 0), new TypesModel('Post', 1), new TypesModel('Live Video', 2)]);
       self.selectedType = ko.observable(); // catch the selected type for the given facebook ID
       self.isPage = ko.observable(false);
+      self.pagePosts = ko.observableArray();
       self.isPost = ko.observable(false);
       self.isLiveVideo = ko.observable(false);
 
@@ -143,6 +144,7 @@ $(document).ready(function() {
       }
 
       self.fbGET = function(obj) {
+        console.log(obj);
         FB.api('/' + obj.fb_id + '?fields=' + obj.fields + '&access_token=' + self.accessToken(), function(response) {
           if(response && !response.error){
             //console.log(response);
@@ -155,6 +157,8 @@ $(document).ready(function() {
 
             } else if(self.isPage()) {
               // get feed posts?
+              console.log(response);
+              self.handleLayout(response); // contains data & paging object
               
             } else if(self.isPost()) {
               // get post's comments ect ... ?
@@ -247,6 +251,7 @@ $(document).ready(function() {
         switch(self.selectedType().index) {
           case 0: // Page
             self.isLiveVideo(false);
+            self.isPage(true);
             obj.fields = "feed{id,message,reactions{ame,link,type},story,likes{name}}";
             self.postToThread(obj);
             break;
@@ -280,16 +285,19 @@ $(document).ready(function() {
         self.isNewVideo(false);
         self.newLiveVideoData("");
         self.embedIframe("");
-        self.selectedType(self.ofTypes()[0]); // reset to element 0
         self.fbDataResponse("");
         self.comments.removeAll();
         self.isNewVideo(false);
         self.isLiveVideo(false);
         self.views(0);
+      }
+
+      self.hardResetLayout = function() { // reset everything on log out or something, not used anywhere atm!
+        self.facebookID("");
+        self.selectedType(self.ofTypes()[0]); // reset to element 0
         self.autoRead(false);
         self.reactToLikes(false);
         self.selectedEmotion(self.availableEmotions()[0]);
-
       }
 
 
@@ -319,25 +327,35 @@ $(document).ready(function() {
 
       self.handleLayout = function(data) { // the stuff that changes every 5 seconds
 
-        self.views(data.live_views);
+        if (self.isPage()) { // handle data differently if page
+          var data = data.data;
+          var paging = data.paging;
 
-        if(data.comments && data.comments.data.length > 0) {
-          var arr_comments = data.comments.data;
+          $.each(data, function(key, val) {
+            self.pagePosts(val);
 
-          if(self.comments().length != arr_comments.length){
-            if(self.comments().length < arr_comments.length && self.comments().length != 0){
-              if(self.autoRead()){
-                //send laatste comment om voor te lezen
-                robotSendTTS(arr_comments[arr_comments.length -1]["message"]);
-              }
+          });
 
-              var emotion = self.selectedEmotion();
-              if(! emotion['index'] == 0){
-                robotSendEmotionRPhi(1.0, emotions_data[emotion['index'] -1].poly * 18, -1);
+        } else { // isPost or Video
+          self.views(data.live_views);
+
+          if(data.comments && data.comments.data.length > 0) {
+            var arr_comments = data.comments.data;
+
+            if(self.comments().length != arr_comments.length){
+              if(self.comments().length < arr_comments.length && self.comments().length != 0){
+                if(self.autoRead()){
+                  //send last comment to read out loud
+                  robotSendTTS(arr_comments[arr_comments.length -1]["message"]);
+                }
+
+                var emotion = self.selectedEmotion();
+                if(! emotion['index'] == 0){
+                  robotSendEmotionRPhi(1.0, emotions_data[emotion['index'] -1].poly * 18, -1);
+                }
               }
             }
-          }
-            //hervul de lijst om laatste comments te krijgen
+            // refill list to get last comments
             self.comments(arr_comments.reverse())
           }
 
@@ -370,6 +388,7 @@ $(document).ready(function() {
                 break;
             }
             robotSendEmotionRPhi(1.0, emotions_data[index].poly * 18, -1);
+          }
         }
       }
 
@@ -400,7 +419,7 @@ $(document).ready(function() {
     switch (data.action) {
       case "threadRunning":
         if(data.fb_id && data.fields) {
-          model.fbGET(data)
+          model.fbGET(data);
         }
         break;
     }
