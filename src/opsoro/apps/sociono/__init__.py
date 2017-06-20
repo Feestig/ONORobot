@@ -272,7 +272,6 @@ def checkForEmoji(status):
     emotions = []
     emoticonStr = status.text
     for text in emoticonStr:
-        print_info(text)
         winking = len(re.findall(u"[\U0001F609]", text))
         angry = len(re.findall(u"[\U0001F620]", text))
         happy_a = len(re.findall(u"[\U0000263A]", text))
