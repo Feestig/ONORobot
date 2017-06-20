@@ -4,8 +4,8 @@ input[type="text"]{
 	display: inline-block;
 }
 iframe {
-	height: 425px!important;
-	width: 750px!important;
+	/*height: 425px!important;
+	width: 750px!important;*/
 }
 select {
 	display: inline-block;
@@ -98,24 +98,6 @@ select {
             border-radius: .5rem;
     background: #ddd;
 }
-/*.bubble:after
-{
-    position: absolute;
-    top: .3rem;
-    bottom: auto;
-    left: -1.1rem;
-
-    display: block;
-
-    width: 0;
-
-    content: '';
-
-    border-width: .75rem 1.2rem .75rem 0;
-    border-style: solid;
-    border-color: #f3961c transparent;
-    border-color: transparent #ddd;
-}*/
 
 .bubble .fa
 {
