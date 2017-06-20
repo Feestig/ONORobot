@@ -31,7 +31,7 @@
 		</div>
 
 		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && facebookID()">
-			<span class="text" data-bind="text: ! isStreaming() ? 'Start Stream' : 'Stop Stream'"></span>
+			<span class="text" data-bind="text: !isStreaming() ? 'Start Stream' : 'Stop Stream'"></span>
 		</button>
 		<div data-bind="visible: !isNewVideo() && !facebookID()">
 			<span>- or -</span>

@@ -55,7 +55,7 @@ $(document).ready(function() {
       self.loggedIn = ko.observable(false);
       self.accessToken = ko.observable(""); // retrieved from log in, needed for every Facebook call
       self.userID = ko.observable(""); // when logged into facebook, could be used if you'd like to get your own wall posts ect.
-
+      
       /* Observables for handling the new live video stream */
       self.newLiveVideoData = ko.observable(""); // holds the new live video's data
       self.isNewVideo = ko.observable(); // check for starting a new live video -> toggle lay-out & functionality
@@ -122,21 +122,21 @@ $(document).ready(function() {
 
       self.fbLogout = function() {
         FB.logout(function(response) {
-          console.log(response)
+          console.log(response);
           self.unsetData();
         });
       }
 
       self.setData = function(response) {
-        self.loggedIn(true)
-        self.accessToken(response.authResponse.accessToken)
-        self.userID(response.authResponse.userID)
+        self.loggedIn(true);
+        self.accessToken(response.authResponse.accessToken);
+        self.userID(response.authResponse.userID);
       }
 
       self.unsetData = function() {
-        self.loggedIn(false)
-        self.accessToken("")
-        self.userID("")
+        self.loggedIn(false);
+        self.accessToken("");
+        self.userID("");
 
         // Stop stream & reset layout !!
         self.stopStream();
@@ -155,8 +155,10 @@ $(document).ready(function() {
 
             } else if(self.isPage()) {
               // get feed posts?
+              
             } else if(self.isPost()) {
               // get post's comments ect ... ?
+              self.handleLayout(response);
             } else if(self.isLiveVideo()) {
 
               self.setIFrame();
@@ -212,8 +214,6 @@ $(document).ready(function() {
       /* Custom page input */
 
       self.toggleStreaming = function(){
-        console.log(self.isStreaming());
-
         if(self.isStreaming()){
           self.stopStream();
         } else {
@@ -246,13 +246,16 @@ $(document).ready(function() {
 
         switch(self.selectedType().index) {
           case 0: // Page
-
+            self.isLiveVideo(false);
+            obj.fields = "feed{id,message,reactions{ame,link,type},story,likes{name}}";
+            self.postToThread(obj);
             break;
           case 1: // Post
-
+            self.isLiveVideo(false);
+            obj.fields = "";
             break;
           case 2: // Video
-            self.isLiveVideo(true);
+            self.isLiveVideo(true); // should be just isVideo ...
             obj.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
             self.postToThread(obj);
             break;
@@ -277,19 +280,22 @@ $(document).ready(function() {
         self.isNewVideo(false);
         self.newLiveVideoData("");
         self.embedIframe("");
-        self.isStreaming(false);
         self.selectedType(self.ofTypes()[0]); // reset to element 0
-        self.facebookID("");
         self.fbDataResponse("");
         self.comments.removeAll();
         self.isNewVideo(false);
         self.isLiveVideo(false);
         self.views(0);
+        self.autoRead(false);
+        self.reactToLikes(false);
+        self.selectedEmotion(self.availableEmotions()[0]);
+
       }
 
 
       self.handleData = function(obj) { // function will be used for a new live video but also for custom id input so don't set isNewVideo(true) likewise in here
         self.facebookID(obj.fb_id);
+
         if(self.isNewVideo()) {
           obj.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
           self.newVideoRequest(obj);
