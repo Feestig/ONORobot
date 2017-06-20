@@ -23,7 +23,7 @@
 		<div>
 			<span>Enter a Facebook ID: </span>
 
-			<input type="text" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter a Facebook page id or a existing live_video id ...">
+			<input type="text" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter your Facebook page id, post id or an existing live_video id ...">
 		</div>
 		<div>
 			<span>Is of type: </span>
@@ -31,7 +31,7 @@
 		</div>
 
 		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && facebookID()">
-			<span class="text" data-bind="text: ! isStreaming() ? 'Start Stream' : 'Stop Stream'"></span>
+			<span class="text" data-bind="text: !isStreaming() && facebookID() ? 'Start Stream' : 'Stop Stream'"></span>
 		</button>
 		<div class="startnew" data-bind="visible: !isNewVideo() && !facebookID()">
 			<span>- or -</span>
