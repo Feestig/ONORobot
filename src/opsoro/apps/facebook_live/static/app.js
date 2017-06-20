@@ -129,6 +129,9 @@ $(document).ready(function() {
         self.loggedIn(false)
         self.accessToken("")
         self.userID("")
+
+        // Stop stream & reset layout !!
+        self.stopStream();
       }
 
       self.fbGET = function(obj) {
@@ -191,6 +194,7 @@ $(document).ready(function() {
           //  alert("video status: \n" + response.status);
 
           if (response && response.status === "live") {
+            self.isNewVideo(false); // the video has already streamed so it's not new anymore ...
             self.postToThread(obj);
           } else {
             // error dialog is canceld before video went on air !!!
@@ -260,6 +264,17 @@ $(document).ready(function() {
         self.sendPost('stopThread', {});
 
         // reset lay-out
+        self.resetLayout();
+      }
+
+      self.resetLayout = function() {
+        self.isNewVideo(false);
+        self.newLiveVideoData("");
+        self.embedIframe("");
+        self.isStreaming(false);
+        self.selectedType(self.ofTypes()[0]); // reset to element 0
+        self.facebookID("");
+        self.fbDataResponse("");
         self.comments.removeAll();
         self.isNewVideo(false);
         self.isLiveVideo(false);

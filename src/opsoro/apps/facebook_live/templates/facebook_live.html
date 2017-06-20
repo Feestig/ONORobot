@@ -30,11 +30,10 @@
 			<select data-bind="enable: !isNewVideo(), options: ofTypes, optionsText: 'text', value: selectedType"></select>
 		</div>
 
-		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn()">
-
-			<span class="text" data-bind="text: ! isStreaming() ? 'Start Stream' : 'Stop Stream' "></span>
+		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && facebookID()">
+			<span class="text" data-bind="text: ! isStreaming() ? 'Start Stream' : 'Stop Stream'"></span>
 		</button>
-		<div class="startnew" data-bind="visible: !isNewVideo()">
+		<div class="startnew" data-bind="visible: !isNewVideo() && !facebookID()">
 			<span>- or -</span>
 			<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn() && !isStreaming()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
 				Start a new live stream!
