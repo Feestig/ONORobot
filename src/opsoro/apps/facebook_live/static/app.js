@@ -55,7 +55,7 @@ $(document).ready(function() {
       self.loggedIn = ko.observable(false);
       self.accessToken = ko.observable(""); // retrieved from log in, needed for every Facebook call
       self.userID = ko.observable(""); // when logged into facebook, could be used if you'd like to get your own wall posts ect.
-      
+
       /* Observables for handling the new live video stream */
       self.newLiveVideoData = ko.observable(""); // holds the new live video's data
       self.isNewVideo = ko.observable(); // check for starting a new live video -> toggle lay-out & functionality
@@ -155,7 +155,7 @@ $(document).ready(function() {
 
             } else if(self.isPage()) {
               // get feed posts?
-              
+
             } else if(self.isPost()) {
               // get post's comments ect ... ?
               self.handleLayout(response);
@@ -318,7 +318,7 @@ $(document).ready(function() {
       }
 
       self.handleLayout = function(data) { // the stuff that changes every 5 seconds
-
+        console.log(data);
         self.views(data.live_views);
 
         if(data.comments && data.comments.data.length > 0) {
