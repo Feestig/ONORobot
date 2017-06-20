@@ -390,7 +390,6 @@ $(document).ready(function() {
   // This makes Knockout get to work
   var model = new FacebookLiveModel();
   ko.applyBindings(model);
-
   app_socket_handler = function(data) {
     switch (data.action) {
       case "threadRunning":
@@ -400,4 +399,20 @@ $(document).ready(function() {
         break;
     }
   };
+});
+$( window ).unload(function() {
+  $.ajax({
+    dataType: 'json',
+    type: 'POST',
+    url: '/apps/facebook_live/',
+    data: {action: 'stopThread', data: {} },
+    success: function(data){
+      if (!data.success) {
+        showMainError(data.message);
+      } else {
+        return "";
+      }
+    }
+  });
+  return "";
 });

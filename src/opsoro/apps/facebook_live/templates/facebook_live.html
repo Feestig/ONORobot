@@ -29,9 +29,6 @@
 			<span>Is of type: </span>
 			<select data-bind="enable: !isNewVideo(), options: ofTypes, optionsText: 'text', value: selectedType"></select>
 		</div>
-		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && !isNewVideo()">
-			<span class="text" data-bind="text: ! isStreaming() ? 'Start Stream' : 'Stop Stream' "></span>
-		</button>
 
 		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && facebookID()">
 			<span class="text" data-bind="text: ! isStreaming() ? 'Start Stream' : 'Stop Stream'"></span>
