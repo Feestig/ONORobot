@@ -340,14 +340,12 @@ $(document).ready(function() {
             //hervul de lijst om laatste comments te krijgen
             self.comments(arr_comments.reverse())
           }
-
-          console.log(data);
-          console.log(data.reactions.data.length);
-          if(self.reactToLikes() && data.reactions.data.lenght != self.likes()){
+          if(data.reactions.data.length != 0) self.likes(data.reactions.data.length);
+          if(self.reactToLikes() && data.reactions != null && data.reactions.data.length != self.likes()){
 
             //nieuwe reactie
             var index = 0;
-            self.likes(data.reactions.data.lenght);
+
 
             switch (data.reactions.data[0]['type']) {
               case 'HAHA':

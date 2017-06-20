@@ -219,3 +219,19 @@ $(document).ready(function(){
 	};
 
 });
+$( window ).unload(function() {
+  $.ajax({
+    dataType: 'json',
+    type: 'POST',
+    url: '/apps/facebook_live/',
+    data: {action: 'stopTweepy', data: {} },
+    success: function(data){
+      if (!data.success) {
+        showMainError(data.message);
+      } else {
+        return "";
+      }
+    }
+  });
+  return "";
+});
