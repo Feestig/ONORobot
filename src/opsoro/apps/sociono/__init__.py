@@ -272,6 +272,48 @@ def checkForEmoji(status):
     emotions = []
     emoticonStr = status.text
 
+    # splittedText = status.text.split()
+    #
+    # for text in splittedText:
+    #         winking = len(re.findall(u"[\U0001F609]", text))
+    #         angry = len(re.findall(u"[\U0001F620]", text))
+    #         happy_a = len(re.findall(u"[\U0000263A]", text))
+    #         happy_b = len(re.findall(u"[\U0000263b]", text))
+    #         happy_c = len(re.findall(u"[\U0001f642]", text))
+    #         thinking = len(re.findall(u"[\U0001F914]", text))
+    #         frowning = len(re.findall(u"[\U00002639]", text))
+    #         nauseated = len(re.findall(u"[\U0001F922]", text))
+    #         astonished = len(re.findall(u"[\U0001F632]", text))
+    #         neutral = len(re.findall(u"[\U0001F610]", text))
+    #         fearful = len(re.findall(u"[\U0001F628]", text))
+    #         laughing = len(re.findall(u"[\U0001F603]", text))
+    #         tired = len(re.findall(u"[\U0001F62B]", text))
+    #         sad = len(re.findall(u"[\U0001f641]", text))
+    #
+    #         if winking > 0:
+    #             emotions.append("tong")
+    #         if angry > 0:
+    #             emotions.append("angry")
+    #         if happy_a > 0 or happy_b > 0 or happy_c > 0:
+    #             emotions.append("happy")
+    #         if frowning > 0:
+    #             emotions.append("tired")
+    #         if nauseated > 0:
+    #             emotions.append("disgusted")
+    #         if astonished > 0:
+    #             emotions.append("surprised")
+    #         if neutral > 0:
+    #             emotions.append("neutral")
+    #         if fearful > 0:
+    #             emotions.append("afraid")
+    #         if laughing > 0:
+    #             emotions.append("laughing")
+    #         if tired > 0:
+    #             emotions.append("sleep")
+    #         if sad > 0:
+    #             emotions.append("sad")
+    #
+    # print_info(emotions)
     winking = len(re.findall(u"[\U0001F609]", emoticonStr))
     angry = len(re.findall(u"[\U0001F620]", emoticonStr))
     happy_a = len(re.findall(u"[\U0000263A]", emoticonStr))
@@ -309,7 +351,7 @@ def checkForEmoji(status):
         emotions.append("sleep")
     if sad > 0:
         emotions.append("sad")
-    #if no emotions are selected returns none
+    if no emotions are selected returns none
     if not emotions:
         emotions.append("none")
     return emotions
