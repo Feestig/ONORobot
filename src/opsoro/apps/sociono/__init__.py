@@ -36,7 +36,6 @@ import tweepy
 import re
 import json
 import time
-from .emoji import textSplitter
 
 config = {
     'full_name':            'Sociono',
@@ -174,7 +173,6 @@ def setup(opsoroapp):
     pass
 
 def start(opsoroapp):
-    # textSplitter.convertEmoji()
     pass
 
 def stop(opsoroapp):

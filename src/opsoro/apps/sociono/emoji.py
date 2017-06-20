@@ -87,7 +87,7 @@ loop_T = None # loop var for Stoppable Thread
 #         playTextInLanguage(text)
 #         #wait_for_sound
 #     pass
-delimiters = {"\U0001F609","\U0001F620","\U0000263A", "\U0000263b","\U0001f642", "\U0001F914", "\U00002639", "\U0001F922","\U0001F632","\U0001F610","\U0001F628","\U0001F603","\U0001F62B","\U0001f641" }
+delimiters = ["\U0001F609","\U0001F620","\U0000263A", "\U0000263b","\U0001f642", "\U0001F914", "\U00002639", "\U0001F922","\U0001F632","\U0001F610","\U0001F628","\U0001F603","\U0001F62B","\U0001f641" ]
 
 class _textSplitter(object):
     """docstring for textSplitter."""
@@ -116,12 +116,31 @@ class _textSplitter(object):
     def testf(self, text, delimitersLocal):
         global delimiters
         while delimitersLocal:
-            if re.search(delimiter, text):
-                splittedText = re.split("("+delimiter+")", text)
-                print_info(splittedText)
-                delimitersLocal.pop();
-                
-            print_info(delimitersLocal)
+            if len(delimitersLocal) == 0:
+                break
+            if re.search(delimitersLocal[0], text):
+                splittedText = re.split("("+delimitersLocal[0]+")", text)
+                delimitersLocal.pop(0)
+                self.testrecursive(splittedText, delimitersLocal);
+            else:
+                delimitersLocal.pop(0);
+            pass
+    def testrecursive(self, textArray , delimitersLocal):
+        while delimitersLocal:
+            if len(delimitersLocal) == 0:
+                break
+            for text in textArray:
+
+                if len(delimitersLocal) == 0:
+                    break
+                if re.search(delimitersLocal[0], text):
+                    splittedText = re.split("("+delimitersLocal[0]+")", text)
+                    print_info(delimitersLocal[0])
+                    print_info("textpeace after split")
+                    print_info(splittedText)
+                    delimitersLocal.pop(0);
+                else:
+                    delimitersLocal.pop(0)
             pass
         # for delimiter in delimitersLocal:
         #     print_info(delimiter)
