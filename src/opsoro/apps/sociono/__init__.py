@@ -132,7 +132,7 @@ def setup_pages(opsoroapp):
             loop_T = StoppableThread(target=wait_for_sound)
 
         if request.form['action'] == 'autoLoopTweepyStop':
-            global autolooping
+            #global autolooping
             autolooping = 0
             send_action(request.form['action'])
 
@@ -140,6 +140,9 @@ def setup_pages(opsoroapp):
             if request.form['data']:
                 tweepyObj = json.loads(request.form['data'])
                 playTweet(tweepyObj)
+        if request.form['action'] == 'toggleAutoRead':
+            autoRead = not autoRead
+            print_info(autoRead)
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 

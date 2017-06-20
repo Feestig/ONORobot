@@ -11,14 +11,9 @@ $(document).ready(function() {
       version          : 'v2.9'
     });
     FB.AppEvents.logPageView();
-
     // Start using the FB SDK
-
     model.fbInitialized(true);
-
-    // check if loggedIn ? Not working I think, unless you automatically logout every page refresh?
-    model.getLoginStatus();
-
+    model.checkFBLogin();
   }
 
   $(function(d, s, id){
@@ -81,20 +76,33 @@ $(document).ready(function() {
 
       /* General observables */
       self.autoRead = ko.observable(false);
+      self.reactToLikes = ko.observable(false);
+      self.likes = ko.observable(0);
       self.availableEmotions = ko.observableArray([new EmotionModel('None', 0)]);
       self.selectedEmotion = ko.observable();
       for (var i = 0; i < emotions_data.length; i++) {
         self.availableEmotions.push(new EmotionModel(emotions_data[i]['name'], i+1));
       }
 
+      self.checkFBLogin = function(){
+        if(self.getLoginStatus()){
+          self.loggedIn(true);
+        }
+        else{
+          self.fbLogin();
+          if(self.getLoginStatus()){
+            //self.loggedIn(true);
+          }
+        }
+      }
+
       self.getLoginStatus = function() {
         FB.getLoginStatus(function(response){
           if (response.status === 'connected') {
-            console.log(response)
-            self.setData(response);
+            return true;
           } else {
             // self.fbLogin()
-            self.unsetData();
+            return false;
           }
         });
       }
@@ -109,7 +117,7 @@ $(document).ready(function() {
             // error ?
             console.log(response)
           }
-        }, {scope: 'user_videos, user_posts, user_photos, user_actions.video'});
+        },{scope: 'user_videos, user_posts, user_photos, user_actions.video'});
       }
 
       self.fbLogout = function() {
@@ -136,9 +144,8 @@ $(document).ready(function() {
 
       self.fbGET = function(obj) {
         FB.api('/' + obj.fb_id + '?fields=' + obj.fields + '&access_token=' + self.accessToken(), function(response) {
-          if(response && !response.error) {
-
-            console.log(response);
+          if(response && !response.error){
+            //console.log(response);
             self.fbDataResponse(response) // could use this instead of passing through params
 
             if (self.isNewVideo()) {
@@ -190,7 +197,7 @@ $(document).ready(function() {
           phase: 'publish',
           broadcast_data: obj,
         }, function(response) {
-          console.log(response)
+          //console.log(response)
           //  alert("video status: \n" + response.status);
 
           if (response && response.status === "live") {
@@ -236,7 +243,6 @@ $(document).ready(function() {
 
         // ------------- Hier gebleven ------------------
 
-        console.log(self.selectedType());
 
         switch(self.selectedType().index) {
           case 0: // Page
@@ -283,9 +289,7 @@ $(document).ready(function() {
 
 
       self.handleData = function(obj) { // function will be used for a new live video but also for custom id input so don't set isNewVideo(true) likewise in here
-
         self.facebookID(obj.fb_id);
-
         if(self.isNewVideo()) {
           obj.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
           self.newVideoRequest(obj);
@@ -315,13 +319,51 @@ $(document).ready(function() {
           var arr_comments = data.comments.data;
 
           if(self.comments().length != arr_comments.length){
-            if(self.autoRead() && self.comments().length < arr_comments.length && self.comments().length != 0){
-              //send laatste comment om voor te lezen
-              robotSendTTS(arr_comments[arr_comments.length -1]["message"]);
+            if(self.comments().length < arr_comments.length && self.comments().length != 0){
+              if(self.autoRead()){
+                //send laatste comment om voor te lezen
+                robotSendTTS(arr_comments[arr_comments.length -1]["message"]);
+              }
+
+              var emotion = self.selectedEmotion();
+              if(! emotion['index'] == 0){
+                robotSendEmotionRPhi(1.0, emotions_data[emotion['index'] -1].poly * 18, -1);
+              }
             }
+          }
             //hervul de lijst om laatste comments te krijgen
             self.comments(arr_comments.reverse())
           }
+
+          console.log(data);
+          console.log(data.reactions.data.length);
+          if(self.reactToLikes() && data.reactions.data.lenght != self.likes()){
+
+            //nieuwe reactie
+            var index = 0;
+            self.likes(data.reactions.data.lenght);
+
+            switch (data.reactions.data[0]['type']) {
+              case 'HAHA':
+                index = 2;
+                break;
+              case 'LOVE':
+                index = 1;
+                break;
+              case 'LIKE':
+                index = 10;
+                break;
+              case 'WOW':
+                index = 3;
+                break;
+              case 'SAD':
+                index = 7;
+                break;
+              case 'ANGRY':
+                index = 5;
+                break;
+            }
+            robotSendEmotionRPhi(1.0, emotions_data[index].poly * 18, -1);
         }
       }
 
@@ -348,7 +390,6 @@ $(document).ready(function() {
   // This makes Knockout get to work
   var model = new FacebookLiveModel();
   ko.applyBindings(model);
-
   app_socket_handler = function(data) {
     switch (data.action) {
       case "threadRunning":
@@ -358,4 +399,20 @@ $(document).ready(function() {
         break;
     }
   };
+});
+$( window ).unload(function() {
+  $.ajax({
+    dataType: 'json',
+    type: 'POST',
+    url: '/apps/facebook_live/',
+    data: {action: 'stopThread', data: {} },
+    success: function(data){
+      if (!data.success) {
+        showMainError(data.message);
+      } else {
+        return "";
+      }
+    }
+  });
+  return "";
 });

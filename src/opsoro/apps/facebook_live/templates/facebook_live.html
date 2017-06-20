@@ -12,7 +12,7 @@
 	<div id="fb-root"></div> <!-- required for the fb init -->
 
 	<div>
-		<button class="button info" data-bind="click: !loggedIn() ? fbLogin : fbLogout, text: !loggedIn() ? 'Log into Facebook' : 'Log out of Facebook'"></button>
+		<button class="button info" data-bind="click: !loggedIn() ? fbLogin : fbLogout, text: !loggedIn() ? 'Log into Facebook' : 'Log out of Facebook', enable: fbInitialized()"></button>
 		<p>Your user ID: <span data-bind="text: userID()"></span></p>
 	</div>
 	<div>
@@ -62,12 +62,9 @@
 	</div>
 	<div class="togglebox">
 		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
-		<label><input type="checkbox"/> React to comments</label>
+		<label><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
 		<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
 	</div>
-
-
-
 
 	{% if not online %}
 		<!-- Content in this section is not displayed online, only on the robot. For example: it is a perfect place to put controls that access hardware stuff, which is not available online. -->
