@@ -93,9 +93,9 @@ def setup_pages(server):
 
         if request.form['action'] == 'stopThread':
             global thread_fb_t
-            if(thread_fb_t != None):
+            if thread_fb_t != None:
                 thread_fb_t.stop()
-                
+
             print_info("thread stopped")
 
         return server.render_template(config['formatted_name'] + '.html', **data)
