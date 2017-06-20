@@ -3,14 +3,21 @@ input[type="text"]{
 	width: 40%;
 	display: inline-block;
 }
+label > input[type="checkbox"]{
+	top: 0.25rem;
+	position: relative;
+}
 iframe {
-	/*height: 425px!important;
-	width: 750px!important;*/
+	max-width: 750px;
+	max-height: 425px;
 }
 select {
 	display: inline-block;
 	width: 40%;
 	margin-left: 0.5rem;
+}
+.appbody span{
+	width: 30%;
 }
 .startnew {
 	display: inline-block;
@@ -27,11 +34,13 @@ select {
 	display: block;
 }
 .rightside {
+	font-size: 1.3rem;
+	font-weight: bold;
 	display: inline-block;
 	float: right;
 	width: 32%;
 	margin: 0 0.5em 0 0.5em;
-	padding: 0.5em;
+	padding: 0 0.5em;
 	height:35px;
 }
 .rightside p{
@@ -43,7 +52,10 @@ select {
 	padding: 0.5em;
 	width: 32%;
 	overflow: hidden;
-	height: 390px;
+	height: auto;
+	max-height: 390px;
+	font-weight: normal;
+}
 
 }
 .leftside{
@@ -54,12 +66,17 @@ select {
 	display: block;
 	width: 99.3%;
 	float: left;
-	padding: 0.5em;
+	padding-top: 0.5em;
 }
 .togglebox p {
 	display: inline-block;
 	float: right;
-	margin-right: 1.5em;
+	/*margin-right: 1.5em;*/
+	width: 30%
+}
+.togglebox > select{
+	width: 30%;
+	float: right;
 }
 .togglebox label{
 	display: inline-block;
