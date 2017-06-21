@@ -65,7 +65,7 @@ $(document).ready(function() {
       self.customRequest = ko.observable(false); // for an extra request to get the custom id's info (type, ...)
       self.isStreaming = ko.observable(false);
       self.facebookID = ko.observable(""); // when user enters his own input id
-      self.ofTypes = ko.observableArray([new TypesModel("Someone else's Page", "isPage"), new TypesModel('My Page', 'isPage'), new TypesModel('(Live) Video', 'isVideo'), new TypesModel('A Post', 'isPost')]);
+      self.ofTypes = ko.observableArray([new TypesModel("Someone else's Page", "isPage"), new TypesModel('My Page', 'isPage'), new TypesModel('A (Live) Video', 'isVideo'), new TypesModel('A Post', 'isPost')]);
       self.selectedType = ko.observable(); // catch the selected type for the given facebook ID
       self.pagePosts = ko.observableArray();
 
