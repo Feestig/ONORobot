@@ -12,10 +12,9 @@
 	<div id="fb-root"></div> <!-- required for the fb init -->
 
 	<div class="upper-section">
-		<button class="button" data-bind="click: !loggedIn() ? fbLogin : fbLogout, css: { success : !loggedIn(), alert: loggedIn() }">
+		<button class="button" data-bind="css: {success : !loggedIn(), alert : loggedIn()}, click: !loggedIn() ? fbLogin : fbLogout, enable: fbInitialized()">
 			<i class="fa fa-facebook big-icon" aria-hidden="true"></i>
-			<span data-bind="text: !loggedIn() ? 'Log in' : 'Log out ', enable: fbInitialized()">
-			</span>
+			<span data-bind="text: !loggedIn() ? 'Log in' : 'Log out '"></span>
 		</button>
 	</div>
 	<div class="middle-section">
@@ -39,7 +38,7 @@
 		<div class="startnew" data-bind="visible: !isNewVideo()">
 			<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn() && !isStreaming()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
 				<i class="fa fa-plus big-icon" aria-hidden="true"></i>
-				<span class="icon-span">Live Video!</span>
+				<span class="icon-span">Live Video</span>
 			</button>
 		</div>
 	</div>
