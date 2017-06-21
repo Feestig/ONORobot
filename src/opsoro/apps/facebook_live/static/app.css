@@ -55,6 +55,9 @@
 		 -moz-border-radius: 100px;
 					border-radius: 100px;
 }
+.lower-section{
+	padding-top: 10px
+}
 input[type="text"] {
 	margin-left: 0.5rem;
 	width: 40%;
@@ -87,9 +90,6 @@ select {
 	max-width: 750px;
 	float: left;
 }
-.button {
-	margin-top: 1.5em;
-}
 .block {
 	display: block;
 }
@@ -103,6 +103,7 @@ select {
 	max-height: 390px;
 	font-weight: normal;
 	margin-bottom: 10px;
+	margin-top: 20px;
 }
 .rightside {
 	font-size: 1.3rem;
@@ -131,14 +132,14 @@ select {
 	max-height: 390px;
 	font-weight: normal;
 }
-.commentscontainerpost{
+/*.commentscontainerpost{
 	padding: 0.5em;
 	width: 100%;
 	overflow: hidden;
 	height: auto;
 	max-height: 390px;
 	font-weight: normal;
-}
+}*/
 .commentsElement{
 	display: block;
 	width: 100%;
