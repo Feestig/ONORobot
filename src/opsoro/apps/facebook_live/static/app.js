@@ -8,6 +8,7 @@ $(document).ready(function() {
       appId            : '1710409469251997',
       autoLogAppEvents : true,
       xfbml            : true,
+      status           : true,
       version          : 'v2.9'
     });
     FB.AppEvents.logPageView();
@@ -106,7 +107,6 @@ $(document).ready(function() {
         FB.login(function(response) {
           console.log(response)
           if (response.status === 'connected') {
-            console.log(response)
             self.setData(response);
           } else {
             // error ?

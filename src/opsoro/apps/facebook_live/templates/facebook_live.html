@@ -56,7 +56,7 @@
 				</div>
 			</div>
 		</div>
-
+		
 		<!-- For the page's posts -->
 		<div class="rightside" data-bind="sortable: { data: pagePosts, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }, visible: pagePosts().length > 0">
 			<div id="voicelines" class="bubble">
@@ -68,12 +68,11 @@
 				</div>
 			</div>
 		</div>
-
 		<div class="togglebox">
 			<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
 			<label><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
 			<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
-	</div>
+		</div>
 	</div>
 
 	{% if not online %}

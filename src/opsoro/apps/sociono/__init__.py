@@ -61,7 +61,7 @@ loop_T = None # loop var for Stoppable Thread
 loop_PlayTweet = None # loop that plays playArray
 autolooping = None
 Emoticons = []
-lang = 'eng' #lang that needs to be played
+lang = 'en' #lang that needs to be played
 tweetArrayToPlay = [] #tweet array that needs to be played
 
 access_token = '141268248-yAGsPydKTDgkCcV0RZTPc5Ff7FGE41yk5AWF1dtN'
@@ -83,17 +83,6 @@ def send_data(action, data):
     #def send_app_data(self, appname, action, data={}): from Opsoro.Users
     Users.send_app_data(config['formatted_name'], action, data)
 
-def wait_for_sound():
-    time.sleep(0.05)  # delay
-    print_info("in wait for sound")
-    global loop_T
-    while not loop_T.stopped():
-        Sound.wait_for_sound()
-        global autolooping
-        if autolooping == 1:
-            send_action("autoLoopTweepyNext")
-        loop_T.stop()
-    pass
 
 def setup_pages(opsoroapp):
     sociono_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
@@ -129,10 +118,10 @@ def setup_pages(opsoroapp):
             stopTwitter()
 
         if request.form['action'] == 'autoLoopTweepyNext':
-            global loop_T
+            print_info('autoLoopTweepyNext')
+            global autolooping
             autolooping = 1
             stopTwitter()
-            loop_T = StoppableThread(target=wait_for_sound)
 
         if request.form['action'] == 'autoLoopTweepyStop':
             #global autolooping
@@ -159,7 +148,7 @@ def playTweet(tweepyDataModel):
     global lang
     global tweetArrayToPlay
     lang = tweepyDataModel['text']['lang']
-    tweetArrayToPlay = tweepyDataModel['text']['playArray']
+    tweetArrayToPlay = getPlayArray(tweepyDataModel)
     loop_PlayTweet = StoppableThread(target=asyncReadTweet) #start playing Tweet
 
 
@@ -167,7 +156,6 @@ def playTweet(tweepyDataModel):
 class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
-        print_info(status)
         if(status == "stopIt"):
             return False
         dataToSend = processJson(status)
@@ -220,34 +208,33 @@ def processJson(status):
         },
         "text": {
             "original": status.text,
-            "filtered": filterTweet(status),
-            "lang": status.lang,
-            "playArray": getPlayArray(status)
+            "filtered": filterTweet(status.text),
+            "lang": status.lang
         }
     }
 
     return data
 
-def filterTweet(status):
+def filterTweet(text):
     #alles in nieuw object aanmaken en steken
-    encodedstattext = status.text.encode('utf-8')
+    encodedstattext = text.encode('utf-8')
     strTweet = str(encodedstattext)
     strTweet = strTweet.replace("RT", "Retweet", 1)
     strTweet = strTweet.replace("#", "")
     #voor emoticons te verwijderen
     strTweet = strTweet.decode('unicode_escape').encode('ascii', 'ignore')
     strTweet = re.sub(r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', strTweet, flags=re.MULTILINE) # re -> import re (regular expression)
-    strTweet = languageCheck(strTweet, status)
+    strTweet = languageCheck(strTweet, lang)
     return strTweet
 
-def languageCheck(strTweet,status):
-    if status.lang == "en":
+def languageCheck(strTweet,lang):
+    if lang == "en":
         return strTweet.replace("@","from ", 1)
-    elif status.lang == "nl":
+    elif lang == "nl":
         return strTweet.replace("@","van ", 1)
-    elif status.lang == "de":
+    elif lang == "de":
         return strTweet.replace("@","von ", 1)
-    elif status.lang == "fr":
+    elif lang == "fr":
         return strTweet.replace("@","de ", 1)
     else:
         return strTweet
@@ -286,14 +273,18 @@ def asyncReadTweet():
     global loop_PlayTweet
     global tweetArrayToPlay
     global lang
+    global autolooping
     while not loop_PlayTweet.stopped():
         for item in tweetArrayToPlay:
             if item[0] == 'txt':
-                playTweetInLanguage(item[1], lang)
+                playTweetInLanguage(filterTweet(item[1]), lang)
                 Sound.wait_for_sound()
             else:
                 Expression.set_emotion_name(item[1], -1)
         loop_PlayTweet.stop()
+        print_info(autolooping)
+        if autolooping == 1:
+            send_action("autoLoopTweepyNext")
         print_info('normaal stopped')
 
 
@@ -305,7 +296,7 @@ def getPlayArray(status):
     output = []
     teller = -1
     previousWasText = False
-    emoticonStr = status.text
+    emoticonStr = status["text"]["original"]
     for text in emoticonStr:
         emotions = []
         winking = len(re.findall(u"[\U0001F609]", text))
