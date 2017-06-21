@@ -138,7 +138,6 @@ $(document).ready(function() {
       }
 
       self.fbGET = function() {
-        console.log('/' + self.globalObjToPass.fb_id + '?fields=' + self.globalObjToPass.fields + '&access_token=' + self.accessToken())
         FB.api('/' + self.globalObjToPass.fb_id + '?fields=' + self.globalObjToPass.fields + '&access_token=' + self.accessToken(), function(response) {
           if(response && !response.error){
             //console.log(response);
@@ -215,7 +214,7 @@ $(document).ready(function() {
         if(self.isStreaming()){
           self.stopStream();
         } else {
-          if (self.newLiveVideoData() != "") {
+          if (self.newLiveVideoData() != null) {
             self.globalObjToPass = self.newLiveVideoData();
             self.globalObjToPass.fb_id = self.facebookID();
           } else {
@@ -241,25 +240,11 @@ $(document).ready(function() {
         } else {
           // check once more, in case the ofTypes selectbox didn't trigger the selectedType value
 
-          switch(self.selectedType().type) {
-            case 'isPage': // Page
-              if (self.selectedType().text == "My Page") { // if type isPage && text is "My Page", order is important here !!
-                self.facebookID(self.userID()); // fill the input box with the user's id
-              }
-              self.globalObjToPass.fields = "feed{id,message,reactions{name,link,type},story,likes{name}}";
-              break;
-            case 'isPost': // Post
-              self.globalObjToPass.fields = "comments{from,message,permalink_url},reactions{name,link,type},likes{name}";
-              break;
-            case 'isVideo': // Video
-              self.globalObjToPass.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
-              break;
-          }
+          self.setGlobalObj(); // does a switch case and sets obj fields accordingly
 
           self.postToThread();
         }
       }
-
 
       self.stopStream = function(){
 
@@ -288,6 +273,25 @@ $(document).ready(function() {
         self.selectedEmotion(self.availableEmotions()[0]);
       }
 
+      self.setGlobalObj = function() { // does a switch case and sets obj fields accordingly
+
+        switch(self.selectedType().type) {
+          case 'isPage': // Page
+            if (self.selectedType().text == "My Page") { // if type isPage && text is "My Page", order is important here !!
+              self.facebookID(self.userID()); // fill the input box with the user's id
+            }
+            self.globalObjToPass.fields = "feed{id,message,reactions{name,link,type},story,likes{name},permalink_url}";
+            break;
+          case 'isPost': // Post
+            self.globalObjToPass.fields = "comments{from,message,permalink_url},reactions{name,link,type},likes{name}";
+            break;
+          case 'isVideo': // Video
+            self.globalObjToPass.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
+            break;
+        }
+        console.log(self.globalObjToPass); // is not an observable !
+      }
+
       self.postToThread = function() {
         $.post('/apps/facebook_live/', { action: 'postToThread', data: JSON.stringify(self.globalObjToPass) }, function() {
           console.log("Posted to thread to wait few seconds")
@@ -307,7 +311,7 @@ $(document).ready(function() {
         if ((self.isNewVideo() || self.selectedType().type == "isVideo") && self.fbDataResponse().embed_html) {
           self.embedIframe(self.fbDataResponse().embed_html);
         }
-      }
+      } 
 
       self.handleLayout = function(data) { // the stuff that changes every 5 seconds
 
@@ -324,21 +328,16 @@ $(document).ready(function() {
               }
               if (!val.message) {
                 val.message = "";
+              } else { // only push it when the post has a message
+                arr.push(val);
               }
-              arr.push(val);
             });
 
             // can't check the count diffrence because it's limit is 25 so it will always be 25
             if(self.pagePosts().length > 0 && self.pagePosts()[0]['id'] != arr[0]['id']) { // 0 instead of last because order is diffrent (newest first)
               if(self.autoRead()){
                 //send last comment to read out loud
-                var textToRead;
-                if (arr[0]["message"]) {
-                  textToRead = arr[0]["message"];
-                }
-                if (arr[0]["story"]) {
-                  textToRead = arr[0]["story"];
-                }
+                var textToRead = arr[0]["message"];
                 console.log(textToRead);
                 robotSendTTS(textToRead);
               }
@@ -463,23 +462,7 @@ $(document).ready(function() {
 
   // listener for when input  select is changed set facebookID accordingly
   model.selectedType.subscribe(function() {
-    switch(model.selectedType().type) {
-      case 'isPage': // Page
-        if (model.selectedType().text == "My Page") { // if type isPage && text is "My Page", order is important here !!
-          model.facebookID(model.userID()); // fill the input box with the user's id
-        }
-        model.globalObjToPass.fields = "feed{id,message,reactions{name,link,type},story,likes{name}}";
-        break;
-      case 'isPost': // Post
-        model.globalObjToPass.fields = "comments{from,message,permalink_url},reactions{name,link,type},likes{name}";
-        break;
-      case 'isVideo': // Video
-        model.globalObjToPass.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
-        break;
-    }
-
-    console.log(model.globalObjToPass);
-
+    model.setGlobalObj(); // does a switch case and sets obj fields accordingly
   })
 
 });

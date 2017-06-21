@@ -54,6 +54,9 @@
 				<div class="voiceline locked">
 					<span data-bind="text: message"></span>
 				</div>
+				<div class="voiceline locked">
+					<a data-bind="attr: { href: permalink_url }" target="_blank">https://facebook.com/...</a>
+				</div>
 			</div>
 		</div>
 		
@@ -65,6 +68,9 @@
 				</div>
 				<div class="voiceline locked">
 					<span data-bind="text: message"></span>
+				</div>
+				<div class="voiceline locked">
+					Post ID: <a data-bind="attr: { href: permalink_url, text: id }" target="_blank"></a>
 				</div>
 			</div>
 		</div>
