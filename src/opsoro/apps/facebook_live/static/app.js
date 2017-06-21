@@ -1,8 +1,6 @@
 $(document).ready(function() {
 
   /* Facebook SDK Init */
-
-
   window.fbAsyncInit = function() {
     FB.init({
       appId            : '1710409469251997',
@@ -24,22 +22,23 @@ $(document).ready(function() {
      js.src = "//connect.facebook.net/en_US/sdk.js";
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
+   //end facebook init functions
 
   /* Models */
-
   var EmotionModel = function(name, index){
     var self = this;
     self.name = name;
     self.index = index;
   }
+
   var TypesModel = function(text, type){
     var self = this;
     self.text = text;
     self.type = type;
   }
 
-  /* Facebook Login */
 
+  /* Facebook Login */
   var FacebookLiveModel = function() {
       var self = this;
 
@@ -62,7 +61,7 @@ $(document).ready(function() {
       self.comments = ko.observableArray();
 
       /* Observables for handling the custom facebook requests */
-      self.customRequest = ko.observable(false); // for an extra request to get the custom id's info (type, ...)
+      //self.customRequest = ko.observable(false); // for an extra request to get the custom id's info (type, ...)
       self.isStreaming = ko.observable(false);
       self.facebookID = ko.observable(""); // when user enters his own input id
       self.ofTypes = ko.observableArray([new TypesModel("Someone else's Page", "isPage"), new TypesModel('My Page', 'isPage'), new TypesModel('(Live) Video', 'isVideo'), new TypesModel('A Post', 'isPost')]);
@@ -81,15 +80,11 @@ $(document).ready(function() {
         self.availableEmotions.push(new EmotionModel(emotions_data[i]['name'], i+1));
       }
 
+      //function that tries to log you in onstart
       self.checkFBLogin = function(){
-        if(self.getLoginStatus()){
-          self.loggedIn(true);
-        }
-        else{
+        if(!self.getLoginStatus()){
           self.fbLogin();
-          if(self.getLoginStatus()){
-            //self.loggedIn(true);
-          }
+          self.getLoginStatus();
         }
       }
 
@@ -98,7 +93,6 @@ $(document).ready(function() {
           if (response.status === 'connected') {
             return true;
           } else {
-            // self.fbLogin()
             return false;
           }
         });
@@ -106,41 +100,44 @@ $(document).ready(function() {
 
       self.fbLogin = function() {
         FB.login(function(response) {
-          console.log(response)
           if (response.status === 'connected') {
             self.setData(response);
-          } else {
-            // error ?
-            console.log(response)
           }
-        },{scope: 'user_videos, user_posts, user_photos, user_actions.video'});
+          if(response.status == "error"){
+            showMainError("Failed to login, please try again");
+          }
+          if(response.status == "unknown" && response.authResponse == null){
+            showMainError('Failed to login, please try again');
+          } else {
+            console.log(response)
+        }
+        },{scope: 'user_videos, user_photos'});
       }
 
       self.fbLogout = function() {
         FB.logout(function(response) {
-          console.log(response);
           self.unsetData();
         });
       }
 
+      //function that is called when loggin in
       self.setData = function(response) {
         self.loggedIn(true);
         self.accessToken(response.authResponse.accessToken);
         self.userID(response.authResponse.userID);
       }
 
+      //function that is called when logged out
       self.unsetData = function() {
         self.loggedIn(false);
         self.accessToken("");
         self.userID("");
-
         self.externallyStopStream();
       }
 
       self.fbGET = function() {
         FB.api('/' + self.globalObjToPass.fb_id + '?fields=' + self.globalObjToPass.fields + '&access_token=' + self.accessToken(), function(response) {
           if(response && !response.error){
-            //console.log(response);
             self.fbDataResponse(response) // could use this instead of passing through params
 
             switch(self.selectedType().type) {
@@ -158,25 +155,22 @@ $(document).ready(function() {
 
           } else {
             if(response.error.code){
+              if(response.error.code == 100){
+                showMainError('We could not find anything with this id, please enter a valid one')
+              }
               var str = 'Error code: ' + response.error.code + ', ' + response.error.message;
               console.log(str);
             }
-            showMainError('Error: Facebook Id does not exist or you have no permission to access it.');
-
             if (self.isStreaming()) { // extra check for calling stopStream externally
               self.stopStream();
               self.isStreaming(false); // always set to false before or after calling stop stream?
             }
-            // error, check if key expired -> re-login ?
-            console.log(response)
-
-            // code 100, type GraphMethodException is not existing or permission error
           }
         })
       }
 
-      /* Videos */
 
+      /* Videos */
       self.startNewLiveStream = function() {
         FB.ui({
             display: 'popup',
@@ -184,7 +178,7 @@ $(document).ready(function() {
             phase: 'create'
         }, function(response) {
             if (!response.id) {
-              alert('dialog canceled');
+              showMainMessage('You have not created a live video')
               return;
             }
 
@@ -198,14 +192,12 @@ $(document).ready(function() {
       }
 
       self.newVideoRequest = function() {
-        console.log(self.newLiveVideoData());
         FB.ui({
           display: 'popup',
           method: 'live_broadcast',
           phase: 'publish',
           broadcast_data: self.newLiveVideoData(),
         }, function(response) {
-          //console.log(response)
           //  alert("video status: \n" + response.status);
 
           if (response && response.status === "live") {
@@ -217,10 +209,9 @@ $(document).ready(function() {
         });
       }
 
-      /* Custom page input */
 
+      /* Custom page input */
       self.toggleStreaming = function(){ // can only be clicked when a Facebook id is filled in
-        console.log(self.isStreaming());
         if(self.isStreaming()){
           self.stopStream();
         } else {
@@ -230,12 +221,9 @@ $(document).ready(function() {
           } else {
             self.isNewVideo(false); // firing custom request so disable the ability to start a new live video
             self.globalObjToPass.fb_id = self.facebookID(); // sending the id in an object because handleData expects an object
-            console.log(self.facebookID()); // make sure facebookID is bound to HTML without () for two-way binding
           }
-
           self.handleData(); // this uses the global obj
         }
-
         self.isStreaming(!self.isStreaming());
       }
 
@@ -243,15 +231,12 @@ $(document).ready(function() {
 
       self.handleData = function() { // function will be used for a new live video but also for custom id input so don't set isNewVideo(true) likewise in here
         self.facebookID(self.globalObjToPass.fb_id.replace(/ /g, '')); // is set in the subscriber
-        console.log(self.facebookID());
         if(self.isNewVideo()) {
           self.globalObjToPass.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
           self.newVideoRequest();
         } else {
           // check once more, in case the ofTypes selectbox didn't trigger the selectedType value
-
           self.setGlobalObj(); // does a switch case and sets obj fields accordingly
-
           self.postToThread();
         }
       }
@@ -278,6 +263,7 @@ $(document).ready(function() {
         self.comments.removeAll();
         self.pagePosts.removeAll();
         self.views(0);
+        self.likes(0);
       }
 
       self.hardResetLayout = function() { // reset everything on log out or something, not used anywhere atm!
@@ -308,7 +294,7 @@ $(document).ready(function() {
 
       self.postToThread = function() {
         $.post('/apps/facebook_live/', { action: 'postToThread', data: JSON.stringify(self.globalObjToPass) }, function() {
-          console.log("Posted to thread to wait few seconds")
+
         });
       }
 
@@ -351,8 +337,7 @@ $(document).ready(function() {
             if(self.pagePosts().length > 0 && self.pagePosts()[0]['id'] != arr[0]['id']) { // 0 instead of last because order is diffrent (newest first)
               if(self.autoRead()){
                 //send last comment to read out loud
-                var textToRead = arr[0]["message"];
-                robotSendTTS(textToRead);
+                robotSendTTS(arr[0]["message"]);
               }
               self.playEmotion();
             }
@@ -429,7 +414,6 @@ $(document).ready(function() {
       }
 
       self.sendPost = function(action, data){
-        console.log("Posted to stop stream! Please stahp!");
         $.ajax({
           dataType: 'json',
           type: 'POST',
@@ -439,7 +423,6 @@ $(document).ready(function() {
             if (!data.success) {
               showMainError(data.message);
             } else {
-              console.log("Stream stopped?");
               return data.config;
             }
           }
@@ -465,7 +448,6 @@ $(document).ready(function() {
   // listener for when input is changed / facebookID, change the selectbox accordingly
   model.facebookID.subscribe(function() {
     model.globalObjToPass.fb_id = model.facebookID().replace(/ /g, ''); // set it everytime it changes, replace spaces
-    console.log(model.globalObjToPass.fb_id);
     if (model.facebookID().indexOf("_") > 0) { // post ids have an underscore in them
       model.setSelectedType('type', 'isPost'); // change the selectbox accordingly
     }
