@@ -11,12 +11,14 @@
 
 	<div id="fb-root"></div> <!-- required for the fb init -->
 
-	<div>
+	<div class="upper-section">
 		<button class="button info" data-bind="click: !loggedIn() ? fbLogin : fbLogout, text: !loggedIn() ? 'Log into Facebook' : 'Log out of Facebook', enable: fbInitialized()"></button>
 	</div>
-	<div>
+	<div class="middle-section">
 		<div>
-			<span  class="fixed_width" data-bind="text: isNewVideo() ? 'Your new live video ID:' : 'Enter a Facebook ID:'"></span>
+			<span  class="fixed_width" data-bind="visible: !isNewVideo() && !selectedType() || !(selectedType().text == 'My Page')">Enter a Facebook ID: </span>
+			<span  class="fixed_width" data-bind="visible: !isNewVideo() && selectedType() && (selectedType().text == 'My Page')">Your Facebook user ID: </span>
+			<span  class="fixed_width" data-bind="visible: isNewVideo() && !(selectedType().text == 'My Page')">Your new Facebook live video ID: </span>
 
 			<input type="text" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter your Facebook page id, post id or an existing live_video id ...">
 		</div>
@@ -35,43 +37,43 @@
 			</button>
 		</div>
 	</div>
+	<div class="lower-section" data-bind="">
+		<div class="iframe-container" data-bind="visible: isNewVideo(), html: embedIframe">
 
-	<div class="iframe-container" data-bind="visible: isNewVideo(), html: embedIframe">
+		</div>
+		<div class="rightside">
+			<p style="float:left" data-bind="visible: isNewVideo()">Views: <span data-bind="text: views"></span></p>
+			<p data-bind="visible: isNewVideo()">Likes: <span data-bind="text: likes()"></span></p>
+		</div>
 
-	</div>
-	<div class="rightside">
-		<p style="float:left" data-bind="visible: isNewVideo()">Views: <span data-bind="text: views"></span></p>
-		<p data-bind="visible: isNewVideo()">Likes: <span data-bind="text: likes()"></span></p>
-	</div>
-
-	<div class="rightside" data-bind="visible: comments().length > 0, sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
-		<div id="voicelines" class="bubble">
-			<div>
-				<span class="voiceline locked name" data-bind="text: from.name"></span>
-			</div>
-			<div class="voiceline locked">
-				<span data-bind="text: message"></span>
+		<div class="rightside" data-bind="visible: comments().length > 0, sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
+			<div id="voicelines" class="bubble">
+				<div>
+					<span class="voiceline locked name" data-bind="text: from.name"></span>
+				</div>
+				<div class="voiceline locked">
+					<span data-bind="text: message"></span>
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<!-- For the page's posts -->
-	<div class="rightside" data-bind="sortable: { data: pagePosts, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }, visible: pagePosts().length > 0">
-		<div id="voicelines" class="bubble">
-			<div>
-				<span class="voiceline locked name" data-bind="text: story"></span>
-			</div>
-			<div class="voiceline locked">
-				<span data-bind="text: message"></span>
+		<!-- For the page's posts -->
+		<div class="rightside" data-bind="sortable: { data: pagePosts, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }, visible: pagePosts().length > 0">
+			<div id="voicelines" class="bubble">
+				<div>
+					<span class="voiceline locked name" data-bind="text: story"></span>
+				</div>
+				<div class="voiceline locked">
+					<span data-bind="text: message"></span>
+				</div>
 			</div>
 		</div>
+
+		<div class="togglebox">
+			<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
+			<label><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
+			<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
 	</div>
-
-
-	<div class="togglebox">
-		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
-		<label><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
-		<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
 	</div>
 
 	{% if not online %}

@@ -418,6 +418,7 @@ $(document).ready(function() {
     switch (data.action) {
       case "threadRunning":
         if(data.fb_id && data.fields) {
+          console.log(data);
           model.fbGET(data);
         }
         break;
