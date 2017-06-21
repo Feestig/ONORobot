@@ -252,6 +252,7 @@ $(document).ready(function() {
             self.postToThread(obj);
             break;
           case 2: // Video
+            self.isPost(false);
             self.isLiveVideo(true); // should be just isVideo ...
             obj.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
             self.postToThread(obj);

@@ -33,7 +33,11 @@
 
     color: #fff;
 }
-
+a {
+    text-decoration: none;
+    font-weight: normal;
+    color: #2ba6cb;
+}
 /*Speech bubble*/
 .bubble
 {

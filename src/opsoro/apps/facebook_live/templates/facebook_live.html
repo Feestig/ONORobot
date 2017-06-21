@@ -46,13 +46,17 @@
 	<div class="iframe-container" data-bind="visible: isNewVideo() || isLiveVideo(), html: embedIframe">
 
 	</div>
-	<div data-bind="css: { rightside: isLiveVideo(), leftside: isPost()}">
+	<!-- class="rightside" -->
+	<div  data-bind="css: { rightside: isLiveVideo(), leftside: !isLiveVideo()}">
 		<p style="float:left" data-bind="visible: isNewVideo() || isLiveVideo()">Views: <span data-bind="text: views"></span></p>
 		<p data-bind="visible: isPost() || isLiveVideo() || isNewVideo()">Likes: <span data-bind="text: likes()"></span></p>
 	</div>
 <!--10213021999524227  -->
-<!-- class="rightside commentscontainer"  -->
-	<div data-bind="css:{ 'rightside commentscontainer':isLiveVideo(), commentscontainerpost: isPost()},visible: comments().length > 0, sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
+<!--
+10213000734392612_10213022173688581
+-->
+<!-- class="rightside commentscontainer"   -->
+	<div data-bind="css:{ 'rightside commentscontainer':isLiveVideo(), commentscontainerpost: !isLiveVideo()},visible: comments().length > 0, sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 		<div id="voicelines" class="bubble">
 			<div>
 				<span class="voiceline locked name" data-bind="text: from.name"></span>
