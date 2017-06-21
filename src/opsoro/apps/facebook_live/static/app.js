@@ -238,8 +238,8 @@ $(document).ready(function() {
       /* General */
 
       self.handleData = function() { // function will be used for a new live video but also for custom id input so don't set isNewVideo(true) likewise in here
-        self.facebookID(self.globalObjToPass.fb_id); // is set in the subscriber
-
+        self.facebookID(self.globalObjToPass.fb_id.replace(/ /g, '')); // is set in the subscriber
+        console.log(self.facebookID());
         if(self.isNewVideo()) {
           self.globalObjToPass.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
           self.newVideoRequest();
@@ -253,8 +253,10 @@ $(document).ready(function() {
       }
 
       self.stopStream = function(){
+        if (self.isStreaming()) { // extra check if stopStream is called externally
+          self.sendPost('stopThread', {});
+        }
 
-        self.sendPost('stopThread', {});
         self.isStreaming(false);
 
         // reset lay-out
@@ -296,7 +298,6 @@ $(document).ready(function() {
             self.globalObjToPass.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
             break;
         }
-        console.log(self.globalObjToPass); // is not an observable !
       }
 
       self.postToThread = function() {
@@ -454,8 +455,8 @@ $(document).ready(function() {
 
   // listener for when input is changed / facebookID, change the selectbox accordingly
   model.facebookID.subscribe(function() {
-    console.log(model.facebookID());
-    model.globalObjToPass.fb_id = model.facebookID(); // set it everytime it changes
+    model.globalObjToPass.fb_id = model.facebookID().replace(/ /g, ''); // set it everytime it changes, replace spaces
+    console.log(model.globalObjToPass.fb_id);
     if (model.facebookID().indexOf("_") > 0) { // post ids have an underscore in them
       model.setSelectedType('type', 'isPost'); // change the selectbox accordingly
     }
