@@ -317,7 +317,7 @@ $(document).ready(function() {
         if ((self.isNewVideo() || self.selectedType().type == "isVideo") && self.fbDataResponse().embed_html) {
           self.embedIframe(self.fbDataResponse().embed_html);
         }
-      } 
+      }
 
       self.handleLayout = function(data) { // the stuff that changes every 5 seconds
 

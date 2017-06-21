@@ -1,20 +1,20 @@
 # twitter Blockly integration
-this class holds the code that needs to be executed in the blockly module.
+This class holds the code that needs to be executed in the blockly module.
 # setup
 ### twitter.py
-the main class ```_twitter``` holds all the code needed for authorizing requests. It also holds a second class for the streamreader
+The main class ```_twitter``` holds all the code needed for authorizing requests. It also holds a second class for the streamreader.
 
-at the bottom of the code declare ```Twitter = _twitter()``` so that this class can be accessed by apps and scripts
+At the bottom of the code declare ```Twitter = _twitter()``` so that this class can be accessed by apps and scripts.
 
 ### scripthost.py
-in order to add a module in blockly that is in an app folder ie. ```sociono/blockly``` to work correctly you need to make a few changes in ```scripthost.py``` located in the folder lua_scripting.
+In order to add a module in blockly that is in an app folder ie. ```sociono/blockly``` to work correctly you need to make a few changes in ```scripthost.py``` located in the folder lua_scripting.
 ```
 from opsoro.twitter import Twitter #import the class
 
 ```
-in the function ```setup_runtime``` add the line ```g["Twitter"] = Twitter```
+In the function ```setup_runtime``` add the line ```g["Twitter"] = Twitter```
 # Code
-there are a few global variables
+There are a few global variables
 ```
 access_token = 'token'
 access_token_secret = 'token secret'
@@ -38,7 +38,7 @@ TweetMax = 0 # maximum allowed tweets
 ```
 ### get a single tweet based on a hashtag
 
-the function ```get_tweet(self, hashtag)``` recieves the hashtag needed to listen in on and initializes a stoppableThread. we also check wether the hastag exists so that the code doesn't run without a valid input.
+The function ```get_tweet(self, hashtag)``` recieves the hashtag needed to listen in on and initializes a stoppableThread. We also check wether the hastag exists so that the code doesn't run without a valid input.
 ```
 def get_tweet(self, hashtag):
       global loop_T
@@ -49,7 +49,7 @@ def get_tweet(self, hashtag):
       else:
           print_info("no input given")
 ```
-in ```start_streamreader(self, twitterwords)``` a stream is started that listens for new tweets ```twitterwords``` is the hashtag that is being listened on.
+In ```start_streamreader(self, twitterwords)``` a stream is started that listens for new tweets, ```twitterwords``` is the hashtag that is being listened on.
 ```
 def start_streamreader(self, hashtag):
     global hasRecievedTweet
@@ -59,7 +59,7 @@ def start_streamreader(self, hashtag):
     hasRecievedTweet = False #if adding ui elements to blockly this can be used to get out of a loop
     myStream.filter(track=social_id, async=True);
 ```
-A StoppableThread is used for checking if the listener has recieved a tweet or not. if ```hasRecievedTweet``` is set to true then the StoppableThread will be stopped.
+A StoppableThread is used for checking if the listener has recieved a tweet or not. If ```hasRecievedTweet``` is set to true then the StoppableThread will be stopped.
 ```
 def wait_for_tweet(self):
     time.sleep(1)
@@ -73,7 +73,7 @@ def wait_for_tweet(self):
             loop_T.stop()
             pass
 ```
-```stop_streamreader()``` is used to stop the streamreader. In this function we will also stop the sound from playing. we set the value stopLoop to True. this serves as a backup for when you want to interrupt the get_tweet_amount
+```stop_streamreader()``` is used to stop the streamreader and stop the sound. The value for stopLoop is set to True. This serves a way for when you want to interrupt the get_tweet_amount manually.
 
 ```
 def stop_streamreader(self):
@@ -87,7 +87,7 @@ def stop_streamreader(self):
     print_info("stop twitter")
 ```
 ### return a set amount of tweets based on a hashtag
-start the stream and set the amout of tweets that it needs to show. The check for a valid input is also done here.
+Start the stream and set the amout of tweets that it needs to show. The check for a valid input is also done here.
 ```
 def start_streamreader_amount(self, hashtag, times):
       global myStream
@@ -104,7 +104,7 @@ def start_streamreader_amount(self, hashtag, times):
           stopLoop = False
           loop_TC = StoppableThread(target=self.count_tweets)
 ```
-the StoppableThread is used to check if the amounts of recieved tweets is equal the the maximum of allowed tweets ot if stopLoop is set to True. in these cases the loop and the stream will be stopped.
+The StoppableThread is used to check if the amounts of recieved tweets is equal the the maximum of allowed tweets or if stopLoop is set to True. In these cases the loop and the stream will be stopped.
 ```
 def count_tweets(self):
       time.sleep(1)  # delay
@@ -120,71 +120,4 @@ def count_tweets(self):
               print_info("stop twitter stream")
               loop_TC.stop()
               pass
-```
-# deleted code *
-these codes need to be uncommented. If this is done the program will wait untill it's finished before playing a new tweet
-```
-loop_S = None # loop var for wait_for_sound
-SoundPosition = 0 #global var for the sound position
-Tweets = [] # this array keeps track of all incoming tweets
-```
-in stop_streamreader. this checks if the array with tweets is not empty. In this case it will play the sound
-```
-if Tweets:
-    self.playSound()
-```
-in wait_for_tweet before loop_T.stop():
-```
-self.playSound()
-```
-in processJson
-```
-global Tweets
-Tweets.insert(len(Tweets),data) #inserts a tweet at the last position
-```
-if the array has 1 item it will play the sound and emotion once. else it will use a stoppable thread to play all the tweets.
-```
-def playSound(self):
-   global loop_S
-   if len(Tweets) == 1:
-       self.playTweetInLanguage(Tweets[0])
-       self.playEmotion(Tweets[0])
-   elif len(Tweets) > 1:
-       loop_S = StoppableThread(target=self.wait_for_sound)
-```
-plays the sound of the arrays current position
-```
-def playMultipleTweets(self, position):
-   self.playTweetInLanguage(Tweets[position])
-```
-The StoppableThread iterates through the array and increases by 1 after the sound has played. If the position is equal to the lenght of the array it will stop.
-```
-def wait_for_sound(self):
-   time.sleep(0.05)
-
-   global loop_S
-   global SoundPosition
-   while not loop_S.stopped():
-       Sound.wait_for_sound()
-       global autoRead
-       if autoRead == 1:
-           self.playMultipleTweets(SoundPosition)
-           SoundPosition = SoundPosition + 1
-       if SoundPosition == len(Tweets):
-           loop_S.stop()
-           pass
-```
-function to stop the streamreader without giving the order to play a sound.
-```
- def stop_streamreader_on_exit(self):
-     global myStream
-     global hasRecievedTweet
-     myStream.disconnect()
-     hasRecievedTweet = False
-```
-comment these 3 lines in the streamlistener
-```
-if autoRead == True:
-      Twitter.playEmotion(dataToSend)
-      Twitter.playTweetInLanguage(dataToSend)
 ```
