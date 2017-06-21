@@ -14,8 +14,7 @@
 	<div class="upper-section">
 		<button class="button" data-bind="css: {success : !loggedIn(), alert : loggedIn()}, click: !loggedIn() ? fbLogin : fbLogout, enable: fbInitialized()">
 			<i class="fa fa-facebook big-icon" aria-hidden="true"></i>
-			<span data-bind="text: !loggedIn() ? 'Log in' : 'Log out '">
-			</span>
+			<span data-bind="text: !loggedIn() ? 'Log in' : 'Log out '"></span>
 		</button>
 	</div>
 	<div class="middle-section">
@@ -31,7 +30,7 @@
 				<span  class="fixed_width">Is of type: </span>
 				<select data-bind="enable: !isNewVideo(), options: ofTypes, optionsText: 'text', value: selectedType"></select>
 			</div>
-			<button class="button round info" data-bind="css:{success : !isStreaming(), alert : isStreaming()},click: toggleStreaming, enable: loggedIn() && facebookID()">
+			<button class="button round info" data-bind="css: { success: !isStreaming(), alert: isStreaming() }, click: toggleStreaming, enable: loggedIn() && facebookID()">
 				<i class="fa" aria-hidden="true" data-bind="css: {'fa-play' : !isStreaming(), 'fa-stop' : isStreaming()}"></i>
 				<span class="text" data-bind="text: !isStreaming() && facebookID() ? 'Start Stream' : 'Stop Stream'"></span>
 			</button>
