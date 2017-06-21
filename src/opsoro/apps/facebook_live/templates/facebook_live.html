@@ -21,11 +21,11 @@
 	<div class="middle-section">
 		<div class="start-stream">
 			<div>
-				<span  class="fixed_width" data-bind="visible: !isNewVideo() && !selectedType() || !(selectedType().text == 'My Page')">Enter a Facebook ID: </span>
-				<span  class="fixed_width" data-bind="visible: !isNewVideo() && selectedType() && (selectedType().text == 'My Page')">Your Facebook user ID: </span>
-				<span  class="fixed_width" data-bind="visible: isNewVideo() && !(selectedType().text == 'My Page')">Your new Facebook live video ID: </span>
+					<span class="fixed_width" data-bind="visible: !isNewVideo() && !selectedType() || !(selectedType().text == 'My Page')">Enter a Facebook ID: </span>
+					<span class="fixed_width" data-bind="visible: !isNewVideo() && selectedType() && (selectedType().text == 'My Page')">Your Facebook user ID: </span>
+					<span class="fixed_width" data-bind="visible: isNewVideo() && !(selectedType().text == 'My Page')">Your new Facebook live video ID: </span>
 
-				<input type="text" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter your Facebook page id, post id or an existing live_video id ...">
+					<input type="text" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter your Facebook page id, post id or an existing live_video id ...">
 			</div>
 			<div>
 				<span  class="fixed_width">Is of type: </span>
@@ -61,6 +61,9 @@
 				<div class="voiceline locked">
 					<span data-bind="text: message"></span>
 				</div>
+				<div class="voiceline locked">
+					<a data-bind="attr: { href: permalink_url }" target="_blank">https://facebook.com/...</a>
+				</div>
 			</div>
 		</div>
 
@@ -72,6 +75,9 @@
 				</div>
 				<div class="voiceline locked">
 					<span data-bind="text: message"></span>
+				</div>
+				<div class="voiceline locked">
+					Post ID: <a data-bind="attr: { href: permalink_url, text: id }" target="_blank"></a>
 				</div>
 			</div>
 		</div>
