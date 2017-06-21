@@ -157,6 +157,11 @@ $(document).ready(function() {
             }
 
           } else {
+            if(response.error.code){
+              var str = 'Error code: ' + response.error.code + ', ' + response.error.message;
+              console.log(str);
+            }
+            showMainError('Error from facebook try login in agian');
             // error, check if key expired -> re-login ?
             console.log(response)
 
@@ -219,7 +224,7 @@ $(document).ready(function() {
             self.globalObjToPass.fb_id = self.facebookID();
           } else {
             self.isNewVideo(false); // firing custom request so disable the ability to start a new live video
-            self.globalObjToPass.fb_id = self.facebookID() // sending the id in an object because handleData expects an object
+            self.globalObjToPass.fb_id = self.facebookID(); // sending the id in an object because handleData expects an object
             console.log(self.facebookID()); // make sure facebookID is bound to HTML without () for two-way binding
           }
 
@@ -358,7 +363,7 @@ $(document).ready(function() {
           if(data.comments && data.comments.data.length > 0) {
             var arr_comments = data.comments.data;
 
-            if(self.comments().length != arr_comments.length){
+            if(self.comments()['id'] != arr_comments['id']){
               if(self.comments().length < arr_comments.length && self.comments().length != 0){
                 if(self.autoRead()){
                   //send last comment to read out loud
