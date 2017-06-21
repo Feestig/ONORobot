@@ -248,11 +248,13 @@ $(document).ready(function() {
           case 1: // Post
             self.isLiveVideo(false);
             self.isPost(true);
+            self.isPage(false);
             obj.fields = "comments{from,message,permalink_url},reactions{name,link,type},likes{name}";
             self.postToThread(obj);
             break;
           case 2: // Video
             self.isLiveVideo(true); // should be just isVideo ...
+            self.isPage(false);
             obj.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
             self.postToThread(obj);
             break;
