@@ -161,7 +161,8 @@ $(document).ready(function() {
               var str = 'Error code: ' + response.error.code + ', ' + response.error.message;
               console.log(str);
             }
-            showMainError('Error from facebook try login in agian');
+            showMainError('Error: Facebook Id does not exist or you have no permission to access it.');
+            self.stopStream(); // should stop stream
             // error, check if key expired -> re-login ?
             console.log(response)
 
@@ -215,7 +216,7 @@ $(document).ready(function() {
       /* Custom page input */
 
       self.toggleStreaming = function(){ // can only be clicked when a Facebook id is filled in
-
+        console.log(self.isStreaming());
         if(self.isStreaming()){
           self.stopStream();
         } else {
@@ -254,6 +255,7 @@ $(document).ready(function() {
       self.stopStream = function(){
 
         self.sendPost('stopThread', {});
+        self.isStreaming(false);
 
         // reset lay-out
         self.resetLayout();
@@ -262,7 +264,7 @@ $(document).ready(function() {
       self.resetLayout = function() {
         self.globalObjToPass = { fb_id: "", fields: "" }; // reset the global
         self.isNewVideo(false);
-        self.newLiveVideoData("");
+        self.newLiveVideoData();
         self.embedIframe("");
         self.fbDataResponse("");
         self.comments.removeAll();
@@ -272,7 +274,7 @@ $(document).ready(function() {
 
       self.hardResetLayout = function() { // reset everything on log out or something, not used anywhere atm!
         self.facebookID("");
-        self.selectedType(self.ofTypes()[0]); // reset to element 0
+        self.setSelectedType(self.ofTypes()[0]); // reset to element 0
         self.autoRead(false);
         self.reactToLikes(false);
         self.selectedEmotion(self.availableEmotions()[0]);
@@ -462,7 +464,7 @@ $(document).ready(function() {
     }
 
     // stop stream when ID gets changed ?
-    // model.stopStream();
+    model.stopStream();
   })
 
   // listener for when input  select is changed set facebookID accordingly
