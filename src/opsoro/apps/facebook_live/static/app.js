@@ -8,6 +8,7 @@ $(document).ready(function() {
       appId            : '1710409469251997',
       autoLogAppEvents : true,
       xfbml            : true,
+      status           : true,
       version          : 'v2.9'
     });
     FB.AppEvents.logPageView();
@@ -31,17 +32,18 @@ $(document).ready(function() {
     self.name = name;
     self.index = index;
   }
-
-  var TypesModel = function(text, index) {
+  var TypesModel = function(text, type){
     var self = this;
     self.text = text;
-    self.index = index;
+    self.type = type;
   }
 
   /* Facebook Login */
 
   var FacebookLiveModel = function() {
       var self = this;
+
+      self.globalObjToPass = { fb_id: "", fields: "" }; // use this for setting the id's & fields to pass to the Facebook GET request
 
       /* Observables for facebook init */
       self.fbInitialized = ko.observable(false);
@@ -53,7 +55,7 @@ $(document).ready(function() {
 
       /* Observables for handling the new live video stream */
       self.newLiveVideoData = ko.observable(""); // holds the new live video's data
-      self.isNewVideo = ko.observable(); // check for starting a new live video -> toggle lay-out & functionality
+      self.isNewVideo = ko.observable(false); // check for starting a new live video -> toggle lay-out & functionality
       self.fbDataResponse = ko.observable(); // catches the facebook response every interval ... needed to set embed_html once
       self.embedIframe = ko.observable("");
       self.views = ko.observable(0)
@@ -63,12 +65,10 @@ $(document).ready(function() {
       self.customRequest = ko.observable(false); // for an extra request to get the custom id's info (type, ...)
       self.isStreaming = ko.observable(false);
       self.facebookID = ko.observable(""); // when user enters his own input id
-      self.ofTypes = ko.observableArray([new TypesModel('Page', 0), new TypesModel('Post', 1), new TypesModel('Live Video', 2)]);
+      self.ofTypes = ko.observableArray([new TypesModel("Someone else's Page", "isPage"), new TypesModel('My Page', 'isPage'), new TypesModel('(Live) Video', 'isVideo'), new TypesModel('A Post', 'isPost')]);
       self.selectedType = ko.observable(); // catch the selected type for the given facebook ID
-      self.isPage = ko.observable(false);
       self.pagePosts = ko.observableArray();
-      self.isPost = ko.observable(false);
-      self.isLiveVideo = ko.observable(false);
+
 
       /* General observables */
       self.autoRead = ko.observable(false);
@@ -107,7 +107,6 @@ $(document).ready(function() {
         FB.login(function(response) {
           console.log(response)
           if (response.status === 'connected') {
-            console.log(response)
             self.setData(response);
           } else {
             // error ?
@@ -138,30 +137,25 @@ $(document).ready(function() {
         self.stopStream();
       }
 
-      self.fbGET = function(obj) {
-        FB.api('/' + obj.fb_id + '?fields=' + obj.fields + '&access_token=' + self.accessToken(), function(response) {
+      self.fbGET = function() {
+        FB.api('/' + self.globalObjToPass.fb_id + '?fields=' + self.globalObjToPass.fields + '&access_token=' + self.accessToken(), function(response) {
           if(response && !response.error){
             //console.log(response);
             self.fbDataResponse(response) // could use this instead of passing through params
 
-            if (self.isNewVideo()) {
-
-              self.setIFrame(); // should only happen once, does it ?
-              self.handleLayout(response)
-
-            } else if(self.isPage()) {
-              // get feed posts?
-              self.handleLayout(response.feed); // contains data & paging object
-
-            } else if(self.isPost()) {
-              // get post's comments ect ... ?
-              self.handleLayout(response);
-            } else if(self.isLiveVideo()) {
-
-              self.setIFrame();
-              self.handleLayout(response);
-
+            switch(self.selectedType().type) {
+              case 'isPage': // Page
+                self.handleLayout(response.feed);
+                break;
+              case 'isPost': // Post
+                self.handleLayout(response);
+                break;
+              case 'isVideo': // Video
+                self.setIFrame();
+                self.handleLayout(response)
+                break;
             }
+
           } else {
             // error, check if key expired -> re-login ?
             console.log(response)
@@ -184,24 +178,25 @@ $(document).ready(function() {
             self.newLiveVideoData(response);
             self.facebookID(response.id);
             self.isNewVideo(true);
-            self.selectedType(self.ofTypes()[2]); // setting the selected option to "Live Video"
+
+            self.setSelectedType('type', 'isVideo');
           }
         );
       }
 
-      self.newVideoRequest = function(obj) {
+      self.newVideoRequest = function() {
         FB.ui({
           display: 'popup',
           method: 'live_broadcast',
           phase: 'publish',
-          broadcast_data: obj,
+          broadcast_data: self.globalObjToPass,
         }, function(response) {
           //console.log(response)
           //  alert("video status: \n" + response.status);
 
           if (response && response.status === "live") {
             self.isNewVideo(false); // the video has already streamed so it's not new anymore ...
-            self.postToThread(obj);
+            self.postToThread();
           } else {
             // error dialog is canceld before video went on air !!!
           }
@@ -210,58 +205,40 @@ $(document).ready(function() {
 
       /* Custom page input */
 
-      self.toggleStreaming = function(){
+      self.toggleStreaming = function(){ // can only be clicked when a Facebook id is filled in
         if(self.isStreaming()){
           self.stopStream();
         } else {
 
-          var obj;
-
           if (self.newLiveVideoData() != "") {
-            obj = self.newLiveVideoData();
-            obj.fb_id = self.facebookID();
-            obj.fields = "";
+            self.globalObjToPass = self.newLiveVideoData();
+            self.globalObjToPass.fb_id = self.facebookID();
           } else {
             self.isNewVideo(false); // firing custom request so disable the ability to start a new live video
-            obj = { fb_id: self.facebookID() } // sending the id in an object because handleData expects an object
+            self.globalObjToPass = { fb_id: self.facebookID() } // sending the id in an object because handleData expects an object
             console.log(self.facebookID()); // make sure facebookID is bound to HTML without () for two-way binding
           }
 
-          self.handleData(obj);
+          self.handleData(); // this uses the global obj
         }
 
         self.isStreaming(!self.isStreaming()); // will this be instantly executed or only after the functions above ??
       }
 
-      self.requestByCustomID = function(obj) {
+      /* General */
 
-        // Let's get the type of the requested info first ...
-        // is page, is post, is video?
+      self.handleData = function() { // function will be used for a new live video but also for custom id input so don't set isNewVideo(true) likewise in here
+        self.facebookID(self.globalObjToPass.fb_id);
 
-        switch(self.selectedType().index) {
-          case 0: // Page
-            self.isLiveVideo(false);
-            self.isPage(true);
-            obj.fields = "feed{id,message,reactions{ame,link,type},story,likes{name}}";
-            self.postToThread(obj);
-            break;
-          case 1: // Post
-            self.isLiveVideo(false);
-            self.isPost(true);
-            obj.fields = "comments{from,message,permalink_url},reactions{name,link,type},likes{name}";
-            self.postToThread(obj);
-            break;
-          case 2: // Video
-            self.isPost(false);
-            self.isLiveVideo(true); // should be just isVideo ...
-            obj.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
-            self.postToThread(obj);
-            break;
+
+        if(self.isNewVideo()) {
+          self.globalObjToPass.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
+          self.newVideoRequest();
+        } else {
+          self.postToThread();
         }
-
       }
 
-      /* General */
 
       self.stopStream = function(){
 
@@ -272,14 +249,13 @@ $(document).ready(function() {
       }
 
       self.resetLayout = function() {
+        self.globalObjToPass = { fb_id: "", fields: "" }; // reset the global
         self.isNewVideo(false);
         self.newLiveVideoData("");
         self.embedIframe("");
         self.fbDataResponse("");
         self.comments.removeAll();
         self.pagePosts.removeAll();
-        self.isNewVideo(false);
-        self.isLiveVideo(false);
         self.views(0);
       }
 
@@ -291,27 +267,23 @@ $(document).ready(function() {
         self.selectedEmotion(self.availableEmotions()[0]);
       }
 
-
-      self.handleData = function(obj) { // function will be used for a new live video but also for custom id input so don't set isNewVideo(true) likewise in here
-        self.facebookID(obj.fb_id);
-
-        if(self.isNewVideo()) {
-          obj.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
-          self.newVideoRequest(obj);
-        } else {
-          self.requestByCustomID(obj);
-        }
-      }
-
-      self.postToThread = function(obj) {
-        $.post('/apps/facebook_live/', { action: 'postToThread', data: JSON.stringify(obj) }, function() {
+      self.postToThread = function() {
+        $.post('/apps/facebook_live/', { action: 'postToThread', data: JSON.stringify(self.globalObjToPass) }, function() {
           console.log("Posted to thread to wait few seconds")
         });
       }
 
+      self.setSelectedType = function(typeOrText, valueToMatch) {
+        // do foreach types and set it where type is Video
+        $.each(self.ofTypes(), function(k, v) {
+          if (v[typeOrText] == valueToMatch) {
+            self.selectedType(v); // setting the selected option to "Video"
+          }
+        })
+      }
 
       self.setIFrame = function() {
-        if ((self.isNewVideo() || self.isLiveVideo()) && self.fbDataResponse().embed_html) {
+        if ((self.isNewVideo() || self.selectedType().type == "isVideo") && self.fbDataResponse().embed_html) {
           self.embedIframe(self.fbDataResponse().embed_html);
         }
       }
@@ -447,6 +419,7 @@ $(document).ready(function() {
     switch (data.action) {
       case "threadRunning":
         if(data.fb_id && data.fields) {
+          console.log(data);
           model.fbGET(data);
         }
         break;
@@ -455,9 +428,34 @@ $(document).ready(function() {
 
   // listener for when input is changed / facebookID, change the selectbox accordingly
   model.facebookID.subscribe(function() {
+    console.log(model.facebookID());
     if (model.facebookID().indexOf("_") > 0) { // post ids have an underscore in them
-      model.selectedType(model.ofTypes()[1]); // change the selectbox accordingly
+      model.setSelectedType('type', 'isPost'); // change the selectbox accordingly
     }
+    if (model.facebookID() == model.userID()) {
+      model.setSelectedType('text', 'My Page'); // if facebook id equals the logged in user's id -> set selectbox to "My Page"
+    }
+  })
+
+  // listener for when input  select is changed set facebookID accordingly
+  model.selectedType.subscribe(function() {
+    switch(model.selectedType().type) {
+      case 'isPage': // Page
+        if (model.selectedType().text == "My Page") { // if type isPage && text is "My Page", order is important here !!
+          model.facebookID(model.userID()); // fill the input box with the user's id
+        }
+        model.globalObjToPass.fields = "feed{id,message,reactions{name,link,type},story,likes{name}}";
+        break;
+      case 'isPost': // Post
+        model.globalObjToPass.fields = "comments{from,message,permalink_url},reactions{name,link,type},likes{name}";
+        break;
+      case 'isVideo': // Video
+        model.globalObjToPass.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
+        break;
+    }
+
+    console.log(model.globalObjToPass);
+
   })
 
 });

@@ -11,19 +11,14 @@
 
 	<div id="fb-root"></div> <!-- required for the fb init -->
 
-	<div>
+	<div class="upper-section">
 		<button class="button info" data-bind="click: !loggedIn() ? fbLogin : fbLogout, text: !loggedIn() ? 'Log into Facebook' : 'Log out of Facebook', enable: fbInitialized()"></button>
-		<div>
-			<p class="fixed_width">Your user ID: </p><span class="fixed_width" data-bind="text: userID()"></span>
-		</div>
 	</div>
-	<div>
-		<div data-bind="visible: isNewVideo()">
-			<span class="fixed_width">Your new live video ID:</span><span class="fixed_width" data-bind="text: "></span>
-		</div>
-
+	<div class="middle-section">
 		<div>
-			<span  class="fixed_width">Enter a Facebook ID: </span>
+			<span  class="fixed_width" data-bind="visible: !isNewVideo() && !selectedType() || !(selectedType().text == 'My Page')">Enter a Facebook ID: </span>
+			<span  class="fixed_width" data-bind="visible: !isNewVideo() && selectedType() && (selectedType().text == 'My Page')">Your Facebook user ID: </span>
+			<span  class="fixed_width" data-bind="visible: isNewVideo() && !(selectedType().text == 'My Page')">Your new Facebook live video ID: </span>
 
 			<input type="text" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter your Facebook page id, post id or an existing live_video id ...">
 		</div>
@@ -35,27 +30,24 @@
 		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && facebookID()">
 			<span class="text" data-bind="text: !isStreaming() && facebookID() ? 'Start Stream' : 'Stop Stream'"></span>
 		</button>
-		<div class="startnew" data-bind="visible: !isNewVideo() && !facebookID()">
+		<div class="startnew" data-bind="visible: !isNewVideo()">
 			<span>- or -</span>
 			<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn() && !isStreaming()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
 				Start a new live stream!
 			</button>
 		</div>
 	</div>
+	<div class="lower-section" data-bind="">
+		<div class="iframe-container" data-bind="visible: isNewVideo(), html: embedIframe">
 
+<!-- <<<<<<< HEAD
 	<div class="iframe-container" data-bind="visible: isNewVideo() || isLiveVideo(), html: embedIframe">
 
 	</div>
-	<!-- class="rightside" -->
 	<div  data-bind="css: { rightside: isLiveVideo(), leftside: !isLiveVideo()}">
 		<p style="float:left" data-bind="visible: isNewVideo() || isLiveVideo()">Views: <span data-bind="text: views"></span></p>
 		<p data-bind="visible: isPost() || isLiveVideo() || isNewVideo()">Likes: <span data-bind="text: likes()"></span></p>
 	</div>
-<!--10213021999524227  -->
-<!--
-10213000734392612_10213022173688581
--->
-<!-- class="rightside commentscontainer"   -->
 	<div data-bind="css:{ 'rightside commentscontainer':isLiveVideo(), commentscontainerpost: !isLiveVideo()},visible: comments().length > 0, sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 		<div id="voicelines" class="bubble">
 			<div>
@@ -64,26 +56,49 @@
 			<div class="voiceline locked">
 				<p class="commentsElement" data-bind="text: message"></p>
 			</div>
+======= -->
+<!-- >>>>>>> master -->
 		</div>
-	</div>
+		<div class="rightside">
+			<p style="float:left" data-bind="visible: isNewVideo()">Views: <span data-bind="text: views"></span></p>
+			<p data-bind="visible: isNewVideo()">Likes: <span data-bind="text: likes()"></span></p>
+		</div>
 
-	<!-- For the page's posts -->
+<!-- <<<<<<< HEAD
+	For the page's posts
 	<div class="centralised" data-bind="sortable: { data: pagePosts, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }, visible: pagePosts().length > 0">
 		<div id="voicelines" class="bubble">
 			<div>
 				<span class="voiceline locked name" data-bind="text: story"></span>
-			</div>
-			<div class="voiceline locked">
-				<span data-bind="text: message"></span>
+======= -->
+		<div class="rightside" data-bind="visible: comments().length > 0, sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
+			<div id="voicelines" class="bubble">
+				<div>
+					<span class="voiceline locked name" data-bind="text: from.name"></span>
+				</div>
+				<div class="voiceline locked">
+					<span data-bind="text: message"></span>
+				</div>
+<!-- >>>>>>> master -->
 			</div>
 		</div>
-	</div>
 
-
-	<div class="togglebox">
-		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
-		<label data-bind="visible: !isPage()"><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
-		<p data-bind="visible: !isPage()">Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
+		<!-- For the page's posts -->
+		<div class="centralised" data-bind="sortable: { data: pagePosts, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }, visible: pagePosts().length > 0">
+			<div id="voicelines" class="bubble">
+				<div>
+					<span class="voiceline locked name" data-bind="text: story"></span>
+				</div>
+				<div class="voiceline locked">
+					<span data-bind="text: message"></span>
+				</div>
+			</div>
+		</div>
+		<div class="togglebox">
+			<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
+			<label><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
+			<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
+		</div>
 	</div>
 
 	{% if not online %}
