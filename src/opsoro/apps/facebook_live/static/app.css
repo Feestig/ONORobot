@@ -5,6 +5,8 @@ a {
 }
 .lower-section p{
 	margin-top: 1.5rem!important;
+	font-size: 1.3rem;
+	font-weight: bold;
 }
 .upper-section{
 	margin-bottom: 50px;
@@ -24,8 +26,9 @@ a {
 	font-size: 3rem;
 	margin-bottom: 10px;
 }
-small{
-	margin-left: 2rem;
+.icon-span-small{
+  margin-top: 5px;
+  display: block;
 }
 .upper-section > .button > span, .icon-span{
 	display: block;
@@ -35,7 +38,7 @@ small{
 }
 .middle-section input[type="text"], .middle-section select{
 	margin-left: 0.5rem;
-	width: 68%;
+	width: 65%;
 	display: inline-block;
 }
 .start-stream{
@@ -180,7 +183,11 @@ select {
 	display: inline-block;
 	float: right;
 	/*margin-right: 1.5em;*/
-	width: 30%
+	width: 30%;
+	font-weight: normal;
+  font-size: 0.875rem;
+  margin-top: 0!important;
+
 }
 .togglebox > select{
 	width: 30%;
@@ -197,6 +204,9 @@ select {
 {
     min-height: 2rem;
     margin-bottom: 0rem;
+}
+.no-indent{
+	margin-left: 0!important;
 }
 #voicelines .voiceline.locked
 {

@@ -32,7 +32,7 @@
 			</div>
 			<button class="button round info" data-bind="css: { success: !isStreaming(), alert: isStreaming() }, click: toggleStreaming, enable: loggedIn() && facebookID()">
 				<i class="fa" aria-hidden="true" data-bind="css: {'fa-play' : !isStreaming(), 'fa-stop' : isStreaming()}"></i>
-				<span class="text" data-bind="text: !isStreaming() && facebookID() ? 'Start Stream' : 'Stop Stream'"></span>
+				<span class="icon-span-small" data-bind="text: !isStreaming() && facebookID() ? 'Start Stream' : 'Stop Stream'"></span>
 			</button>
 	</div>
 		<div class="startnew" data-bind="visible: !isNewVideo()">
@@ -53,7 +53,7 @@
 
 		<div data-bind="css:{ centralised:selectedType().type=='isPost', 'rightside commentscontainer':selectedType().type=='isVideo'},visible: selectedType().type == 'isPost' || selectedType().type == 'isVideo', sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 			<div id="voicelines" class="bubble">
-				<div>
+				<div >
 					<span class="voiceline locked name" data-bind="text: from.name"></span>
 				</div>
 				<div class="voiceline locked">
@@ -69,9 +69,9 @@
 		<div class="centralised" data-bind="sortable: { data: pagePosts, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }, visible: pagePosts().length > 0">
 			<div id="voicelines" class="bubble">
 				<div>
-					<span class="voiceline locked name" data-bind="text: story"></span>
+					<span class="voiceline locked name no-indent" data-bind="text: story"></span>
 				</div>
-				<div class="voiceline locked">
+				<div class="voiceline locked no-indent">
 					<span data-bind="text: message"></span>
 				</div>
 				<div>
