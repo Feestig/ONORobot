@@ -135,6 +135,7 @@ $(document).ready(function() {
 
         // Stop stream & reset layout !!
         self.stopStream();
+        self.isStreaming(false); // always set to false before or after calling stop stream?
       }
 
       self.fbGET = function() {
@@ -162,7 +163,9 @@ $(document).ready(function() {
               console.log(str);
             }
             showMainError('Error: Facebook Id does not exist or you have no permission to access it.');
+
             self.stopStream(); // should stop stream
+            self.isStreaming(false); // always set to false before or after calling stop stream?
             // error, check if key expired -> re-login ?
             console.log(response)
 
@@ -232,7 +235,7 @@ $(document).ready(function() {
           self.handleData(); // this uses the global obj
         }
 
-        self.isStreaming(!self.isStreaming()); // will this be instantly executed or only after the functions above ??
+        self.isStreaming(!self.isStreaming());
       }
 
       /* General */
@@ -253,12 +256,7 @@ $(document).ready(function() {
       }
 
       self.stopStream = function(){
-        if (self.isStreaming()) { // extra check if stopStream is called externally
-          self.sendPost('stopThread', {});
-        }
-
-        self.isStreaming(false);
-
+        self.sendPost('stopThread', {});
         // reset lay-out
         self.resetLayout();
       }
@@ -466,6 +464,7 @@ $(document).ready(function() {
 
     // stop stream when ID gets changed ?
     model.stopStream();
+    self.isStreaming(false); // always set to false before or after calling stop stream?
   })
 
   // listener for when input  select is changed set facebookID accordingly
