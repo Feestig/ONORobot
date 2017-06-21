@@ -157,6 +157,14 @@ $(document).ready(function() {
             }
 
           } else {
+            if(response.error.code;){
+
+
+              switch (response.error.code;) {
+                var str = 'Error code: ' + response.error.code + ', ' + response.error.message;
+                console.log(str);
+            }
+            showMainError('Error from facebook try login in agian');
             // error, check if key expired -> re-login ?
             console.log(response)
           }
