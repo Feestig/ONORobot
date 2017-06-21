@@ -74,7 +74,8 @@ $(document).ready(function() {
       self.autoRead = ko.observable(false);
       self.reactToLikes = ko.observable(false);
       self.likes = ko.observable(0);
-      self.availableEmotions = ko.observableArray([new EmotionModel('None', 0)]);
+      self.availableEmotions = ko.observableArray([new EmotionModel('None', -1)]);
+      self.availableEmotions.push(new EmotionModel('Random',0))
       self.selectedEmotion = ko.observable();
       for (var i = 0; i < emotions_data.length; i++) {
         self.availableEmotions.push(new EmotionModel(emotions_data[i]['name'], i+1));
@@ -319,7 +320,7 @@ $(document).ready(function() {
         if ((self.isNewVideo() || self.selectedType().type == "isVideo") && self.fbDataResponse().embed_html) {
           self.embedIframe(self.fbDataResponse().embed_html);
         }
-      } 
+      }
 
       self.handleLayout = function(data) { // the stuff that changes every 5 seconds
 
@@ -346,14 +347,9 @@ $(document).ready(function() {
               if(self.autoRead()){
                 //send last comment to read out loud
                 var textToRead = arr[0]["message"];
-                console.log(textToRead);
                 robotSendTTS(textToRead);
               }
-
-              var emotion = self.selectedEmotion();
-              if(! emotion['index'] == 0){
-                robotSendEmotionRPhi(1.0, emotions_data[emotion['index'] -1].poly * 18, -1);
-              }
+              self.playEmotion();
             }
             self.pagePosts(arr);
           }
@@ -372,11 +368,7 @@ $(document).ready(function() {
                   //send last comment to read out loud
                   robotSendTTS(arr_comments[arr_comments.length -1]["message"]);
                 }
-
-                var emotion = self.selectedEmotion();
-                if(! emotion['index'] == 0){
-                  robotSendEmotionRPhi(1.0, emotions_data[emotion['index'] -1].poly * 18, -1);
-                }
+                self.playEmotion();
               }
             }
             // refill list to get last comments
@@ -388,11 +380,8 @@ $(document).ready(function() {
           }
 
           if(self.reactToLikes() && data.reactions != null && data.reactions.data.length != self.likes()){
-
             //nieuwe reactie
             var index = 0;
-
-
             switch (data.reactions.data[0]['type']) {
               case 'HAHA':
                 index = 2;
@@ -418,6 +407,21 @@ $(document).ready(function() {
         }
       }
 
+
+      //function that playes the selected emotion
+      //needs to be called when a new comment or post
+      self.playEmotion = function(){
+        var emotion = self.selectedEmotion();
+        if(emotion['index'] != -1){
+          if(emotion['index'] == 0){
+            var random = Math.floor(Math.random() * emotions_data.length);
+            robotSendEmotionRPhi(1.0, emotions_data[random].poly * 18,-1);
+          }
+          else {
+            robotSendEmotionRPhi(1.0, emotions_data[emotion['index'] -1].poly * 18, -1);
+          }
+        }
+      }
 
       self.sendPost = function(action, data){
         console.log("Posted to stop stream! Please stahp!");
