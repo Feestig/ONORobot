@@ -38,8 +38,8 @@
 	</div>
 		<div class="startnew" data-bind="visible: !isNewVideo()">
 			<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn() && !isStreaming()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
-				<i class="fa fa-play big-icon" aria-hidden="true"></i>
-				<span class="icon-span">new live stream!</span>
+				<i class="fa fa-plus big-icon" aria-hidden="true"></i>
+				<span class="icon-span">Live Video!</span>
 			</button>
 		</div>
 	</div>
@@ -81,7 +81,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="togglebox">
+		<div class="togglebox" data-bind="visible: !pagePosts().length > 0">
 			<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
 			<label><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
 			<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>

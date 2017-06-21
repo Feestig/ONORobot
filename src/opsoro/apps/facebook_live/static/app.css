@@ -14,10 +14,13 @@
 }
 .big-icon{
 	font-size: 3rem;
-	margin-bottom: 5px;
+	margin-bottom: 10px;
 }
 .upper-section > .button > span, .icon-span{
 	display: block;
+	font-weight: bold;
+	font-size: 1.5rem;
+	text-transform: capitalize;
 }
 .middle-section input[type="text"], .middle-section select{
 	margin-left: 0.5rem;
@@ -26,7 +29,8 @@
 }
 .start-stream{
 	border: lightGray dashed thick;
-	padding: 20px;
+	padding: 40px;
+	padding-bottom: 20px!important;
 	float: left;
 	display: block;
 	width: 60%;
@@ -94,11 +98,11 @@ select {
 	display: block;
 	float: left;
 	width: 100%;
-	padding: 0 0.5em;
 	overflow-y: scroll;
 	height: auto;
 	max-height: 390px;
 	font-weight: normal;
+	margin-bottom: 10px;
 }
 .rightside {
 	font-size: 1.3rem;
