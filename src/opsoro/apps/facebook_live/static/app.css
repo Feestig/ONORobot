@@ -12,9 +12,16 @@
 			 -moz-border-radius: 100px;
 						border-radius: 100px;
 }
+.big-icon{
+	font-size: 3rem;
+	margin-bottom: 5px;
+}
+.upper-section > .button > span, .icon-span{
+	display: block;
+}
 .middle-section input[type="text"], .middle-section select{
 	margin-left: 0.5rem;
-	width: 65%;
+	width: 68%;
 	display: inline-block;
 }
 .start-stream{
@@ -23,20 +30,20 @@
 	float: left;
 	display: block;
 	width: 60%;
-	-webkit-border-radius: 25px;
-		 -moz-border-radius: 25px;
-					border-radius: 25px;
+	-webkit-border-radius: 5px;
+		 -moz-border-radius: 5px;
+					border-radius: 5px;
 }
 .start-stream button{
 	font-family: "Avenir Next";
 	width: 100%;
 }
-.startnew{
+.startnew {
 	display: inline-block;
 	width: 40%;
 	text-align: center;
 }
-.startnew button{
+.startnew button {
 	font-family: "Avenir Next";
 	width: 200px;
 	height: 200px;
@@ -44,7 +51,7 @@
 		 -moz-border-radius: 100px;
 					border-radius: 100px;
 }
-input[type="text"]{
+input[type="text"] {
 	margin-left: 0.5rem;
 	width: 40%;
 	display: inline-block;
