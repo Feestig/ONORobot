@@ -40,8 +40,8 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 access_token = '141268248-yAGsPydKTDgkCcV0RZTPc5Ff7FGE41yk5AWF1dtN'
 access_token_secret = 'UalduP04BS4X3ycgBJKn2QJymMhJUbNfQZlEiCZZezW6V'
-consumer_key = 'jHW1X0K58pKhPePYDVk1ko2E6'
-consumer_secret = '5SzUVSd0DD2aMPqwNRyGuS1ovWnEb4qSaMnPkAHZSKu5G42pri'
+consumer_key = 'U2PILejmAYpd20ImoqdTZp4Rm'
+consumer_secret = 'nacB6eTgMR4cpZzckG7pTGpV3WKBXoyDhn3feU1R24kY2Kf0QF'
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -189,43 +189,45 @@ class _twitter(object):
         emotions = []
         emoticonStr = status.text
 
-        winking = len(re.findall(u"[\U0001F609]", emoticonStr))
-        angry = len(re.findall(u"[\U0001F620]", emoticonStr))
-        happy_a = len(re.findall(u"[\U0000263A]", emoticonStr))
-        happy_b = len(re.findall(u"[\U0000263b]", emoticonStr))
-        happy_c = len(re.findall(u"[\U0001f642]", emoticonStr))
-        thinking = len(re.findall(u"[\U0001F914]", emoticonStr))
-        frowning = len(re.findall(u"[\U00002639]", emoticonStr))
-        nauseated = len(re.findall(u"[\U0001F922]", emoticonStr))
-        astonished = len(re.findall(u"[\U0001F632]", emoticonStr))
-        neutral = len(re.findall(u"[\U0001F610]", emoticonStr))
-        fearful = len(re.findall(u"[\U0001F628]", emoticonStr))
-        laughing = len(re.findall(u"[\U0001F603]", emoticonStr))
-        tired = len(re.findall(u"[\U0001F62B]", emoticonStr))
-        sad = len(re.findall(u"[\U0001f641]", emoticonStr))
+        for text in emoticonStr:
+            winking = len(re.findall(u"[\U0001F609]", text))
+            angry = len(re.findall(u"[\U0001F620]", text))
+            happy_a = len(re.findall(u"[\U0000263A]", text))
+            happy_b = len(re.findall(u"[\U0000263b]", text))
+            happy_c = len(re.findall(u"[\U0001f642]", text))
+            thinking = len(re.findall(u"[\U0001F914]", text))
+            frowning = len(re.findall(u"[\U00002639]", text))
+            nauseated = len(re.findall(u"[\U0001F922]", text))
+            astonished = len(re.findall(u"[\U0001F632]", text))
+            neutral = len(re.findall(u"[\U0001F610]", text))
+            fearful = len(re.findall(u"[\U0001F628]", text))
+            laughing = len(re.findall(u"[\U0001F603]", text))
+            tired = len(re.findall(u"[\U0001F62B]", text))
+            sad = len(re.findall(u"[\U0001f641]", text))
 
-        if winking > 0:
-            emotions.append("tong")
-        if angry > 0:
-            emotions.append("angry")
-        if happy_a > 0 or happy_b > 0 or happy_c > 0:
-            emotions.append("happy")
-        if frowning > 0:
-            emotions.append("tired")
-        if nauseated > 0:
-            emotions.append("disgusted")
-        if astonished > 0:
-            emotions.append("surprised")
-        if neutral > 0:
-            emotions.append("neutral")
-        if fearful > 0:
-            emotions.append("afraid")
-        if laughing > 0:
-            emotions.append("laughing")
-        if tired > 0:
-            emotions.append("sleep")
-        if sad > 0:
-            emotions.append("sad")
+            if winking > 0:
+                emotions.append("tong")
+            if angry > 0:
+                emotions.append("angry")
+            if happy_a > 0 or happy_b > 0 or happy_c > 0:
+                emotions.append("happy")
+            if frowning > 0:
+                emotions.append("tired")
+            if nauseated > 0:
+                emotions.append("disgusted")
+            if astonished > 0:
+                emotions.append("surprised")
+            if neutral > 0:
+                emotions.append("neutral")
+            if fearful > 0:
+                emotions.append("afraid")
+            if laughing > 0:
+                emotions.append("laughing")
+            if tired > 0:
+                emotions.append("sleep")
+            if sad > 0:
+                emotions.append("sad")
+        print_info(emotions)
         if not emotions:
             emotions.append("none")
         return emotions
@@ -234,6 +236,7 @@ class _twitter(object):
         global loop_E
         global Emoticons
         Emoticons = tweet['text']['emoticon']
+        print_info(Emoticons)
         loop_E = StoppableThread(target=self.asyncEmotion)
     def asyncEmotion(self):
         time.sleep(0.05)
@@ -244,6 +247,7 @@ class _twitter(object):
         playedAnimations = 0
         while not loop_E.stopped():
             if currentAnimationArrayLength > playedAnimations:
+                print_info(Emoticons[playedAnimations])
                 Expression.set_emotion_name(Emoticons[playedAnimations], -1)
                 playedAnimations = playedAnimations+1
                 time.sleep(2)

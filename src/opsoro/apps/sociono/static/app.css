@@ -33,7 +33,11 @@
 
     color: #fff;
 }
-
+a {
+    text-decoration: none;
+    font-weight: normal;
+    color: #2ba6cb;
+}
 /*Speech bubble*/
 .bubble
 {
@@ -119,16 +123,7 @@
     margin-bottom: 0rem;
 }
 
-/*#PickEmotionModal
-{
-    width: 35rem;
-    min-height: 10rem;
-}*/
-
-
-.voiceline .avatar,
-#PickEmotionModal .avatar
-{
+.voiceline .avatar{
     position: absolute;
     top: 0;
     left: 0;
@@ -143,35 +138,11 @@
     cursor: pointer;
 }
 
-/*#PickEmotionModal .avatar
-{
-    position: relative;
-}
-#PickEmotionModal .avatarcaption
-{
-    font-size: .8rem;
-    font-weight: bold;
-
-    margin-top: .25rem;
-    padding: 0 .5rem;
-
-    text-align: center;
-    text-transform: uppercase;
-
-    color: #fff;
-    border-radius: 1rem;
-    background: #4d4d4d;
-}*/
-
-.voiceline .avatar:hover,
-#PickEmotionModal .avatar:hover
-{
+.voiceline .avatar:hover{
     background: rgba(34, 181, 115, .41);
 }
 
-.voiceline .avatar > div,
-#PickEmotionModal .avatar > div
-{
+.voiceline .avatar > div{
     width: 4.75rem;
     height: 4.75rem;
 
@@ -192,11 +163,6 @@
 {
     margin-left: 1rem;
 }
-/*#fixedavatars .voiceline.locked
-{
-    width: auto;
-    height: auto;
-}*/
 .voiceline.locked .avatar > div, .avatar img
 {
     width: 3rem;
