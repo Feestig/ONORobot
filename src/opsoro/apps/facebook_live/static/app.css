@@ -1,3 +1,11 @@
+a {
+    text-decoration: none;
+    font-weight: normal;
+    color: #2ba6cb;
+}
+.lower-section p{
+	margin-top: 1.5rem!important;
+}
 .upper-section{
 	margin-bottom: 50px;
 	width: 100%;
@@ -15,6 +23,9 @@
 .big-icon{
 	font-size: 3rem;
 	margin-bottom: 10px;
+}
+small{
+	margin-left: 2rem;
 }
 .upper-section > .button > span, .icon-span{
 	display: block;
@@ -89,6 +100,7 @@ select {
 	max-height: 425px;
 	max-width: 750px;
 	float: left;
+	margin-top: 2rem;
 }
 .block {
 	display: block;
@@ -131,6 +143,7 @@ select {
 	height: auto;
 	max-height: 390px;
 	font-weight: normal;
+	margin-top: 1rem;
 }
 /*.commentscontainerpost{
 	padding: 0.5em;
