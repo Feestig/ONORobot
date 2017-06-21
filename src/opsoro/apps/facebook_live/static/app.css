@@ -16,6 +16,12 @@ select {
 	width: 40%;
 	margin-left: 0.5rem;
 }
+.fixed_width{
+	width: 15%;
+	display: inline-block;
+}
+.fixed_width > span{
+}
 .appbody span{
 	width: 30%;
 }
@@ -55,11 +61,6 @@ select {
 	height: auto;
 	max-height: 390px;
 	font-weight: normal;
-}
-
-}
-.leftside{
-
 }
 .togglebox {
 	/*background-color: green;*/
