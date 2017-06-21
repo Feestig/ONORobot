@@ -1,3 +1,41 @@
+.upper-section{
+	margin-bottom: 50px;
+	width: 100%;
+	padding: 20px;
+	text-align: center;
+}
+.upper-section > .button{
+		width: 200px;
+		height: 200px;
+		-webkit-border-radius: 100px;
+			 -moz-border-radius: 100px;
+						border-radius: 100px;
+}
+.middle-section input[type="text"], .middle-section select{
+	margin-left: 0.5rem;
+	width: 65%;
+	display: inline-block;
+}
+.start-stream{
+	border: lightGray dashed thick;
+	padding: 20px;
+	float: left;
+	display: block;
+	width: 60%;
+}
+.start-stream button{
+	width: 100%;
+}
+.startnew{
+	width: 100%;
+}
+.startnew button{
+	width: 200px;
+	height: 200px;
+	-webkit-border-radius: 100px;
+		 -moz-border-radius: 100px;
+					border-radius: 100px;
+}
 input[type="text"]{
 	margin-left: 0.5rem;
 	width: 40%;
@@ -17,7 +55,7 @@ select {
 	margin-left: 0.5rem;
 }
 .fixed_width{
-	width: 15%;
+	width: 30%;
 	display: inline-block;
 }
 .fixed_width > span{
