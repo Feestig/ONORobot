@@ -337,7 +337,7 @@ $(document).ready(function() {
           if(data.comments && data.comments.data.length > 0) {
             var arr_comments = data.comments.data;
 
-            if(self.comments().length != arr_comments.length){
+            if(self.comments()['id'] != arr_comments['id']){
               if(self.comments().length < arr_comments.length && self.comments().length != 0){
                 if(self.autoRead()){
                   //send last comment to read out loud
