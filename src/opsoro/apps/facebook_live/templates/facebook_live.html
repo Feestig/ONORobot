@@ -16,9 +16,9 @@
 	</div>
 	<div class="middle-section">
 		<div>
-			<span  class="fixed_width" data-bind="visible: !isNewVideo() && !selectedType() || !(selectedType().text == 'My Page')">Enter a Facebook ID: </span>
-			<span  class="fixed_width" data-bind="visible: !isNewVideo() && selectedType() && (selectedType().text == 'My Page')">Your Facebook user ID: </span>
-			<span  class="fixed_width" data-bind="visible: isNewVideo() && !(selectedType().text == 'My Page')">Your new Facebook live video ID: </span>
+			<span class="fixed_width" data-bind="visible: !isNewVideo() && !selectedType() || !(selectedType().text == 'My Page')">Enter a Facebook ID: </span>
+			<span class="fixed_width" data-bind="visible: !isNewVideo() && selectedType() && (selectedType().text == 'My Page')">Your Facebook user ID: </span>
+			<span class="fixed_width" data-bind="visible: isNewVideo() && !(selectedType().text == 'My Page')">Your new Facebook live video ID: </span>
 
 			<input type="text" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter your Facebook page id, post id or an existing live_video id ...">
 		</div>
