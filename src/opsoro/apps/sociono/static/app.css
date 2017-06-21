@@ -111,10 +111,6 @@
 .voiceline
 {
     position: relative;
-
-    min-height: 5.5rem;
-    margin-bottom: .5rem;
-
     background: transparent;
 }
 .voiceline.locked
@@ -123,11 +119,11 @@
     margin-bottom: 0rem;
 }
 
-#PickEmotionModal
+/*#PickEmotionModal
 {
     width: 35rem;
     min-height: 10rem;
-}
+}*/
 
 
 .voiceline .avatar,
@@ -147,7 +143,7 @@
     cursor: pointer;
 }
 
-#PickEmotionModal .avatar
+/*#PickEmotionModal .avatar
 {
     position: relative;
 }
@@ -165,7 +161,7 @@
     color: #fff;
     border-radius: 1rem;
     background: #4d4d4d;
-}
+}*/
 
 .voiceline .avatar:hover,
 #PickEmotionModal .avatar:hover
@@ -187,7 +183,6 @@
 {
     width: 3.5rem;
     height: 3.5rem;
-    margin: 0;
     margin-bottom: .5rem;
     margin-left: .5rem;
     padding-top: .15rem;
@@ -197,11 +192,11 @@
 {
     margin-left: 1rem;
 }
-#fixedavatars .voiceline.locked
+/*#fixedavatars .voiceline.locked
 {
     width: auto;
-    height: auto;;
-}
+    height: auto;
+}*/
 .voiceline.locked .avatar > div, .avatar img
 {
     width: 3rem;
@@ -245,7 +240,6 @@
     padding-top: 1rem;
 
     border-radius: 50%;
-    /*background-color: #43ac6a;*/
     background-color: transparent;
 }
 
@@ -259,26 +253,9 @@
 
 		color: #fff;
 }
-
-.voiceline .playbutton a:hover
-{
-    /*background-color: #368a55;*/
-    /*background-color: transparent;*/
-}
-
 .voiceline .playbutton.used .bg
 {
     background: #aaa;
-}
-
-.voiceline .playbutton.used a
-{
-    /*background: #b2afa1;*/
-}
-
-.voiceline .playbutton.used a:hover
-{
-    /*background-color: #545454;*/
 }
 
 .voiceline .playbutton.active .bg
@@ -296,19 +273,9 @@
     background: #b2afa1;
 }
 
-.voiceline .playbutton.active a
-{
-    /*background: #43ac6a;*/
-}
-
-.voiceline .playbutton.active a:hover
-{
-    /*background-color: #368a55;*/
-}
-
 .voiceline .content
 {
-    margin-right: 3rem;
+    margin-right: 3.5rem;
     margin-left: 4rem;
     padding: 1.25rem 0 0 0;
 }
