@@ -39,6 +39,17 @@ select {
 .block {
 	display: block;
 }
+.centralised{
+	font-size: 1.3rem;
+	display: block;
+	float: left;
+	width: 100%;
+	padding: 0 0.5em;
+	overflow-y: scroll;
+	height: auto;
+	max-height: 390px;
+	font-weight: normal;
+}
 .rightside {
 	font-size: 1.3rem;
 	font-weight: bold;
@@ -54,7 +65,11 @@ select {
 	float: right;
 	margin: 0;
 }
-.ko_container {
+.leftside p{
+	font-size: 1.3rem;
+	font-weight: bold;
+}
+.commentscontainer{
 	padding: 0.5em;
 	width: 32%;
 	overflow: hidden;
@@ -62,6 +77,30 @@ select {
 	max-height: 390px;
 	font-weight: normal;
 }
+.commentscontainerpost{
+	padding: 0.5em;
+	width: 100%;
+	overflow: hidden;
+	height: auto;
+	max-height: 390px;
+	font-weight: normal;
+}
+.commentsElement{
+	display: block;
+	width: 100%;
+	word-wrap: break-word;
+
+	/*float: left;
+	word-wrap: break-word;*/
+}
+/*.ko_container {
+	padding: 0.5em;
+	width: 32%;
+	overflow: hidden;
+	height: auto;
+	max-height: 390px;
+	font-weight: normal;
+}*/
 .togglebox {
 	/*background-color: green;*/
 	display: block;
@@ -109,6 +148,8 @@ select {
     position: relative;
     margin-bottom: .25rem;
 		padding: 0.5rem;
+		height: auto;
+		overflow-y:auto;
 
     -webkit-border-radius: .5rem;
        -moz-border-radius: .5rem;
@@ -125,9 +166,40 @@ select {
 	.rightside {
 		display: block;
 		width: 100%;
+		margin: 0 auto;
 	}
-	.ko_container {
-		width: 100%;
+	.bubble
+	{
+	    font-size: .9rem;
 
+	    position: relative;
+	    margin-bottom: .25rem;
+			padding: 0.5rem;
+			height: auto;
+			overflow-y:auto;
+
+	    -webkit-border-radius: .5rem;
+	       -moz-border-radius: .5rem;
+	            border-radius: .5rem;
+	    background: #ddd;
+	}
+	.rightside p{
+		display: inline-block;
+		float: right;
+		margin: 0;
+	}
+	.commentscontainer{
+		display: block;
+		padding: 0.5em;
+		margin: 0 auto;
+		width: 100%;
+		overflow: hidden;
+		height: auto;
+		max-height: 390px;
+		font-weight: normal;
+	}
+	.togglebox p {
+		display: block;
+		width: 30%
 	}
 }
