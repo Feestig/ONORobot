@@ -13,17 +13,10 @@
 
 	<div>
 		<button class="button info" data-bind="click: !loggedIn() ? fbLogin : fbLogout, text: !loggedIn() ? 'Log into Facebook' : 'Log out of Facebook', enable: fbInitialized()"></button>
-		<div>
-			<p class="fixed_width">Your user ID: </p><span class="fixed_width" data-bind="text: userID()"></span>
-		</div>
 	</div>
 	<div>
-		<div data-bind="visible: isNewVideo()">
-			<span class="fixed_width">Your new live video ID:</span><span class="fixed_width" data-bind="text: "></span>
-		</div>
-
 		<div>
-			<span  class="fixed_width">Enter a Facebook ID: </span>
+			<span  class="fixed_width" data-bind="text: isNewVideo() ? 'Your new live video ID:' : 'Enter a Facebook ID:'"></span>
 
 			<input type="text" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter your Facebook page id, post id or an existing live_video id ...">
 		</div>
@@ -43,12 +36,12 @@
 		</div>
 	</div>
 
-	<div class="iframe-container" data-bind="visible: isNewVideo() || isLiveVideo(), html: embedIframe">
+	<div class="iframe-container" data-bind="visible: isNewVideo(), html: embedIframe">
 
 	</div>
 	<div class="rightside">
-		<p style="float:left" data-bind="visible: isNewVideo() || isLiveVideo()">Views: <span data-bind="text: views"></span></p>
-		<p data-bind="visible: isPost() || isLiveVideo() || isNewVideo()">Likes: <span data-bind="text: likes()"></span></p>
+		<p style="float:left" data-bind="visible: isNewVideo()">Views: <span data-bind="text: views"></span></p>
+		<p data-bind="visible: isNewVideo()">Likes: <span data-bind="text: likes()"></span></p>
 	</div>
 
 	<div class="rightside" data-bind="visible: comments().length > 0, sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
@@ -77,8 +70,8 @@
 
 	<div class="togglebox">
 		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
-		<label data-bind="visible: !isPage()"><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
-		<p data-bind="visible: !isPage()">Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
+		<label><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
+		<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
 	</div>
 
 	{% if not online %}
