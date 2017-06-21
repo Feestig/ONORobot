@@ -31,11 +31,10 @@ $(document).ready(function() {
     self.name = name;
     self.index = index;
   }
-
-  var TypesModel = function(text, index) {
+  var TypesModel = function(name, type){
     var self = this;
-    self.text = text;
-    self.index = index;
+    self.name = name;
+    self.type = type;
   }
 
   /* Facebook Login */
@@ -53,7 +52,7 @@ $(document).ready(function() {
 
       /* Observables for handling the new live video stream */
       self.newLiveVideoData = ko.observable(""); // holds the new live video's data
-      self.isNewVideo = ko.observable(); // check for starting a new live video -> toggle lay-out & functionality
+      self.isNewVideo = ko.observable(false); // check for starting a new live video -> toggle lay-out & functionality
       self.fbDataResponse = ko.observable(); // catches the facebook response every interval ... needed to set embed_html once
       self.embedIframe = ko.observable("");
       self.views = ko.observable(0)
@@ -63,12 +62,10 @@ $(document).ready(function() {
       self.customRequest = ko.observable(false); // for an extra request to get the custom id's info (type, ...)
       self.isStreaming = ko.observable(false);
       self.facebookID = ko.observable(""); // when user enters his own input id
-      self.ofTypes = ko.observableArray([new TypesModel('Page', 0), new TypesModel('Post', 1), new TypesModel('Live Video', 2)]);
+      self.ofTypes = ko.observableArray([new TypesModel("Someone else's Page", "isPage"), new TypesModel('My Page', 'isMyPage'), new TypesModel('(Live) Video', 'isVideo'), new TypesModel('A Post', 'isPost')]);
       self.selectedType = ko.observable(); // catch the selected type for the given facebook ID
-      self.isPage = ko.observable(false);
       self.pagePosts = ko.observableArray();
-      self.isPost = ko.observable(false);
-      self.isLiveVideo = ko.observable(false);
+
 
       /* General observables */
       self.autoRead = ko.observable(false);
@@ -184,7 +181,9 @@ $(document).ready(function() {
             self.newLiveVideoData(response);
             self.facebookID(response.id);
             self.isNewVideo(true);
-            self.selectedType(self.ofTypes()[2]); // setting the selected option to "Live Video"
+
+            // do foreach types and set it where type is Video
+            //self.selectedType(self.ofTypes()[2]); // setting the selected option to "Live Video"
           }
         );
       }
@@ -210,7 +209,7 @@ $(document).ready(function() {
 
       /* Custom page input */
 
-      self.toggleStreaming = function(){
+      self.toggleStreaming = function(){ // can only be clicked when a Facebook id is filled in
         if(self.isStreaming()){
           self.stopStream();
         } else {
@@ -231,33 +230,6 @@ $(document).ready(function() {
         }
 
         self.isStreaming(!self.isStreaming()); // will this be instantly executed or only after the functions above ??
-      }
-
-      self.requestByCustomID = function(obj) {
-
-        // Let's get the type of the requested info first ...
-        // is page, is post, is video?
-
-        switch(self.selectedType().index) {
-          case 0: // Page
-            self.isLiveVideo(false);
-            self.isPage(true);
-            obj.fields = "feed{id,message,reactions{ame,link,type},story,likes{name}}";
-            self.postToThread(obj);
-            break;
-          case 1: // Post
-            self.isLiveVideo(false);
-            self.isPost(true);
-            obj.fields = "comments{from,message,permalink_url},reactions{name,link,type},likes{name}";
-            self.postToThread(obj);
-            break;
-          case 2: // Video
-            self.isLiveVideo(true); // should be just isVideo ...
-            obj.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
-            self.postToThread(obj);
-            break;
-        }
-
       }
 
       /* General */
@@ -298,7 +270,7 @@ $(document).ready(function() {
           obj.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
           self.newVideoRequest(obj);
         } else {
-          self.requestByCustomID(obj);
+          self.postToThread(obj);
         }
       }
 
@@ -454,9 +426,36 @@ $(document).ready(function() {
 
   // listener for when input is changed / facebookID, change the selectbox accordingly
   model.facebookID.subscribe(function() {
+    console.log(model.facebookID());
     if (model.facebookID().indexOf("_") > 0) { // post ids have an underscore in them
       model.selectedType(model.ofTypes()[1]); // change the selectbox accordingly
     }
+    if (model.facebookID() == model.userID()) {
+      model.selectedType(model.ofTypes()[1]); // if facebook id equals the logged in user's id -> set selectbox to "My Page"
+    }
+  })
+
+  // listener for when input  select is changed set facebookID accordingly
+  model.selectedType.subscribe(function() {
+    if (model.selectedType().index == 3) { // "My Page" is selected, fill in facebookID input
+      model.facebookID(model.userID()); // fill the input box with the user's id
+    }
+
+    switch(self.selectedType().type) {
+      case 'isPage': // Page
+        obj.fields = "feed{id,message,reactions{name,link,type},story,likes{name}}";
+        self.postToThread(obj);
+        break;
+      case 'isPost': // Post
+        obj.fields = "comments{from,message,permalink_url},reactions{name,link,type},likes{name}";
+        self.postToThread(obj);
+        break;
+      case 'isLiveVideo': // Video
+        obj.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
+        self.postToThread(obj);
+        break;
+    }
+
   })
 
 });
