@@ -60,6 +60,12 @@
 		</div>
 	</div>
 
+	<div class="togglebox">
+		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
+		<label data-bind="visible: !isPage()"><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
+		<p data-bind="visible: !isPage()">Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
+	</div>
+
 	<!-- For the page's posts -->
 	<div class="rightside" data-bind="sortable: { data: pagePosts, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }, visible: pagePosts().length > 0">
 		<div id="voicelines" class="bubble">
@@ -73,11 +79,7 @@
 	</div>
 
 
-	<div class="togglebox">
-		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
-		<label data-bind="visible: !isPage()"><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
-		<p data-bind="visible: !isPage()">Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
-	</div>
+
 
 	{% if not online %}
 		<!-- Content in this section is not displayed online, only on the robot. For example: it is a perfect place to put controls that access hardware stuff, which is not available online. -->
