@@ -60,6 +60,11 @@ TweetMax = 0 #maximum of allowed tweets
 class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
+        """
+        this function is called when the StreamListener recieved a tweet.
+
+        :param list data:  a list containing information about the tweet.
+        """
         print_info(status.text)
         dataToSend = Twitter.processJson(status)
         if dataToSend['text']['filtered'] != None:
@@ -75,14 +80,16 @@ myStreamListener = MyStreamListener()
 myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
 
 class _twitter(object):
-    """docstring for _twitter."""
+    """docstring for _twitter.
+    This class holds the code that the blockly module in apps/sociono will call.
+    """
     def __init__(self):
         super(_twitter, self).__init__()
         #self.arg = arg
 
     def start_streamreader(self, hashtag):
         """
-		Starts the streamreader
+		Starts the streamreader and start to filter by a hashtag.
 
         :param string hashtag:    hashtag to filter by
 
@@ -128,7 +135,7 @@ class _twitter(object):
     def wait_for_tweet(self):
         """
         StoppableThread function to check if the streamreader has recieved a tweet.
-        When hasRecievedTweet is True the loop will stop.
+        When hasRecievedTweet is True the loop will stop. Should not be called directly.
 
         """
         time.sleep(1)
@@ -146,7 +153,7 @@ class _twitter(object):
     def start_streamreader_amount(self, hashtag, times):
         """
         Starts a streamreader where you will filter by a hashtag for a number of tweets.
-        If hashtag is None this function won't be executed
+        If hashtag is None this function won't be executed.
 
         stopLoop is set to false so that the StoppableThread can run.
 
@@ -172,6 +179,7 @@ class _twitter(object):
         StoppableThread loop that checks wether the streamreader has recieved the amount of tweets needed to stop.
 
         if the amount of tweets equals to the maximum allowed tweets or stopLoop is set to true this loop will stop.
+        Should not be called directly.
         """
         time.sleep(1)  # delay
         global TweetMax
@@ -189,7 +197,7 @@ class _twitter(object):
     #functions for filtering tweets
     def processJson(self, status):
         """
-        Recieves data from the streamreader and process it and create a list.
+        Recieves data from the streamreader and process it and create a list, should not be called directly.
 
         :param string status:    result from tweepy.
 
@@ -213,6 +221,7 @@ class _twitter(object):
         """
         filters the text of the tweet. removes all emoji's and links from the text.
         We will also replace some parts in the string. This will be used for saying the text.
+        Should not be called directly.
 
         :param string status:    result from tweepy, a json array.
 
@@ -231,7 +240,8 @@ class _twitter(object):
         return strTweet
     def languageCheck(self, strTweet,status):
         """
-        check the language of the tweet and replaces the @ accordingly to the language. if no match is found it will return the default string
+        check the language of the tweet and replaces the @ accordingly to the language.
+        if no match is found it will return the default string, should not be called directly.
 
         :param string strTweet:    text that has been filtered
         :param string status:    result from tweepy, a json array.
@@ -254,7 +264,7 @@ class _twitter(object):
         """
         will check a text if it contains an emoji
 
-        executes a for loop where every char is checked if it is a emoticon or not.
+        executes a for loop where every char is checked if it is a emoticon or not, should not be called directly.
 
         :param string status:    result from tweepy, a json array.
 
@@ -309,7 +319,7 @@ class _twitter(object):
     #functions to play emotions
     def playEmotion(self, tweet):
         """
-        start a StoppableThread in order to play all emoticons in a tweet.
+        start a StoppableThread in order to play all emoticons in a tweet, should not be called directly.
 
         :param string tweet:    list that has been processed in processJson.
         """
@@ -320,7 +330,7 @@ class _twitter(object):
         loop_E = StoppableThread(target=self.asyncEmotion)
     def asyncEmotion(self):
         """
-        iterates through a list of emoticons and stops when it has played the last item.
+        iterates through a list of emoticons and stops when it has played the last item, should not be called directly.
         """
         time.sleep(0.05)
 
@@ -340,7 +350,7 @@ class _twitter(object):
     #functions concerning sound
     def playTweetInLanguage(self, tweet):
         """
-        plays the tweet in a language
+        plays the tweet in a language, should not be called directly.
 
         :param string tweet:    list that has been processed in processJson.
         """
