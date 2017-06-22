@@ -293,6 +293,12 @@ $(document).ready(function() {
         }
       }
 
+       // if clicked on post id link -> paste it in the input field
+      self.setIdByFacebookPost = function(postID) { // bind with parameter in html
+        self.facebookID(postID);
+        self.toggleStreaming(); // directly start ?
+      }
+
       self.postToThread = function() {
         $.post('/apps/facebook_live/', { action: 'postToThread', data: JSON.stringify(self.globalObjToPass) }, function() {
 

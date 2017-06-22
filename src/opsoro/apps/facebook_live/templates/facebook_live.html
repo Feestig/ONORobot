@@ -46,22 +46,21 @@
 		<div class="iframe-container" data-bind="visible: selectedType().type=='isVideo', html: embedIframe">
 
 		</div>
-		<div data-bind="css:{rightside:selectedType().type=='isVideo'}">
+		<div class="stats" data-bind="css:{rightside:selectedType().type=='isVideo'}">
 			<p style="float:left" data-bind="visible: selectedType().type=='isVideo'">Views: <span data-bind="text: views"></span></p>
 			<p data-bind="visible: selectedType().type=='isVideo' || selectedType().type=='isPost'">Likes: <span data-bind="text: likes()"></span></p>
 		</div>
 
 		<div data-bind="css:{ centralised:selectedType().type=='isPost', 'rightside commentscontainer':selectedType().type=='isVideo'},visible: comments().length > 0 && (selectedType().type == 'isPost' || selectedType().type == 'isVideo'), sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 			<div id="voicelines" class="bubble">
-				<div >
-					<span class="voiceline locked name" data-bind="text: from.name"></span>
-				</div>
-				<div class="voiceline locked">
-					<p class="commentsElement" data-bind="text: message"></p>
-				</div>
-				<div class="voiceline locked">
-					<a data-bind="attr: { href: permalink_url }" target="_blank">https://facebook.com/...</a>
-				</div>
+				<a data-bind="attr: { href: permalink_url }" target="_blank">
+					<div >
+						<span class="voiceline locked name" data-bind="text: from.name"></span>
+					</div>
+					<div class="voiceline locked">
+						<p class="commentsElement" data-bind="text: message"></p>
+					</div>
+				</a>
 			</div>
 		</div>
 
@@ -88,7 +87,7 @@
 						<span data-bind="text: message"></span>
 					</div>
 					<div>
-						<small style="margin-top: 15px;"><a data-bind="" target="_blank">Click here to read the comments comments of this post!</a></small>
+						<small style="margin-top: 15px;"><a data-bind="click: $root.setIdByFacebookPost.bind($data, id)" target="_blank">Click here to read the comments comments of this post!</a></small>
 					</div>
 				</a>
 			</div>

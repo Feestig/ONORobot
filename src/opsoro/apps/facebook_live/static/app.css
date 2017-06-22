@@ -24,7 +24,7 @@ button, button > span {
 	text-transform: uppercase!important;
 }
 
-.lower-section p{
+.lower-section > .stats > p {
 	margin-top: 1.5rem!important;
 	font-size: 1.3rem;
 	font-weight: bold;
@@ -91,6 +91,7 @@ button, button > span {
 	display: inline-block;
 	width: 40%;
 	text-align: center;
+	margin-top: 50px;
 }
 .startnew button {
 	font-family: "Avenir Next";
@@ -176,36 +177,17 @@ select {
 	width: 32%;
 	overflow: hidden;
 	height: auto;
-	max-height: 390px;
+	max-height: 402px;
 	font-weight: normal;
 	margin-top: 1rem;
 }
-/*.commentscontainerpost{
-	padding: 0.5em;
-	width: 100%;
-	overflow: hidden;
-	height: auto;
-	max-height: 390px;
-	font-weight: normal;
-}*/
 .commentsElement{
 	display: block;
 	width: 100%;
 	word-wrap: break-word;
-
-	/*float: left;
-	word-wrap: break-word;*/
+	font-weight: normal!important;
 }
-/*.ko_container {
-	padding: 0.5em;
-	width: 32%;
-	overflow: hidden;
-	height: auto;
-	max-height: 390px;
-	font-weight: normal;
-}*/
 .togglebox {
-	/*background-color: green;*/
 	display: block;
 	width: 99.3%;
 	float: left;
@@ -214,11 +196,10 @@ select {
 .togglebox p {
 	display: inline-block;
 	float: right;
-	/*margin-right: 1.5em;*/
 	width: 30%;
 	font-weight: normal;
-  font-size: 0.875rem;
-  margin-top: 0!important;
+  	font-size: 0.875rem;
+  	margin-top: 0!important;
 
 }
 .togglebox > select{
@@ -242,13 +223,12 @@ select {
 }
 #voicelines .voiceline.locked
 {
-    margin-left: 2rem;
+    
 }
 #voicelines .voiceline.locked.name
 {
-    margin-left: 0.5rem;
-		font-style: italic;
-		font-weight: bold;
+	font-style: italic;
+	font-weight: bold;
 }
 /*comment bubble*/
 .bubble
@@ -303,9 +283,9 @@ select {
 		padding: 0.5em;
 		margin: 0 auto;
 		width: 100%;
-		overflow: hidden;
+		overflow: auto;
 		height: auto;
-		max-height: 390px;
+		max-height: 402px;
 		font-weight: normal;
 	}
 	.togglebox p {
