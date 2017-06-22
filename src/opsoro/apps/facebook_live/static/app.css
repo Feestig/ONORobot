@@ -164,6 +164,7 @@ select {
 	display: block;
 	width: 100%;
 	word-wrap: break-word;
+  font-weight: normal!important;
 
 	/*float: left;
 	word-wrap: break-word;*/
