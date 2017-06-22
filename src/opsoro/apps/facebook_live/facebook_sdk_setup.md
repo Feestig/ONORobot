@@ -43,9 +43,9 @@ There are a few different types of access tokens: user tokens, app tokens & page
 
 Read more about Facebook's access tokens here: https://developers.facebook.com/docs/facebook-login/access-tokens
 
-### Ways to retreive an access token
+### Ways to retrieve an access token
 
-There are several options to retreive access tokens.
+There are several options to retrieve access tokens.
 
  - Navigate to the Graph API if you haven't already, click the dropdown button **Get Token** and select **Get User Access Token**. If there is something already filled in, in the access token field than this is your **short lived** access token.
 
@@ -66,7 +66,7 @@ Example response:
       }
     }
 
-There might be more ways to retreive one, feel free to investigate. Either way you'll generate a **short lived** (user or page) access token. This means that it'll expire when you log out of Facebook in any way or if you're logged in for more than about 45 minutes, this means your session has expired. In the Graph API Explorer you'll be prompted to press **ALT + T** to renew your session. In your web application you'll want to ask your user to re-login. Annoying isn't it?
+There might be more ways to retrieve one, feel free to investigate. Either way you'll generate a **short lived** (user or page) access token. This means that it'll expire when you log out of Facebook in any way or if you're logged in for more than about 45 minutes, this means your session has expired. In the Graph API Explorer you'll be prompted to press **ALT + T** to renew your session. In your web application you'll want to ask your user to re-login. Annoying isn't it?
 
 There's a solution for every problem? Well in this case there is. You can exchange your short lived token into a long lived one, this will obviously last longer before it expires. Does this cut the deal for you? It doesn't for me so I'd exchange that long lived token for a permanent token this will never expire (unless you delete your account or targeted Facebook page). 
 
@@ -97,11 +97,11 @@ Here is how to submit a review to get those extra Facebook features for your app
 
 ## CRUD Operations in the Facebook Graph API Explorer
 
-CRUD litteraly stands for Create (post), Read (get), Update (put) and Delete (delete). These are methods / actions you use to alter or retreive data.
+CRUD litteraly stands for Create (post), Read (get), Update (put) and Delete (delete). These are methods / actions you use to alter or retrieve data.
 
 Let's play around with the Graph API Explorer. Start simple by submitting `me`.
 
-By default you'll retreive the **fields** name and id.
+By default you'll retrieve the **fields** name and id.
 
     {
       "name": "...",
@@ -135,8 +135,7 @@ This is the trickiest part as you might encounter complex errors.
 
 - First in your HTML make this `<div id="fb-root"></div>` the first element in your body. Facebook needs this to append it's dialogs and modal boxes.
 
- - In your JavaScript, in your `window.load` function or `$(document).ready` or whatever `onLoad` function you prefer. You should execute the Facebook initialize function.
-
+ - In your JavaScript, in your `window.load` function or `$(document).ready` or whatever `onLoad` function you prefer. You should execute the Facebook initialize function. This function is called asynchronously and might take some time to load so don't think that you can use it instantly.
 
         window.fbAsyncInit = function() {
           FB.init({
@@ -149,8 +148,29 @@ This is the trickiest part as you might encounter complex errors.
           FB.AppEvents.logPageView();
           // From here you can use the FB 
         }
-  
-  - Fill in your app id so
+
+  - Fill in your app id so the requests go through you app and you can analyze the stats, how or how many times your app is used ect.
+
+  Over time certain data becomes irrelevant or dissapears because of security / permission updates, you know how it goes. This is why the **app version** is important so you can can keep track of which fields, permissions, ... become **deprecated** and can no longer be used in your app.
+
+  There are a few lesser important options:
+
+        xfbml: true, 
+
+  Determines whether **XFBML** tags used by social plugins are parsed, and therefore whether the plugins are rendered or not. Defaults to false.
+
+        cookie: false,
+
+  Determines whether a **cookie** is created for the **session** or not. If enabled, it can be accessed by **server-side** code. Defaults to false.
+
+        status: true,
+
+  Determines whether the current **login status** of the user is freshly retrieved on every page load. If this is disabled, that status will have to be manually retrieved using .getLoginStatus(). Defaults to false.
+
+Source: https://developers.facebook.com/docs/javascript/reference/FB.init/v2.9
+
+
+
 
 
 
