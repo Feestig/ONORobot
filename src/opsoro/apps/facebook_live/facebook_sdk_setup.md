@@ -8,7 +8,7 @@ This is a quick guide to get you started on the Facebook JavaScript SDK.
  - Facebook Graph Explorer
  - Access Tokens & Permissions
  - CRUD Operations in the Facebook Graph API Explorer
- - Code Examples using the JavaScript SDK
+ - Code samples using the JavaScript SDK
 
 ## Creating A Facebook Application
 
@@ -80,10 +80,10 @@ If you deploy an application for multiple users where you use their data or perf
 
 When clicking **Get User Access Token** in the Graph API Explorer you might be prompted to select permissions, it will require different permissions / scopes depending on where you want to perform an action:
 
- - To your own feed (user) it needs: publish_actions.
- - To a page: publish_actions, manage_pages.
- - To a group: publish_actions, user_managed_groups.
- - To an event: publish_actions, user_events.
+ - To your own feed (user) it needs: `publish_actions`.
+ - To a page: `publish_actions, manage_pages`.
+ - To a group: `publish_actions, user_managed_groups`.
+ - To an event: `publish_actions, user_events`.
 
 Some data can be accessed without permission, for example the name of a publicly accessible Facebook page.
 
@@ -123,7 +123,35 @@ Creating, reading, updating and deleting data on a node (page, post, ...) requir
       } 
     }
 
-## Code examples using the JavaScript SDK
+## Code samples using the JavaScript SDK
+
+I'll guide you through the flow of setting up the JavaScript SDK to **log a user in** and to make a simple **GET** request.
+
+### Initialize Facebook
+
+This is the trickiest part as you might encounter complex errors.
+
+- First in your HTML make this `<div id="fb-root"></div>` the first element in your body. Facebook needs this to append it's dialogs and modal boxes.
+
+ - In your JavaScript, in your `window.load` function or `$(document).ready` You should execute the Facebook initialize function.
+
+ 
+        window.fbAsyncInit = function() {
+          FB.init({
+            appId            : '1710409469251997',
+            autoLogAppEvents : true,
+            xfbml            : true,
+            status           : true,
+            version          : 'v2.9'
+          });
+          FB.AppEvents.logPageView();
+          // Start using the FB SDK
+          console.log("Incognito test");
+          model.fbInitialized(true);
+          model.checkFBLogin();
+        }
+
+
 
 
 
