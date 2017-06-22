@@ -50,12 +50,12 @@ loop_T = None # loop var for wait_for_tweet
 loop_E = None # loop var for Emoticons
 loop_TC = None # loop var for tweets by amount
 
-Emoticons = []
-hasRecievedTweet = False
-stopLoop = False
+Emoticons = [] #array for the emoticons
+hasRecievedTweet = False # true of tweepy has recieven a tweet
+stopLoop = False # stops the loop if set to true
 
-TweetCount = 0
-TweetMax = 0
+TweetCount = 0 #amount of tweets already recieved
+TweetMax = 0 #maximum of allowed tweets
 
 class MyStreamListener(tweepy.StreamListener):
 
@@ -81,6 +81,12 @@ class _twitter(object):
         #self.arg = arg
 
     def start_streamreader(self, hashtag):
+        """
+		Starts the streamreader
+
+        :param string hashtag:    hashtag to filter by
+
+        """
         global hasRecievedTweet
         global myStream
         social_id = []
@@ -89,6 +95,11 @@ class _twitter(object):
         myStream.filter(track=social_id, async=True);
 
     def stop_streamreader(self):
+        """
+		Stop the streamreader and stops the sound.
+        stopLoop and hasRecievedTweet is set to true to interrupt the StoppableThread
+
+        """
         global myStream
         global hasRecievedTweet
         global stopLoop
@@ -98,6 +109,14 @@ class _twitter(object):
         Sound.stop_sound()
         print_info("stop twitter")
     def get_tweet(self, hashtag):
+        """
+		get a single tweet with hashtag.
+        If the hashtag is None the code won't be executed.
+        this function starts the streamreader and a StoppableThread
+
+        :param string hashtag:    hashtag to filter by
+
+        """
         global loop_T
         if not (hashtag is None):
             print_info(hashtag)
@@ -107,6 +126,11 @@ class _twitter(object):
             print_info("no input given")
     #streamreader stops after recieving a single tweet
     def wait_for_tweet(self):
+        """
+        StoppableThread function to check if the streamreader has recieved a tweet.
+        When hasRecievedTweet is True the loop will stop.
+
+        """
         time.sleep(1)
 
         global loop_T
@@ -120,6 +144,16 @@ class _twitter(object):
                 pass
     #start a streamreader and show X amount of tweets
     def start_streamreader_amount(self, hashtag, times):
+        """
+        Starts a streamreader where you will filter by a hashtag for a number of tweets.
+        If hashtag is None this function won't be executed
+
+        stopLoop is set to false so that the StoppableThread can run.
+
+        :param string hashtag:    hashtag to filter by.
+        :param string times:    amount of tweets that you want to recieve.
+
+        """
         global myStream
         global loop_TC
         global TweetCount
@@ -134,6 +168,11 @@ class _twitter(object):
             stopLoop = False
             loop_TC = StoppableThread(target=self.count_tweets)
     def count_tweets(self):
+        """
+        StoppableThread loop that checks wether the streamreader has recieved the amount of tweets needed to stop.
+
+        if the amount of tweets equals to the maximum allowed tweets or stopLoop is set to true this loop will stop.
+        """
         time.sleep(1)  # delay
         global TweetMax
         global loop_TC
@@ -149,6 +188,14 @@ class _twitter(object):
                 pass
     #functions for filtering tweets
     def processJson(self, status):
+        """
+        Recieves data from the streamreader and process it and create a list.
+
+        :param string status:    result from tweepy.
+
+        :return:        processed json data consisting of user data and text dataZ
+        :rtype:         list
+        """
         data = {
             "user": {
                 "username": status._json["user"]["screen_name"],
@@ -163,6 +210,15 @@ class _twitter(object):
         }
         return data
     def filterTweet(self, status):
+        """
+        filters the text of the tweet. removes all emoji's and links from the text.
+        We will also replace some parts in the string. This will be used for saying the text.
+
+        :param string status:    result from tweepy, a json array.
+
+        :return:       the filtered text.
+        :rtype:        string
+        """
         encodedstattext = status.text.encode('utf-8')
         strTweet = str(encodedstattext)
         strTweet = strTweet.replace("RT", "Retweet", 1)
@@ -174,6 +230,15 @@ class _twitter(object):
         strTweet = self.languageCheck(strTweet, status)
         return strTweet
     def languageCheck(self, strTweet,status):
+        """
+        check the language of the tweet and replaces the @ accordingly to the language. if no match is found it will return the default string
+
+        :param string strTweet:    text that has been filtered
+        :param string status:    result from tweepy, a json array.
+
+        :return:        edited text
+        :rtype:         string
+        """
         if status.lang == "en":
             return strTweet.replace("@","from ", 1)
         elif status.lang == "nl":
@@ -186,6 +251,16 @@ class _twitter(object):
             return strTweet
     #filter emoticons
     def checkForEmoji(self,status):
+        """
+        will check a text if it contains an emoji
+
+        executes a for loop where every char is checked if it is a emoticon or not.
+
+        :param string status:    result from tweepy, a json array.
+
+        :return:        list of emoticons in correct order.
+        :rtype:         list
+        """
         emotions = []
         emoticonStr = status.text
 
@@ -233,12 +308,20 @@ class _twitter(object):
         return emotions
     #functions to play emotions
     def playEmotion(self, tweet):
+        """
+        start a StoppableThread in order to play all emoticons in a tweet.
+
+        :param string tweet:    list that has been processed in processJson.
+        """
         global loop_E
         global Emoticons
         Emoticons = tweet['text']['emoticon']
         print_info(Emoticons)
         loop_E = StoppableThread(target=self.asyncEmotion)
     def asyncEmotion(self):
+        """
+        iterates through a list of emoticons and stops when it has played the last item.
+        """
         time.sleep(0.05)
 
         global loop_E
@@ -256,6 +339,11 @@ class _twitter(object):
                 pass
     #functions concerning sound
     def playTweetInLanguage(self, tweet):
+        """
+        plays the tweet in a language
+
+        :param string tweet:    list that has been processed in processJson.
+        """
         if not os.path.exists("/tmp/OpsoroTTS/"):
             os.makedirs("/tmp/OpsoroTTS/")
 
