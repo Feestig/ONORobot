@@ -46,7 +46,7 @@
 		<div class="iframe-container" data-bind="visible: selectedType().type=='isVideo', html: embedIframe">
 
 		</div>
-		<div data-bind="css:{rightside:selectedType().type=='isVideo'}">
+		<div data-bind="css:{rightside:selectedType().type=='isVideo',leftside:selectedType().type=='isPost'}">
 			<p style="float:left" data-bind="visible: selectedType().type=='isVideo'">Views: <span data-bind="text: views"></span></p>
 			<p data-bind="visible: selectedType().type=='isVideo' || selectedType().type=='isPost'">Likes: <span data-bind="text: likes()"></span></p>
 		</div>
@@ -65,7 +65,7 @@
 			</div>
 		</div>
 
-		<!-- If no comments use this div --> 
+		<!-- If no comments use this div -->
 		<div data-bind="css:{ centralised:selectedType().type=='isPost', 'rightside commentscontainer':selectedType().type=='isVideo'},visible: isStreaming() && comments().length <= 0 && (selectedType().type == 'isPost' || selectedType().type == 'isVideo')">
 			<div id="voicelines" class="bubble">
 				<div>
@@ -95,7 +95,7 @@
 		<div class="togglebox">
 			<label data-bind="visible: selectedType().type == 'isPost' || selectedType().type == 'isVideo' || selectedType().type == 'isPage'"><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
 			<label data-bind="visible: selectedType().type == 'isVideo'"><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
-			<p data-bind="visible: selectedType().type == 'isPost' || selectedType().type == 'isVideo'">Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
+			<p data-bind="visible: selectedType().type == 'isPost' || selectedType().type == 'isVideo' || selectedType().type == 'isPage'">Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
 		</div>
 	</div>
 
