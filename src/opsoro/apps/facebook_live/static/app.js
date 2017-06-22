@@ -319,7 +319,6 @@ $(document).ready(function() {
           var paging = data.paging;
 
           if (data.data && data.data.length > 0) {
-
             // to avoid errors of undefined objects while binding
             var arr = [];
             $.each(data.data, function(key, val) {
@@ -351,26 +350,21 @@ $(document).ready(function() {
 
           if(data.comments && data.comments.data.length > 0) {
             var arr_comments = data.comments.data;
-
-            if(self.comments()['id'] != arr_comments['id']){
-              if(self.comments().length < arr_comments.length && self.comments().length != 0){
+            if(self.comments().length == 0) self.comments(arr_comments.reverse())
+            if(self.comments()[0]['id'] != arr_comments[arr_comments.length - 1]['id']){
                 if(self.autoRead()){
+                  console.log("autoread")
                   //send last comment to read out loud
                   robotSendTTS(arr_comments[arr_comments.length -1]["message"]);
                 }
                 self.playEmotion();
-              }
+                self.comments(arr_comments.reverse());
             }
-            // refill list to get last comments
-            self.comments(arr_comments.reverse());
           }
-
-          if(data.reactions && data.reactions.data.length != 0) {
-            self.likes(data.reactions.data.length);
-          }
-
+          console.log(data);
           if(self.reactToLikes() && data.reactions != null && data.reactions.data.length != self.likes()){
             //nieuwe reactie
+            console.log("react to like");
             var index = 0;
             switch (data.reactions.data[0]['type']) {
               case 'HAHA':
@@ -392,8 +386,13 @@ $(document).ready(function() {
                 index = 5;
                 break;
             }
+            console.log(index);
             robotSendEmotionRPhi(1.0, emotions_data[index].poly * 18, -1);
           }
+          if(data.reactions && data.reactions.data.length != self.likes()) {
+            self.likes(data.reactions.data.length);
+          }
+          if(! data.reactions) self.likes(0);
         }
       }
 
