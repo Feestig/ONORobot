@@ -67,8 +67,8 @@ newTweet = False
 
 access_token = '141268248-yAGsPydKTDgkCcV0RZTPc5Ff7FGE41yk5AWF1dtN'
 access_token_secret = 'UalduP04BS4X3ycgBJKn2QJymMhJUbNfQZlEiCZZezW6V'
-consumer_key = 'U2PILejmAYpd20ImoqdTZp4Rm'
-consumer_secret = 'nacB6eTgMR4cpZzckG7pTGpV3WKBXoyDhn3feU1R24kY2Kf0QF'
+consumer_key = 'kOTvE82ZX0VPM0KBWl7dic68m'
+consumer_secret = 'T7mJJqdUSZYdPSEorvLFFAU7HZ8KOEJOFOQ4vkRYzN8xBswHsN'
 
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
