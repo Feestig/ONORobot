@@ -135,7 +135,7 @@ This is the trickiest part as you might encounter complex errors.
 
 - First in your HTML make this `<div id="fb-root"></div>` the first element in your body. Facebook needs this to append it's dialogs and modal boxes.
 
- - In your JavaScript, in your `window.load` function or `$(document).ready` or whatever `onLoad` function you prefer. You should execute the Facebook initialize function. This function is called asynchronously and might take some time to load so don't think that you can use it instantly.
+- In your JavaScript, in your `window.load` function or `$(document).ready` or whatever `onLoad` function you prefer. You should execute the Facebook initialize function. This function is called asynchronously and might take some time to load so don't think that you can use it instantly.
 
         window.fbAsyncInit = function() {
           FB.init({
@@ -149,25 +149,42 @@ This is the trickiest part as you might encounter complex errors.
           // From here you can use the FB 
         }
 
-  - Fill in your app id so the requests go through you app and you can analyze the stats, how or how many times your app is used ect.
+- Fill in your app id so the requests go through you app and you can analyze the stats, how or how many times your app is used ect.
 
-  Over time certain data becomes irrelevant or dissapears because of security / permission updates, you know how it goes. This is why the **app version** is important so you can can keep track of which fields, permissions, ... become **deprecated** and can no longer be used in your app.
+Over time certain data becomes irrelevant or dissapears because of security / permission updates, you know how it goes. This is why the **app version** is important so you can can keep track of which fields, permissions, ... become **deprecated** and can no longer be used in your app.
 
-  There are a few lesser important options:
+There are a few lesser important options:
 
         xfbml: true, 
 
-  Determines whether **XFBML** tags used by social plugins are parsed, and therefore whether the plugins are rendered or not. Defaults to false.
+Determines whether **XFBML** tags used by social plugins are parsed, and therefore whether the plugins are rendered or not. Defaults to false.
 
         cookie: false,
 
-  Determines whether a **cookie** is created for the **session** or not. If enabled, it can be accessed by **server-side** code. Defaults to false.
+Determines whether a **cookie** is created for the **session** or not. If enabled, it can be accessed by **server-side** code. Defaults to false.
 
         status: true,
 
-  Determines whether the current **login status** of the user is freshly retrieved on every page load. If this is disabled, that status will have to be manually retrieved using .getLoginStatus(). Defaults to false.
+Determines whether the current **login status** of the user is freshly retrieved on every page load. If this is disabled, that status will have to be manually retrieved using .getLoginStatus(). Defaults to false.
 
 Source: https://developers.facebook.com/docs/javascript/reference/FB.init/v2.9
+
+- The next thing to do is to make the **script tag** importing the Facebook SDK JavaScript file. This code comes right after the initialization in your JavaScript file. The script tag is made prepend in your HTML `<head>` section.
+
+        $(function(d, s, id){
+           var js, fjs = d.getElementsByTagName(s)[0];
+           if (d.getElementById(id)) {return;}
+           js = d.createElement(s); js.id = id;
+           js.src = "//connect.facebook.net/en_US/sdk.js";
+           fjs.parentNode.insertBefore(js, fjs);
+         }(document, 'script', 'facebook-jssdk'));
+
+This function will be triggered on load. It will find your first `<script>` element and prepend an new `<script>` element to it with an id of `facebook-jssdk` and a source of `//connect.facebook.net/en_US/sdk.js`. You are free to change the language setting `en_US` to whatever you like, make sure it's in the right format. Another example is: `nl_NL`.
+
+
+
+
+
 
 
 
