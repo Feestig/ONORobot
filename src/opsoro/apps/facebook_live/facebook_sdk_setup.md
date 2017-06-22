@@ -91,7 +91,7 @@ Some data can be accessed without permission, for example the name of a publicly
 
 Some need do permission, for example getting a user's e-mail address.
 
-And some need extra permission by getting your application reviewed by Facebook moderators (this may take days or weeks). There's a similar process for making your Facebook application public, **online** requires an accepted review.
+And some need extra permission by getting your application reviewed by Facebook moderators (this may take days or weeks). There's a similar process for making your Facebook application public, **online** requires an accepted review. An example would be like things in the name of the user, this could be heavily abused so Facebook has to be strict at granting these permissions to app developers.
 
 Here is how to submit a review to get those extra Facebook features for your app: https://developers.facebook.com/docs/apps/review/feature 
 
@@ -113,6 +113,12 @@ To get data from more fields, you can enter it in the left column in the search 
 For extra fields you just type them after the `?fields=` parameter, for example: `me?fields=id,name,birthday,picture`. You can also get data from **sub-fields** and even deeper nested data. 
 Example: `me?fields=id,name,events{category,place{name,location{street,city}}}`.
 
+You can make even more complex queries by adding a limit: `me?fields=events.limit(10){name,place{location{street,city}}}`
+When requesting an **array** of data / objects there is default limit of 25 set. You can change this however you like. I tested until over 500. Depending on the limit you often retrieve a `paging` object in your response, this holds a **token** for the next and previous page. 
+
+Or offsets: `me?fields=events.offset(25){name,place{location{street,city}}}`
+This offset will make
+
 And so on, these are usable querystring examples for requesting data through HTTP or code using an SDK but you can execute more CRUD operations ofcourse.
 
 Creating, reading, updating and deleting data on a node (page, post, ...) require different permissions and each node has different fields, for example you can't request the field `PLACE_TYPE` querying on a user. This will return an error in the response.
@@ -120,7 +126,7 @@ Creating, reading, updating and deleting data on a node (page, post, ...) requir
     {
       error: {
         code: 100,
-        type: GraphException,
+        type: GraphMethodException,
         message: "The field PLACE_TYPE does not exist on node User"
       } 
     }
@@ -223,9 +229,31 @@ This **access token** is important for further requests.
 
 ### A simple GET request
 
+Let's make a simple GET request to get your id, name and **1** of your events with it's location and name, make sure you fill in your **access token**:
 
+        function fbGET() {
+          FB.api('/me?fields=id,name,events.limit(1){name,place{location{street,city}}}&access_token=YOUR_ACCESS_TOKEN', function(response) {
+            if(response && !response.error){
+              // successfully retrieved 
 
+            } else {
+              // an error occured!
+              console.log(response.error)
+            }
+          })
+        }
 
+If succesful, the response will result in a JSON object with the requested data. Else it will give you a JSON response aswell but with an error object. Example:
+
+    {
+      error: {
+        code: 100,
+        type: GraphMethodException,
+        message: "The field PLACE_TYPE does not exist on node User"
+      } 
+    }
+
+More about errors: 
 
 
 
