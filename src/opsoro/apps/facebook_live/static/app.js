@@ -11,6 +11,7 @@ $(document).ready(function() {
     });
     FB.AppEvents.logPageView();
     // Start using the FB SDK
+    console.log("Incognito test");
     model.fbInitialized(true);
     model.checkFBLogin();
   }
@@ -290,6 +291,12 @@ $(document).ready(function() {
             self.globalObjToPass.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
             break;
         }
+      }
+
+       // if clicked on post id link -> paste it in the input field
+      self.setIdByFacebookPost = function(postID) { // bind with parameter in html
+        self.facebookID(postID);
+        self.toggleStreaming(); // directly start ?
       }
 
       self.postToThread = function() {
