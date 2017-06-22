@@ -168,6 +168,9 @@ select {
 	float: right;
 	margin: 0;
 }
+.leftside{
+  margin-top: 50px;
+}
 .leftside p{
 	font-size: 1.3rem;
 	font-weight: bold;
@@ -223,7 +226,7 @@ select {
 }
 #voicelines .voiceline.locked
 {
-    
+
 }
 #voicelines .voiceline.locked.name
 {
