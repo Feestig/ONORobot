@@ -135,7 +135,7 @@ This is the trickiest part as you might encounter complex errors.
 
 - First in your HTML make this `<div id="fb-root"></div>` the first element in your body. Facebook needs this to append it's dialogs and modal boxes.
 
-- In your JavaScript, in your `window.load` function or `$(document).ready` or whatever `onLoad` function you prefer. You should execute the Facebook initialize function. This function is called asynchronously and might take some time to load so don't think that you can use it instantly.
+- In your JavaScript, in your `window.load` function or `$(document).ready` or whatever `onLoad` function you prefer. You should execute the Facebook initialize function. This function is called **asynchronously** and might take some time to load so don't think that you can use it instantly.
 
         window.fbAsyncInit = function() {
           FB.init({
@@ -180,6 +180,50 @@ Source: https://developers.facebook.com/docs/javascript/reference/FB.init/v2.9
          }(document, 'script', 'facebook-jssdk'));
 
 This function will be triggered on load. It will find your first `<script>` element and prepend an new `<script>` element to it with an id of `facebook-jssdk` and a source of `//connect.facebook.net/en_US/sdk.js`. You are free to change the language setting `en_US` to whatever you like, make sure it's in the right format. Another example is: `nl_NL`.
+
+### Log into Facebook
+
+We are now ready to make the log in functionality. We'll prompt the user to login when clicking a button. All prompts and dialogs are pop-up windows and might get blocked by your browser if the user hasn't interacted with your application. So it isn't wise to prompt a user to log in on page load.
+
+- Make a button in your HTML file and make it call `fbLogin()`. This will refer to the function below:
+
+        function fbLogin() {
+          FB.login(function(response) {
+            if (response.status === 'connected') {
+              // you are logged in
+              console.log(response)
+            } else {
+              console.log(response)
+            }
+          }, { scope: 'user_videos, user_photos' });
+        }
+
+If the response status equals `connected`, you'll be logged in successfully. Else you should handle your error. If you get an error like `FB init is not defined ...` in you **browser console**, you might have tried to use the SDK functionality (FB) before the **asynchronous** function has completed. This is another reason for why you shouldn't execute SDK functionality directly on page load.
+
+You can see **scopes** requested at the login. This will prompt the user to grant or deny permissions for your app.
+
+Find more functionality here: 
+
+More about the scopes and other options: https://developers.facebook.com/docs/reference/javascript/FB.login/v2.9
+
+The response will look like this if it was successful:
+
+        {
+          status: 'connected',
+          authResponse {
+            userID: 123546879,
+            accessToken: EEEgopjergog4r56e465rg46e56...,
+            expiresIn: ...,
+            signedRequest: ...
+          },
+          ...
+        } 
+
+This **access token** is important for further requests.
+
+### A simple GET request
+
+
 
 
 
