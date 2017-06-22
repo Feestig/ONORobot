@@ -106,9 +106,11 @@ $(document).ready(function() {
           }
           if(response.status == "error"){
             showMainError("Failed to login, please try again");
+            console.log(response);
           }
           if(response.status == "unknown" && response.authResponse == null){
             showMainError('Failed to login, please try again');
+            console.log(response);
           } else {
             console.log(response)
         }
