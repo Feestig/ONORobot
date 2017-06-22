@@ -14,7 +14,7 @@ $(document).ready(function(){
 		$.ajax({
 			dataType: 'json',
 			type: 'POST',
-			url: '/apps/sociono/',
+			url: '/apps/tweader/',
 			data: {action: action, data: data },
 			success: function(data){
 				if (!data.success) {

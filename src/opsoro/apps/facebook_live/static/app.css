@@ -103,6 +103,7 @@ button, button > span {
 }
 .lower-section{
 	padding-top: 10px
+	margin-bottom: 50px;
 }
 input[type="text"] {
 	margin-left: 0.5rem;
