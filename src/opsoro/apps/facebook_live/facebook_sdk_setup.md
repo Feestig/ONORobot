@@ -8,7 +8,7 @@ This is a quick guide to get you started on the Facebook JavaScript SDK.
  - Facebook Graph Explorer
  - Access Tokens & Permissions
  - CRUD Operations in the Facebook Graph API Explorer
- - Code Examples
+ - Code Examples using the JavaScript SDK
 
 ## Creating A Facebook Application
 
@@ -54,7 +54,7 @@ https://graph.facebook.com/oauth/access_token?client_id=YOUR_APP_ID&client_secre
 
 Example response:
 
-  {
+    {
       status: 'connected',
       authResponse: {
           accessToken: '...',
@@ -62,7 +62,7 @@ Example response:
           signedRequest:'...',
           userID:'...'
       }
-  }
+    }
 
 There might be more ways to retreive one, feel free to investigate. Either way you'll generate a **short lived** (user or page) access token. This means that it'll expire when you log out of Facebook in any way or if you're logged in for more than about 45 minutes, this means your session has expired. In the Graph API Explorer you'll be prompted to press **ALT + T** to renew your session. In your web application you'll want to ask your user to re-login. Annoying isn't it?
 
@@ -76,11 +76,11 @@ https://developers.facebook.com/tools/debug/accesstoken
 
 ### Permissions
 
-If you deploy an application for multiple users where you use their data or perform actions to their Facebook account, you'll need their permission.
+If you deploy an application for multiple users where you use their data or perform actions to their Facebook account, you'll need their permission. This can be done using **scopes**.
 
-When clicking **Get User Access Token** in the Graph API Explorer you might be prompted to select permissions, it will require different permissions depending on where you want to perform an action:
+When clicking **Get User Access Token** in the Graph API Explorer you might be prompted to select permissions, it will require different permissions / scopes depending on where you want to perform an action:
 
- - To your own feed (User) it needs: publish_actions.
+ - To your own feed (user) it needs: publish_actions.
  - To a page: publish_actions, manage_pages.
  - To a group: publish_actions, user_managed_groups.
  - To an event: publish_actions, user_events.
@@ -95,51 +95,39 @@ Here is how to submit a review to get those extra Facebook features for your app
 
 ## CRUD Operations in the Facebook Graph API Explorer
 
-CRUD litteraly stands for Create, Read, Update and Delete. These are methods / actions you use to alter or retreive data.
+CRUD litteraly stands for Create (post), Read (get), Update (put) and Delete (delete). These are methods / actions you use to alter or retreive data.
+
+Let's play around with the Graph API Explorer. Start simple by submitting `me`.
+
+By default you'll retreive the **fields** name and id.
+
+    {
+      "name": "...",
+      "id": "1234567891011"
+    }
+
+To get data from more fields, you can enter it in the left column in the search field. You'll be assisted by a nice autocomplete box. If you click a field in the autcompletion box, it will be added to your **querystring** to be submitted. This is one of the great features of the Graph API Explorer. But in your own application you shouldn't expect this kind of support. So I'll explain further how it works.
+
+For extra fields you just type them after the `?fields=` parameter, for example: `me?fields=id,name,birthday,picture`. You can also get data from **sub-fields** and even deeper nested data. 
+Example: `me?fields=id,name,events{category,place{name,location{street,city}}}`.
+
+And so on, these are usable querystring examples for requesting data through HTTP or code using an SDK but you can execute more CRUD operations ofcourse.
+
+Creating, reading, updating and deleting data on a node (page, post, ...) require different permissions and each node has different fields, for example you can't request the field `PLACE_TYPE` querying on a user. This will return an error in the response.
+
+    {
+      error: {
+        code: 100,
+        type: GraphException,
+        message: "The field PLACE_TYPE does not exist on node User"
+      } 
+    }
+
+## Code examples using the JavaScript SDK
 
 
 
--------------------------------------
-
-1.2 Click "Get Token" to retrieve a user or page access token.
-You could live stream a video on your own feed, on a page, on a group or on an event.
-
-1.3 You'll be prompted to select permissions, it will require different permissions depending on where you want to post the video:
-
-To your own feed (User) it needs: publish_actions.
-To a page: publish_actions, manage_pages.
-To a group: publish_actions, user_managed_groups.
-To an event: publish_actions, user_events.
-
-1.4 Check the permissions you need and click "Get Access Token" to continue.
-
-A "short lived" access token appears, short lived means that it will vanish when you log-out or when your session expires (ca. 45 minutes)
-If you need a token that lasts longer or doesn't expire, you can follow this link:
-https://stackoverflow.com/questions/17197970/facebook-permanent-page-access-token
-
-You can check the validity of your token here: https://developers.facebook.com/tools/debug/accesstoken
-
-### POST request
-
-Perform a POST request to create a Facebook live stream.
-
-1.5 Underneath your access token to the left, you'll see a book icon (examine it if you feel like). To the right of the book icon, you see the word "GET", change it to "POST" by clicking it.
-
-1.6 In the query field you'll see something like this "me?fields=id,name", change it to "me/live_videos" or "<your-page-id>/live_videos" and click "Submit"
-
-This should return an object with an id, and stream urls in RTMP format.
-You have now created a Facebook live stream but external software is needed to record your stream.
-
-Something like this:
-{
-  "id": "1548733171824663",
-  "stream_url": "rtmp://rtmp-api.facebook.com:80/rtmp/1548733171824663?ds=1&s_l=1&a=ATghSBT1Dp_Gp7Rh",
-  "secure_stream_url": "rtmps://rtmp-api.facebook.com:443/rtmp/1548733171824663?ds=1&s_l=1&a=ATghSBT1Dp_Gp7Rh",
-  "stream_secondary_urls": [
-  ],
-  "secure_stream_secondary_urls": [
-  ]
-}
+----------------------------------------------------------------------
 
 ### Open Broadcasting Software
 
