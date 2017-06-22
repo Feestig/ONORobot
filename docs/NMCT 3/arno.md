@@ -1,7 +1,7 @@
 # Treader
 
 ## documentation tweepy
-For tweepy all the documentation whas on this page: http://docs.tweepy.org/en/v3.5.0/
+For tweepy all the documentation is on this page: http://docs.tweepy.org/en/v3.5.0/
 </br>
 We also looked in the source-code with you can find: https://github.com/tweepy/tweepy
 
@@ -11,7 +11,6 @@ We also looked in the source-code with you can find: https://github.com/tweepy/t
 1. go to https://apps.twitter.com
 2. create your app
 3. go to "keys and tokens"
-
 4. create an access tokens
 5. now you have an consumer key, consumer secret, access token and a access token secret
 
@@ -22,6 +21,7 @@ We also looked in the source-code with you can find: https://github.com/tweepy/t
   import tweepy
   ```
 2. authenticate with your api keys
+
   ```
   access_token = {your_access_token}
   access_token_secret = {your_access_token_secret}
@@ -56,14 +56,14 @@ We also looked in the source-code with you can find: https://github.com/tweepy/t
 
 5. stop the twitter stream
 
-  don't forget to stop your stream to save server load. The stream wil close once a new tweet has come in. There is no workaround for this.
+  don't forget to stop your stream to save server load. The stream will close once a new tweet has come in. There is no workaround for this.
   ```
   global myStream
   myStream.disconnect()
   ```
 
 ## sending profile picture and url
- to make the frontend more attractive we decided to show te profile picture of the tweet and make it clickable.
+ To make the front-end more attractive we decided to show the profile picture of the tweet and make it click-able.
  To do so we send some extra content from the json we get to our javascript: ["user"]["screen_name"] and ["user"]["profile_image_url_https"]
 
   The profile picture is just a simple img object with the src you get from twitter.
@@ -73,7 +73,7 @@ We also looked in the source-code with you can find: https://github.com/tweepy/t
 
 
 ## Multi language
-  PlayTweetInLanguage takse 2 arguments and plays the text in that language.
+  PlayTweetInLanguage takes 2 arguments and plays the text in that language.
 
   ```
   def playTweetInLanguage(text, lang):
@@ -88,14 +88,14 @@ We also looked in the source-code with you can find: https://github.com/tweepy/t
     Sound._play(full_path)
   ```
 ## auto reader comments
-Autoreader is a boolean that know's when the user selected the "auto read tweet" function. <br/>
+Autoreader is a boolean that knows when the user selected the "auto read tweet" function. <br/>
 You get the value when starting the stream and when the user changes the value in javascript.<br/>
 When you get a tweet from the stream it will check the value and play the tweet if necessary.
 
 ## playtweet
 To play a tweet we use different functions:
 ### playtweet(tweepyDataModel)
-Here we prepare everything to start an async funtion. We make sure ther is no tweet playing and set the correct language. We also call an function getPlayArray(tweepyDataModel). To make an readable array with emoticons and text.
+Here we prepare everything to start an async function. We make sure there is no tweet playing and set the correct language. We also call a function getPlayArray(tweepyDataModel). To make a readable array with emoticons and text.
 ```
 def playTweet(tweepyDataModel):
     global loop_PlayTweet
@@ -110,11 +110,11 @@ def playTweet(tweepyDataModel):
 
 ```
 ### getPlayArray(tweepyDataModel)
-This function takes tweepyDataModel and makes an that split text and emotions. </br>
-It checkes avery char in the text. If there is an emoticon et wil append the output with ['emj',{emotion}]
+This function takes tweepyDataModel and makes an array that split text and emotions. </br>
+It checks every char in the text. If there is an emoticon it will append the output with ['emj',{emotion}]
 </br>
-When ther is no emotion it will check if it needs to add a char or if it is the first char of a new part of text. </br>
-The return value is an 2 demensional array: [[{emj or text}, {the emotion or a piece of text}], ...]
+When there is no emotion it will check if it needs to add a char or if it is the first char of a new part of text. </br>
+The return value is an 2 dimensional array: [[{emj or text}, {the emotion or a piece of text}], ...]
 This output can be played by the asyncPlayTweet() function.
 ```
 def getPlayArray(status):
@@ -187,14 +187,14 @@ def getPlayArray(status):
 ```
 
 ### asyncReadTweet()
-The function takes the tweetArrayToPlay and play's it correctly.
+The function takes the tweetArrayToPlay and plays it correctly.
 </br>
-It takes every peace of the array and checkes if it's an emoticon or a peace of text.
+It takes every peace of the array and checks if it's an emoticon or a peace of text.
 When it's text it has to wait until the text is played. After that it takes the next piece and so on.
 </br>
-It also checkes the if the autoloop is enabled so it can play the next tweet.
+It also checks the if the autoloop is enabled so it can play the next tweet.
 </br>
-This function has to be a new tread beceause of the "wait_for_sound" function
+This function has to be a new tread because of the "wait_for_sound" function
  ```
  def asyncReadTweet():
     time.sleep(0.05)
@@ -217,7 +217,7 @@ This function has to be a new tread beceause of the "wait_for_sound" function
 
  ## Autoloop
  ### Backend
- To make the autoloop work we use a boolean that knows when it's running. After a tweet is played it checkes the value and sends a socket to the client side who then sends a new playtweet command to the server.
+ To make the autoloop work we use a boolean that knows when it's running. After a tweet is played it checks the value and sends a socket to the client side who then sends a new playtweet command to the server.
 
 ## Close connections from client
 Because we work with streams it's possible there is an open connection with twitter when closing the browser. To avoid tweepy is still running we use an ajax function ".unload()". Here we send the action "stopTweepy" to disconnect the stream.
@@ -244,7 +244,7 @@ $( window ).unload(function() {
 
 # Facebook live
 ## Reacting to comments and reading comments
-In the handleLayout() function it checks if there was a new comment and then simply sends an request to the server to play the sound. It also needs to check if the option is checked. After that it goes to the playEmotion() function witch handles the emotions().
+In the handleLayout() function it checks if there was a new comment and then simply sends an request to the server to play the sound. It also needs to check if the option is enabled. After that it goes to the playEmotion() function which handles the emotions().
 
 ```
 if(self.comments().length > 0 && self.comments()[0]['id'] != arr_comments[arr_comments.length - 1]['id']){
@@ -257,7 +257,7 @@ if(self.comments().length > 0 && self.comments()[0]['id'] != arr_comments[arr_co
     self.comments(arr_comments.reverse());
 }
 ```
-The playEmotion() function gets the selected item in the combobox. If it's -1 the option 'None' is selected and nothing needs to happen. If the option "Random" is selected it will select a random index from the emotions array to the server. Else there is an index selected of an available emotion, the index needs to be -1 because there is an value 'random' added.
+The playEmotion() function gets the selected item in the combo box. If it's -1 the option 'None' is selected and nothing needs to happen. If the option "Random" is selected it will select a random index from the emotions array to the server. Else there is an index selected of an available emotion, the index needs to be -1 because there is an value 'random' added.
 
 ```
 self.playEmotion = function(){
