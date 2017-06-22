@@ -1,9 +1,9 @@
 # Blockly
 
-The subfolder blockly in sociono is used to declera new blocks for the blockly app.
+The subfolder blockly in tweader is used to declare new blocks for the blockly app.
 This folder contains two files:
-1. sociono.xml: Here we declare new blocks ie. `<block type="type_name"></block>`
-2. sociono.js: We initialize the blocks and assign the code that needs to be executed.
+1. tweader.xml: Here we declare new blocks ie. `<block type="type_name"></block>`
+2. tweader.js: We initialize the blocks and assign the code that needs to be executed.
   2.1`Blockly.Blocks['type_name'] = {}` is where the code for the layout is put.
   2.2.`Blockly.Lua['type_name'] = function(block) {}` is where we will put the code that is to be generated in.
 
