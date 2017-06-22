@@ -91,14 +91,14 @@
 						<span data-bind="text: message"></span>
 					</div>
 					<div>
-						<small style="margin-top: 15px;"><a data-bind="click: $root.setIdByFacebookPost.bind($data, id)" target="_blank">Click here to read the comments comments of this post!</a></small>
+						<small style="margin-top: 15px;"><a data-bind="click: $root.setIdByFacebookPost.bind($data, id)" target="_blank">Click here to read the comments of this post!</a></small>
 					</div>
 				</a>
 			</div>
 		</div>
 
 		<div class="togglebox">
-			<label data-bind="visible: selectedType().type == 'isPost' || selectedType().type == 'isVideo' || selectedType().type == 'isPage'"><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
+			<label data-bind="visible: selectedType().type == 'isPost' || selectedType().type == 'isVideo' || selectedType().type == 'isPage'"><input type="checkbox" data-bind="checked: autoRead"/> Start reading automatically</label>
 			<label data-bind="visible: selectedType().type == 'isVideo'"><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
 			<p data-bind="visible: selectedType().type == 'isPost' || selectedType().type == 'isVideo' || selectedType().type == 'isPage'">Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
 		</div>

@@ -38,7 +38,7 @@ import json
 import time
 
 config = {
-    'full_name':            'Sociono',
+    'full_name':            'Tweader',
     'icon':                 'fa-hashtag',
     'color':                'blue',
     'difficulty':           1,
@@ -55,7 +55,6 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 dof_positions = {}
 
-sociono_t = None
 autoRead = None # globals -> can be decalerd in called methodes
 loop_T = None # loop var for Stoppable Thread
 loop_PlayTweet = None # loop that plays playArray
@@ -87,15 +86,15 @@ def send_data(action, data):
 
 
 def setup_pages(opsoroapp):
-    sociono_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
+    tweader_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
-    @sociono_bp.route('/', methods=['GET'])
+    @tweader_bp.route('/', methods=['GET'])
     @opsoroapp.app_view
     def index():
         data = {'actions': {}, 'emotions': [], 'sounds': []}
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
-    @sociono_bp.route('/', methods=['POST'])
+    @tweader_bp.route('/', methods=['POST'])
     @opsoroapp.app_view
     def post():
         data = {'actions': {}, 'emotions': [], 'sounds': []} # Overbodig ...
@@ -140,7 +139,7 @@ def setup_pages(opsoroapp):
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
-    opsoroapp.register_app_blueprint(sociono_bp)
+    opsoroapp.register_app_blueprint(tweader_bp)
 
 def playTweet(tweepyDataModel):
     global playing
