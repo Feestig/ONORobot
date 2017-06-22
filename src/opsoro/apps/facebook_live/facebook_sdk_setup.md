@@ -18,6 +18,8 @@ It's possible to alter Facebook data solely through HTTP requests but the possib
  - Click "My Apps" in the top right corner and add a new app.
  - Give it a display name and your e-mail address, press "Create App".
 
+A Facebook app keeps track of stats such as active users during a period and much more.
+
 You now have an app which you can use for a Facebook SDK and even the Graph API Explorer: https://developers.facebook.com/tools/explorer/
 
 ## Graph API Explorer
@@ -133,23 +135,22 @@ This is the trickiest part as you might encounter complex errors.
 
 - First in your HTML make this `<div id="fb-root"></div>` the first element in your body. Facebook needs this to append it's dialogs and modal boxes.
 
- - In your JavaScript, in your `window.load` function or `$(document).ready` You should execute the Facebook initialize function.
+ - In your JavaScript, in your `window.load` function or `$(document).ready` or whatever `onLoad` function you prefer. You should execute the Facebook initialize function.
 
- 
+
         window.fbAsyncInit = function() {
           FB.init({
-            appId            : '1710409469251997',
+            appId            : 'YOUR_APP_ID_HERE',
             autoLogAppEvents : true,
             xfbml            : true,
             status           : true,
-            version          : 'v2.9'
+            version          : 'v2.9' // your app version
           });
           FB.AppEvents.logPageView();
-          // Start using the FB SDK
-          console.log("Incognito test");
-          model.fbInitialized(true);
-          model.checkFBLogin();
+          // From here you can use the FB 
         }
+  
+  - Fill in your app id so
 
 
 
