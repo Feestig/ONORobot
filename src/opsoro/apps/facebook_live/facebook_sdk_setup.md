@@ -1,0 +1,273 @@
+# Facebook API & SDK
+
+This is a quick guide to get you started on the Facebook JavaScript SDK.
+
+## Table of contents
+
+ - Create a Facebook Application
+ - Facebook Graph Explorer
+ - Access Tokens & Permissions
+ - CRUD Operations in the Facebook Graph API Explorer
+ - Code Examples
+
+## Creating A Facebook Application
+
+It's possible to alter Facebook data solely through HTTP requests but the possibilities will remain limited. Becoming a Facebook developer gives you access to extra features such as an SDK which includes Facebook GUI  elements like: sharing, live streaming, ... dialogs.
+
+ - Register yourself as a Facebook developer: https://developers.facebook.com/
+ - Click "My Apps" in the top right corner and add a new app.
+ - Give it a display name and your e-mail address, press "Create App".
+
+You now have an app which you can use for a Facebook SDK and even the Graph API Explorer: https://developers.facebook.com/tools/explorer/
+
+## Graph API Explorer
+
+The Graph API Explorer is a tool commonly used for testing and playing with Facebook data.
+
+### Use your app
+
+By default the Graph API Explorer will be selected in the top right corner. This is the same as using the URL in HTTP request, limited. Therefor you should use your (recently made) Facebook application. Another benefit of this is that for example a status update created by this app will mention it's made by your app, free credits?
+
+Here is an example URL for if you would like to test the Graph API Explorer through HTTP requests or just in your browser.
+https://graph.facebook.com/DjVDC
+
+Navigate to the URL above and you'll encounter an "OAuthException" telling you that you need an **access token** to request this resource.
+
+## Access Tokens & Permissions
+
+Access tokens are required to get, post, update or delete Facebook data through the Graph API or an SDK. It's the way to authenticate requests.
+
+There are a few different types of access tokens: user tokens, app tokens & page tokens. The difference lies within the access possibilties for example, a user token will allow access to everything you can normally access. Page and app tokens have other perks.
+
+Read more about Facebook's access tokens here: https://developers.facebook.com/docs/facebook-login/access-tokens
+
+### Ways to retreive an access token
+
+There are several options to retreive access tokens.
+
+ - Navigate to the Graph API if you haven't already, click the dropdown button **Get Token** and select **Get User Access Token**. If there is something already filled in, in the access token field than this is your **short lived** access token.
+
+You cannot do this with a HTTP request since you'll need an access token to execute the request, if I'm not mistaken. You could get a page token through a HTTP request using your user access token. Or an app token by making a GET request like this (fill it in with your app information):
+https://graph.facebook.com/oauth/access_token?client_id=YOUR_APP_ID&client_secret=YOUR_APP_SECRET&grant_type=client_credentials
+
+ - Another option is by logging into Facebook using an SDK. The SDK provides a dialog window prompting for you to log in. In the response you'll find your access token. Later more on that.
+
+Example response:
+
+  {
+      status: 'connected',
+      authResponse: {
+          accessToken: '...',
+          expiresIn:'...',
+          signedRequest:'...',
+          userID:'...'
+      }
+  }
+
+There might be more ways to retreive one, feel free to investigate. Either way you'll generate a **short lived** (user or page) access token. This means that it'll expire when you log out of Facebook in any way or if you're logged in for more than about 45 minutes, this means your session has expired. In the Graph API Explorer you'll be prompted to press **ALT + T** to renew your session. In your web application you'll want to ask your user to re-login. Annoying isn't it?
+
+There's a solution for every problem? Well in this case there is. You can exchange your short lived token into a long lived one, this will obviously last longer before it expires. Does this cut the deal for you? It doesn't for me so I'd exchange that long lived token for a permanent token this will never expire (unless you delete your account or targeted Facebook page). 
+
+Follow this link to generate a long lived or permanent access token:
+https://stackoverflow.com/questions/17197970/facebook-permanent-page-access-token
+
+Here's a tool for validation your access token, check if it is indeed the token you want:
+https://developers.facebook.com/tools/debug/accesstoken
+
+### Permissions
+
+If you deploy an application for multiple users where you use their data or perform actions to their Facebook account, you'll need their permission.
+
+When clicking **Get User Access Token** in the Graph API Explorer you might be prompted to select permissions, it will require different permissions depending on where you want to perform an action:
+
+ - To your own feed (User) it needs: publish_actions.
+ - To a page: publish_actions, manage_pages.
+ - To a group: publish_actions, user_managed_groups.
+ - To an event: publish_actions, user_events.
+
+Some data can be accessed without permission, for example the name of a publicly accessible Facebook page.
+
+Some need do permission, for example getting a user's e-mail address.
+
+And some need extra permission by getting your application reviewed by Facebook moderators (this may take days or weeks). There's a similar process for making your Facebook application public, **online** requires an accepted review.
+
+Here is how to submit a review to get those extra Facebook features for your app: https://developers.facebook.com/docs/apps/review/feature 
+
+## CRUD Operations in the Facebook Graph API Explorer
+
+CRUD litteraly stands for Create, Read, Update and Delete. These are methods / actions you use to alter or retreive data.
+
+
+
+-------------------------------------
+
+1.2 Click "Get Token" to retrieve a user or page access token.
+You could live stream a video on your own feed, on a page, on a group or on an event.
+
+1.3 You'll be prompted to select permissions, it will require different permissions depending on where you want to post the video:
+
+To your own feed (User) it needs: publish_actions.
+To a page: publish_actions, manage_pages.
+To a group: publish_actions, user_managed_groups.
+To an event: publish_actions, user_events.
+
+1.4 Check the permissions you need and click "Get Access Token" to continue.
+
+A "short lived" access token appears, short lived means that it will vanish when you log-out or when your session expires (ca. 45 minutes)
+If you need a token that lasts longer or doesn't expire, you can follow this link:
+https://stackoverflow.com/questions/17197970/facebook-permanent-page-access-token
+
+You can check the validity of your token here: https://developers.facebook.com/tools/debug/accesstoken
+
+### POST request
+
+Perform a POST request to create a Facebook live stream.
+
+1.5 Underneath your access token to the left, you'll see a book icon (examine it if you feel like). To the right of the book icon, you see the word "GET", change it to "POST" by clicking it.
+
+1.6 In the query field you'll see something like this "me?fields=id,name", change it to "me/live_videos" or "<your-page-id>/live_videos" and click "Submit"
+
+This should return an object with an id, and stream urls in RTMP format.
+You have now created a Facebook live stream but external software is needed to record your stream.
+
+Something like this:
+{
+  "id": "1548733171824663",
+  "stream_url": "rtmp://rtmp-api.facebook.com:80/rtmp/1548733171824663?ds=1&s_l=1&a=ATghSBT1Dp_Gp7Rh",
+  "secure_stream_url": "rtmps://rtmp-api.facebook.com:443/rtmp/1548733171824663?ds=1&s_l=1&a=ATghSBT1Dp_Gp7Rh",
+  "stream_secondary_urls": [
+  ],
+  "secure_stream_secondary_urls": [
+  ]
+}
+
+### Open Broadcasting Software
+
+OBS (Open Broadcasting Software) is referenced to and shown in the Facebook documentation, download link: https://obsproject.com/download
+
+Follow this link to set-up OBS: https://github.com/jp9000/obs-studio/wiki/Install-Instructions
+
+Once it's downloaded an "Auto-Configuration Wizard" will pop-up, make good use of this. Make sure you set the streaming service to "Facebook Live". Enter your stream url and key. You can retrieve this key through a Facebook dialog but you can also just fetch it from your stream url.
+
+Example: "stream_url": "rtmp://rtmp-api.facebook.com:80/rtmp/1548733171824663?ds=1&s_l=1&a=ATghSBT1Dp_Gp7Rh"
+
+The part after "/rtmp/" is your stream key, so "1548733171824663?ds=1&s_l=1&a=ATghSBT1Dp_Gp7Rh".
+The first part refers to your user, page, group or event id.
+
+### Problem
+
+OBS didn't want to connect so I'll approach it differently.
+
+### Facebook built-in stream widget (solution?)
+
+1. Open another window (don't close the Graph API Explorer) and navigate to the desired facebook profile, page, group or event owned by you and start a live video.
+
+You'll get a screen like this:
+<img here>
+
+2. At the bottom right corner (marked red) there's an option to stream with external software (OBS, ...), click it. This might be useful if you want to show more than just the your face ... for example your desktop while gaming and yourself in the bottom right or left corner giving live commentary.
+
+3. Click "make livestream" this results in a modal window where you can enter a video title and get your stream key. If not already, start OBS, go to settings, select "Facebook Live" as service and paste your stream key.
+
+4. Back in the Facebook window, set the access level (public recommended) and go live! 
+
+
+## 2. Reading
+
+1. In the Graph API Explorer, query "<facebook-id>/live_videos" example: "me/live_videos", press submit. You should see your video listed where "status" is "LIVE", click on the id
+and press submit again to get the specific data for that video.
+
+We'll work with the views & comments of the live video.
+Add fields to get specific data, example: "<live_video-id>?fields=live_views,comments".
+
+this will result in something like this:
+
+{
+  "comments": {
+    "data": [
+      {
+        "from": {
+          "name": "Auguste Van Nieuwenhuyzen",
+          "id": "1548926531805327"
+        },
+        "message": "Mooi",
+        "id": "10209691024654989_10209691105297005"
+      },
+      {
+        "from": {
+          "name": "Auguste Van Nieuwenhuyzen",
+          "id": "1548926531805327"
+        },
+        "message": "Ok",
+        "id": "10209691024654989_10209691105857019"
+      }
+    ],
+    "paging": {
+      "cursors": {
+        "before": "WTI5dGJXVnVkRjlqZAFhKemIzSTZANVEF5TURrMk9URXhNRFV5T1Rjd01EVTZANVFE1TnpJM016a3lOdz09",
+        "after": "WTI5dGJXVnVkRjlqZAFhKemIzSTZANVEF5TURrMk9URXhNRFU0TlRjd01UazZANVFE1TnpJM016a3pOZAz09"
+      }
+    }
+  },
+  "live_views": 1,
+  "id": "10209691024734991"
+}
+
+This is usable data for the ONORobot, let's make the app!
+
+Side Notes:
+RTMP (Real-time Messaging Protocol): https://en.wikipedia.org/wiki/Real-Time_Messaging_Protocol
+
+src: https://developers.facebook.com/docs/videos/live-video/getting-started
+
+# ONORobot
+
+### 1. Paste your access_token
+### 2. Get Request me/live_videos, this will result into something like this:
+  {
+    "data": [
+      {
+        "title": "Niks te zien, test voor project! (zwart scherm)",
+        "status": "LIVE",
+        "stream_url": "rtmp://rtmp-api.facebook.com:80/rtmp/1550981988266448?ds=1&s_l=1&a=AThG-5FPYt7Uf8YD",
+        "secure_stream_url": "rtmps://rtmp-api.facebook.com:443/rtmp/1550981988266448?ds=1&s_l=1&a=AThG-5FPYt7Uf8YD",
+        "embed_html": "<iframe src=\"https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fauguste.vannieuwenhuyzen%2Fvideos%2F1550981984933115%2F&width=1280\" width=\"1280\" height=\"720\" style=\"border:none;overflow:hidden\" scrolling=\"no\" frameborder=\"0\" allowTransparency=\"true\" allowFullScreen=\"true\"></iframe>",
+        "id": "1550981988266448"
+      }
+    ],
+    "paging": {
+      "cursors": {
+        "before": "MTU1MDk4MTk4ODI2NjQ0OAZDZD",
+        "after": "MTU1MDk4MTk4ODI2NjQ0OAZDZD"
+      }
+    }
+  } 
+
+
+#### 2.1. Send response from python to JS & validate it there. 
+
+
+### 3. Filter out live video (status="LIVE"), get it's ID
+    Send back video IDs of the live videos only with a post to python, (in python) get their data with a graph request
+
+#### 3.1 Set lay-out with live_video data -> embed iFrame error: this video can't be embed (not embeddable while streaming?)
+      Works when going through OBS, sometimes ?!
+
+### 4. Use ID for Facebook call for comments & views
+    get request for live_views & comments
+
+### 5. Get the data every 2 seconds and bind to lay-out to show up to date data (through sockets to JS). 
+    Why fetching all the comments over and over? Because comments might be deleted, edited and added. This way you don't have to make complex checks nor will you see comments that were deleted on Facebook but not on our app.
+
+
+
+
+## Facebook Login, pages, videos, feed with SDK
+
+Add your test domain url to FB app
+
+
+
+
+Extra: Multiple videos ? Display all, check the one you want
+
