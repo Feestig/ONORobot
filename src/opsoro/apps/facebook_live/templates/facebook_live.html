@@ -32,7 +32,10 @@
 			</div>
 			<button class="button round info" data-bind="css: { success: !isStreaming(), alert: isStreaming() }, click: toggleStreaming, enable: loggedIn() && facebookID()">
 				<i class="fa" aria-hidden="true" data-bind="css: {'fa-play' : !isStreaming(), 'fa-stop' : isStreaming()}"></i>
-				<span class="icon-span-small" data-bind="text: !isStreaming() && facebookID() ? 'Start Stream' : 'Stop Stream'"></span>
+				<span class="icon-span-small" data-bind="enable:  facebookID(), text: !isStreaming() ? 'Start Reading' : 'Stop Reading'"></span>
+				<span class="icon-span-small" data-bind="visible: selectedType() && (selectedType().type == 'isPage')"> Page Posts</span>
+				<span class="icon-span-small" data-bind="visible: selectedType() && (selectedType().type == 'isVideo')"> Video Comments</span>
+				<span class="icon-span-small" data-bind="visible: selectedType() && (selectedType().type == 'isPost')"> Post Comments</span>
 			</button>
 	</div>
 		<div class="startnew" data-bind="visible: !isNewVideo()">

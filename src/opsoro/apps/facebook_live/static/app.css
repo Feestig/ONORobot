@@ -36,12 +36,12 @@ button, button > span {
 	text-align: center;
 }
 .upper-section > .button{
-		font-family: "Avenir Next";
-		width: 200px;
-		height: 200px;
-		-webkit-border-radius: 100px;
-			 -moz-border-radius: 100px;
-						border-radius: 100px;
+	font-family: "Avenir Next";
+	width: 200px;
+	height: 200px;
+	-webkit-border-radius: 100px;
+		 -moz-border-radius: 100px;
+					border-radius: 100px;
 }
 .big-icon{
 	font-size: 3rem;
