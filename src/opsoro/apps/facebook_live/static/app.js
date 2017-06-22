@@ -357,7 +357,11 @@ $(document).ready(function() {
 
           if(data.comments && data.comments.data.length > 0) {
             var arr_comments = data.comments.data;
-            if(self.comments().length == 0) self.comments(arr_comments.reverse())
+            if(self.comments().length == 0) {
+              self.comments(arr_comments.reverse())
+              self.playEmotion();
+              if(self.autoRead()) robotSendTTS(self.comments[0]["message"]);
+            }
             if(self.comments()[0]['id'] != arr_comments[arr_comments.length - 1]['id']){
                 if(self.autoRead()){
                   console.log("autoread")
