@@ -37,7 +37,7 @@
 				<span class="icon-span-small" data-bind="visible: selectedType() && (selectedType().type == 'isVideo')"> Video Comments</span>
 				<span class="icon-span-small" data-bind="visible: selectedType() && (selectedType().type == 'isPost')"> Post Comments</span>
 			</button>
-	</div>
+		</div>
 		<div class="startnew" data-bind="visible: !isNewVideo()">
 			<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn() && !isStreaming()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
 				<i class="fa fa-plus big-icon" aria-hidden="true"></i>
