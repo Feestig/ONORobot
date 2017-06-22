@@ -80,15 +80,17 @@
 		<!-- For the page's posts -->
 		<div class="centralised" data-bind="sortable: { data: pagePosts, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }, visible: isStreaming() && pagePosts().length > 0">
 			<div id="voicelines" class="bubble">
-				<div>
-					<span class="voiceline locked name no-indent" data-bind="text: story"></span>
-				</div>
-				<div class="voiceline locked no-indent">
-					<span data-bind="text: message"></span>
-				</div>
-				<div>
-					<small>Post ID: <a data-bind="attr: { href: permalink_url }, text: id" target="_blank"></a></small>
-				</div>
+				<a data-bind="attr: { href: permalink_url }" target="_blank">
+					<div>
+						<span class="voiceline locked name no-indent" data-bind="text: story"></span>
+					</div>
+					<div class="voiceline locked no-indent">
+						<span data-bind="text: message"></span>
+					</div>
+					<div>
+						<small style="margin-top: 15px;"><a data-bind="" target="_blank">Click here to read the comments comments of this post!</a></small>
+					</div>
+				</a>
 			</div>
 		</div>
 

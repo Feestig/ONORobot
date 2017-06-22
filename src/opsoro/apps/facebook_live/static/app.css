@@ -1,8 +1,29 @@
 a {
+	text-decoration: none;
+    font-weight: normal;
+}
+
+a:hover {
+	text-decoration: none;
+    font-weight: normal;
+    color: inherit!important;
+}
+
+small > a {
     text-decoration: none;
     font-weight: normal;
     color: #2ba6cb;
 }
+
+small > a:hover {
+    text-decoration: underline;
+    color: #2ba6cb!important;
+}
+
+button, button > span {
+	text-transform: uppercase!important;
+}
+
 .lower-section p{
 	margin-top: 1.5rem!important;
 	font-size: 1.3rem;
@@ -24,7 +45,7 @@ a {
 }
 .big-icon{
 	font-size: 3rem;
-	margin-bottom: 10px;
+	margin-bottom: 15px;
 }
 .icon-span-small{
   margin-top: 5px;
@@ -52,10 +73,20 @@ a {
 		 -moz-border-radius: 5px;
 					border-radius: 5px;
 }
-.start-stream button{
+
+.start-stream .fa {
+	font-size: 2rem;
+	margin-bottom: 10px;
+}
+
+.start-stream button {
 	font-family: "Avenir Next";
 	width: 100%;
+	font-size: 1rem;
+	color: #fff!important;
+	font-weight: bold!important;
 }
+
 .startnew {
 	display: inline-block;
 	width: 40%;
@@ -226,9 +257,9 @@ select {
 
     position: relative;
     margin-bottom: .25rem;
-		padding: 0.5rem;
-		height: auto;
-		overflow-y:auto;
+	padding: 1rem;
+	height: auto;
+	overflow-y:auto;
 
     -webkit-border-radius: .5rem;
        -moz-border-radius: .5rem;

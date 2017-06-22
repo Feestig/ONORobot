@@ -11,6 +11,7 @@ $(document).ready(function() {
     });
     FB.AppEvents.logPageView();
     // Start using the FB SDK
+    console.log("Incognito test");
     model.fbInitialized(true);
     model.checkFBLogin();
   }
