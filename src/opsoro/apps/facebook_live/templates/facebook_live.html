@@ -100,7 +100,7 @@
 		<div class="togglebox">
 			<label data-bind="visible: selectedType().type == 'isPost' || selectedType().type == 'isVideo' || selectedType().type == 'isPage'"><input type="checkbox" data-bind="checked: autoRead"/> Start reading automatically</label>
 			<label data-bind="visible: selectedType().type == 'isVideo'"><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
-			<p data-bind="visible: selectedType().type == 'isPost' || selectedType().type == 'isVideo' || selectedType().type == 'isPage'">Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
+			<p data-bind="visible: selectedType().type == 'isPost' || selectedType().type == 'isVideo'">Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
 		</div>
 	</div>
 

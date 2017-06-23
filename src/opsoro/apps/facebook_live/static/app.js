@@ -359,7 +359,7 @@ $(document).ready(function() {
 
           if(data.comments && data.comments.data.length > 0) {
             var arr_comments = data.comments.data;
-            if(self.comments().length > 0 && self.comments()[0]['id'] != arr_comments[arr_comments.length - 1]['id']){
+            if(self.comments().length >= 0 && self.comments()[0]['id'] != arr_comments[arr_comments.length - 1]['id']){
                 if(self.autoRead()){
                   console.log("autoread")
                   //send last comment to read out loud
