@@ -65,10 +65,10 @@ tweetArrayToPlay = [] #tweet array that needs to be played
 playing = False
 newTweet = False
 
-access_token = '141268248-yAGsPydKTDgkCcV0RZTPc5Ff7FGE41yk5AWF1dtN'
-access_token_secret = 'UalduP04BS4X3ycgBJKn2QJymMhJUbNfQZlEiCZZezW6V'
-consumer_key = 'U2PILejmAYpd20ImoqdTZp4Rm'
-consumer_secret = 'nacB6eTgMR4cpZzckG7pTGpV3WKBXoyDhn3feU1R24kY2Kf0QF'
+access_token = '141268248-z4fcw3qlfFPYFZIU4pjNZ5zk6uwGCbhYQi8ZOlSY'
+access_token_secret = 'vduhHFy6JtOh2uox8v3JigLek7vKwHa6vp6jFPIvjEI6g'
+consumer_key = '1VoJWPQEuGphENPUr11uevN4b'
+consumer_secret = '8AGdquUA2PHxoTRZRKwQ5FowZdXwrK5dJN0ygyxZ9QHWTa6jMJ'
 
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -111,10 +111,8 @@ def setup_pages(opsoroapp):
                 # Auto Read
                 global autoRead
                 autoRead = json_data['autoRead']
-
                 # Start Tweepy stream
                 startTwitter(social_id)
-
         if request.form['action'] == 'stopTweepy':
             stopTwitter()
 
