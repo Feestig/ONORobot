@@ -359,15 +359,15 @@ $(document).ready(function() {
 
           if(data.comments && data.comments.data.length > 0) {
             var arr_comments = data.comments.data;
-            if(self.comments().length >= 0 && self.comments()[0]['id'] != arr_comments[arr_comments.length - 1]['id']){
+            if(self.comments().length > 0 && self.comments()[0]['id'] != arr_comments[arr_comments.length - 1]['id']){
                 if(self.autoRead()){
                   console.log("autoread")
                   //send last comment to read out loud
                   robotSendTTS(arr_comments[arr_comments.length -1]["message"]);
                 }
                 self.playEmotion();
-                self.comments(arr_comments.reverse());
             }
+            self.comments(arr_comments.reverse()); // reverse -> unshift ... so last comment, comes first
           }
           console.log(data);
           if(self.reactToLikes() && data.reactions != null && data.reactions.data.length != self.likes()){
